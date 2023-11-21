@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Greenthumb</string>
+    <string name="title_home">Home</string>
+    <string name="title_myplants">My Plants</string>
+    <string name="title_search">Search</string>
+    <string name="btn_search_by_photo">Search by photo</string>
+    <string name="et_hint_plant_search">Enter plant name to search</string>
+</resources>

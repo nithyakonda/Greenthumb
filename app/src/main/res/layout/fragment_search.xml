@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/padding_default"
+    tools:context=".ui.search.SearchFragment">
+
+    <Button
+        android:id="@+id/btnPhotoSearch"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/btn_search_by_photo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/etNameSearch"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="16dp"
+        android:ems="10"
+        android:hint="@string/et_hint_plant_search"
+        android:inputType="textPersonName"
+        app:layout_constraintEnd_toStartOf="@+id/btnNameSearch"
+        app:layout_constraintStart_toStartOf="@+id/btnPhotoSearch"
+        app:layout_constraintTop_toBottomOf="@+id/btnPhotoSearch" />
+
+    <ImageButton
+        android:id="@+id/btnNameSearch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/purple_500"
+        android:src="@android:drawable/ic_menu_search"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/etNameSearch" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="409dp"
+        android:layout_height="568dp"
+        android:layout_marginTop="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/etNameSearch" />
+</androidx.constraintlayout.widget.ConstraintLayout>
