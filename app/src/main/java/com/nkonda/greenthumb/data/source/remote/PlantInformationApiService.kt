@@ -1,6 +1,6 @@
 package com.nkonda.greenthumb.data.source.remote
 
-import androidx.viewbinding.BuildConfig
+import com.nkonda.greenthumb.BuildConfig
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import okhttp3.OkHttpClient
@@ -37,7 +37,7 @@ private val retrofit = Retrofit.Builder()
 
 interface PlantInformationApiService {
     companion object {
-        const val PLANT_INFO_API_KEY =  "BuildConfig.PLANT_INFO_API_KEY"
+        const val PLANT_INFO_API_KEY =  BuildConfig.PLANT_INFO_API_KEY
     }
     @GET("species-list")
     suspend fun searchPlantByName(

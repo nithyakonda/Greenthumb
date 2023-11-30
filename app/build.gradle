@@ -23,6 +23,11 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            buildConfigField("String", "PLANT_INFO_API_KEY", "\"${project.perenualAPIKey}\"")
+        }
+
+        debug {
+            buildConfigField("String", "PLANT_INFO_API_KEY", "\"${project.perenualAPIKey}\"")
         }
     }
     compileOptions {
@@ -80,8 +85,6 @@ dependencies {
 
     // OKHttp3
     implementation(platform("com.squareup.okhttp3:okhttp-bom:$okhttpVersion"))
-
-    // define any required OkHttp artifacts without version
     implementation("com.squareup.okhttp3:okhttp")
     implementation("com.squareup.okhttp3:logging-interceptor")
 
@@ -96,4 +99,8 @@ dependencies {
     androidTestImplementation "io.insert-koin:koin-test:$koinVersion"
     implementation "io.insert-koin:koin-android:$koinVersion"
     implementation platform('com.google.firebase:firebase-bom:32.3.1')
+
+    // Glide
+    implementation "com.github.bumptech.glide:glide:$glideVersion"
+    annotationProcessor "com.github.bumptech.glide:compiler:$glideVersion"
 }

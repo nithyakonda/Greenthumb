@@ -20,9 +20,11 @@
             android:layout_width="@dimen/image_listitem_dimens"
             android:layout_height="@dimen/image_listitem_dimens"
             android:contentDescription="@string/cd_listitem_plant_image"
+            android:src="@drawable/ic_broken_image"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:srcCompat="@tools:sample/avatars" />
+            tools:srcCompat="@tools:sample/avatars"
+            searchResultPlantImage="@{plantSummary.defaultImage.thumbnail}"/>
 
         <TextView
             android:id="@+id/tvCommonName"
