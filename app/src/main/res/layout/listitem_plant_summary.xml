@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <variable
+            name="plantSummary"
+            type="com.nkonda.greenthumb.data.source.remote.PlantSummary" />
+    </data>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/container_listitem_veritcal_padding"
+        android:paddingTop="@dimen/container_listitem_horizontal_padding"
+        android:paddingRight="@dimen/container_listitem_veritcal_padding"
+        android:paddingBottom="@dimen/container_listitem_horizontal_padding">
+
+        <ImageView
+            android:id="@+id/ivPlantImage"
+            android:layout_width="@dimen/image_listitem_dimens"
+            android:layout_height="@dimen/image_listitem_dimens"
+            android:contentDescription="@string/cd_listitem_plant_image"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:srcCompat="@tools:sample/avatars" />
+
+        <TextView
+            android:id="@+id/tvCommonName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/container_listitem_vertical_margin"
+            android:layout_marginLeft="@dimen/container_listitem_vertical_margin"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:text="@{plantSummary.commonName}"
+            app:layout_constraintBottom_toTopOf="@+id/tvScientificName"
+            app:layout_constraintStart_toEndOf="@+id/ivPlantImage"
+            app:layout_constraintTop_toTopOf="@+id/ivPlantImage"
+            tools:text="Common Name"/>
+
+        <TextView
+            android:id="@+id/tvScientificName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{plantSummary.scientificName}"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            app:layout_constraintBottom_toBottomOf="@+id/ivPlantImage"
+            app:layout_constraintStart_toStartOf="@+id/tvCommonName"
+            app:layout_constraintTop_toBottomOf="@+id/tvCommonName"
+            tools:text="Scientific Name"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

@@ -3,4 +3,8 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="padding_default">16dp</dimen>
+    <dimen name="image_listitem_dimens">56dp</dimen>
+    <dimen name="container_listitem_horizontal_padding">8dp</dimen>
+    <dimen name="container_listitem_veritcal_padding">16dp</dimen>
+    <dimen name="container_listitem_vertical_margin">16dp</dimen>
 </resources>

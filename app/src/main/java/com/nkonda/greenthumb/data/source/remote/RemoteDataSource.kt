@@ -16,8 +16,8 @@ class RemoteDataSource constructor(val ioDispatcher: CoroutineDispatcher = Dispa
                 if (response.isSuccessful) {
                     val responseBody = response.body()
                     if (responseBody != null) {
-                        Timber.i("Found ${responseBody.size} results")
-                        Success(responseBody)
+                        Timber.i("Found ${responseBody.data.size} results")
+                        Success(responseBody.data)
                     } else {
                         Timber.e("Null response body")
                         Error(Exception("Null response body"))
@@ -27,6 +27,7 @@ class RemoteDataSource constructor(val ioDispatcher: CoroutineDispatcher = Dispa
                     Error(Exception("Network request failed"))
                 }
             } catch (e: Exception) {
+                Timber.e(e.stackTraceToString())
                 Error(e)
             }
         }
