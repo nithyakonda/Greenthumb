@@ -2,7 +2,6 @@ package com.nkonda.greenthumb.data.source
 
 import android.graphics.Bitmap
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.liveData
 import com.nkonda.greenthumb.data.Plant
 import com.nkonda.greenthumb.data.Task
 import com.nkonda.greenthumb.data.source.remote.PlantSummary
@@ -12,6 +11,7 @@ import com.nkonda.greenthumb.data.source.remote.asDomainModel
 import com.nkonda.greenthumb.util.wrapEspressoIdlingResource
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import java.lang.Exception
 
 class Repository constructor(
     private val remoteDataSource: IRemoteDataSource,
@@ -41,18 +41,20 @@ class Repository constructor(
         TODO("Get plants from local")
     }
 
-    override suspend fun getPlantById(plantId: Long): LiveData<Result<Plant>> = liveData {
+    override suspend fun getPlantById(plantId: Long): Result<Plant?> {
         wrapEspressoIdlingResource {
             val existsInLocal = false // TODO - add implementation
-            if (!existsInLocal) {
+            return if (!existsInLocal) {
                 when (val result = remoteDataSource.getPlantById(plantId)) {
-                    is Result.Loading -> emit(Result.Loading)
+                    is Result.Loading -> Result.Loading
                     is Result.Success -> {
                         val plant = result.data.asDomainModel()
-                        emit(Result.Success(plant))
+                        Result.Success(plant)
                     }
-                    is Result.Error -> emit(result)
+                    is Result.Error -> result
                 }
+            } else {
+                Result.Error(Exception("todo"))
             }
         }
     }

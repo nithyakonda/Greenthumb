@@ -5,7 +5,6 @@ import androidx.lifecycle.LiveData
 import com.nkonda.greenthumb.data.Plant
 import com.nkonda.greenthumb.data.Result
 import com.nkonda.greenthumb.data.Task
-import com.nkonda.greenthumb.data.source.remote.DefaultImage
 import com.nkonda.greenthumb.data.source.remote.PlantSummary
 import java.lang.Exception
 
@@ -40,7 +39,7 @@ class FakeRepository: IRepository {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getPlantById(plantId: Long): LiveData<Result<Plant>> {
+    override suspend fun getPlantById(plantId: Long): Result<Plant?> {
         TODO("Not yet implemented")
     }
 

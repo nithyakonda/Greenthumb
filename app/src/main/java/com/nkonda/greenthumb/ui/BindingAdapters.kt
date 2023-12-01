@@ -6,6 +6,7 @@ import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.nkonda.greenthumb.R
 import timber.log.Timber
 
@@ -23,4 +24,11 @@ fun bindSearchResultPlantImage(imageView: ImageView, imageUrl: String?) {
                     .error(R.drawable.ic_broken_image))
             .into(imageView)
     }
+}
+
+@BindingAdapter("plantDetailsFabContentDescription")
+fun bindPlantDetailsFabContentDescription(view: FloatingActionButton, saved: Boolean) {
+    view.contentDescription = view.context.getString(
+        if (saved) R.string.cd_fab_action_remove else R.string.cd_fab_action_add
+    )
 }

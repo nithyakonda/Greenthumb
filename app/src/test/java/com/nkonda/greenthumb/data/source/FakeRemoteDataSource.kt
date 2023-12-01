@@ -1,7 +1,6 @@
 package com.nkonda.greenthumb.data.source
 
 import com.nkonda.greenthumb.data.Result
-import com.nkonda.greenthumb.data.source.remote.DefaultImage
 import com.nkonda.greenthumb.data.source.remote.IRemoteDataSource
 import com.nkonda.greenthumb.data.source.remote.PlantDetails
 import com.nkonda.greenthumb.data.source.remote.PlantSummary

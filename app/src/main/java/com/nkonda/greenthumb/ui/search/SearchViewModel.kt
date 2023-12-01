@@ -17,10 +17,13 @@ class SearchViewModel(private val repository: IRepository) : ViewModel() {
     val searchSuccess: LiveData<Boolean> = _searchSuccess
 
     private val _searchResults = MutableLiveData<List<PlantSummary>?>()
-    val searchResults = _searchResults
+    val searchResults:LiveData<List<PlantSummary>?> = _searchResults
 
     private val _errorMessage = MutableLiveData<String>()
-    val errorMessage = _errorMessage
+    val errorMessage: LiveData<String> = _errorMessage
+
+    private val _navigateToSelectedPlant = MutableLiveData<Long>()
+    val navigateToSelectedPlant:LiveData<Long> = _navigateToSelectedPlant
 
     fun searchPlantByName(name: String) {
         _dataLoading.value = true
@@ -38,8 +41,12 @@ class SearchViewModel(private val repository: IRepository) : ViewModel() {
             _dataLoading.value = false
         }
     }
-}
 
-@Suppress("UNCHECKED_CAST")
-class SearchViewModelFactory ( private val repository: IRepository ) : ViewModelProvider.NewInstanceFactory() {
-    override fun <T : ViewModel> create(modelClass: Class<T>) = (SearchViewModel(repository) as T) }
+    fun displayPlantDetails(plantId: Long) {
+        _navigateToSelectedPlant.value = plantId
+    }
+
+    fun displayPlantDetailsComplete() {
+        _navigateToSelectedPlant.value = -1L
+    }
+}

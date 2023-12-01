@@ -10,7 +10,7 @@ data class PlantSummary(
     @Json(name = "common_name") val commonName: String?,
     @Json(name = "scientific_name") val scientificNames: List<String>?,
     val cycle: String?,
-    @Json(name = "default_image") val defaultImage: DefaultImage?,
+    @Json(name = "default_image") val defaultImage: Images?,
     ) {
     val scientificName: String
         get() = scientificNames.orEmpty().getOrElse(0) {"Unknown"}
@@ -18,20 +18,23 @@ data class PlantSummary(
 
 data class PlantDetails(
     val id: Long,
-    @Json(name = "common_name") val commonName: String,
-    @Json(name = "scientific_name") val scientificName: String,
-    val cycle: String,
-    @Json(name = "care_level") val careLevel: Int,
-    val sunlight: List<Int>,
-    val watering: Int,
-    @Json(name = "pruning_month") val pruningMonth: List<String>,
-    @Json(name = "interval") val pruningInterval: String, // enum
-    val thumbnail: String,
-    @Json(name = "original_url") val image: String,
-    val description: String,
+    @Json(name = "common_name") val commonName: String?,
+    @Json(name = "scientific_name") val scientificNames: List<String>?,
+    val cycle: String?,
+    @Json(name = "care_level") val careLevel: String?,
+    val sunlight: List<String>?,
+    val watering: String?,
+    @Json(name = "pruning_month") val pruningMonth: List<String>?,
+    @Json(name = "default_image") val images: Images?,
+    val description: String?,
 )
 
-data class DefaultImage(
+data class Pruning(
+    val amount: Int?,
+    val interval: String? // enum
+)
+
+data class Images(
     @Json(name = "original_url") val originalUrl: String?,
     @Json(name = "regular_url") val regularUrl: String?,
     @Json(name = "medium_url") val mediumUrl: String?,
@@ -44,17 +47,16 @@ data class DefaultImage(
 
 fun PlantDetails.asDomainModel(): Plant {
     return Plant(this.id,
-        this.commonName,
-        this.scientificName,
-        this.cycle,
-        this.careLevel,
-        this.sunlight,
-        this.watering,
-        this.pruningMonth,
-        this.pruningInterval,
-        this.thumbnail,
-        this.image,
-        this.description,
+        this.commonName.orEmpty(),
+        this.scientificNames.orEmpty().getOrElse(0) {"Unknown"},
+        this.cycle.orEmpty(),
+        this.careLevel.orEmpty(),
+        this.sunlight.orEmpty(),
+        this.watering.orEmpty(),
+        this.pruningMonth.orEmpty(),
+        this.images?.thumbnail.orEmpty(),
+        this.images?.originalUrl.orEmpty(),
+        this.description.orEmpty(),
         null
     )
 }

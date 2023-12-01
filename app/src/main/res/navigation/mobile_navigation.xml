@@ -12,14 +12,34 @@
         tools:layout="@layout/fragment_home" />
 
     <fragment
-        android:id="@+id/navigation_dashboard"
+        android:id="@+id/navigation_myplants"
         android:name="com.nkonda.greenthumb.ui.myplants.MyPlantsFragment"
         android:label="@string/title_myplants"
-        tools:layout="@layout/fragment_myplants" />
+        tools:layout="@layout/fragment_myplants" >
+        <action
+            android:id="@+id/action_navigation_myplants_to_navigation_plant_details"
+            app:destination="@id/navigation_plant_details" />
+    </fragment>
 
     <fragment
-        android:id="@+id/navigation_notifications"
+        android:id="@+id/navigation_search"
         android:name="com.nkonda.greenthumb.ui.search.SearchFragment"
         android:label="@string/title_search"
-        tools:layout="@layout/fragment_search" />
+        tools:layout="@layout/fragment_search" >
+        <action
+            android:id="@+id/action_navigation_search_to_navigation_plant_details"
+            app:destination="@id/navigation_plant_details" />
+    </fragment>
+    <fragment
+        android:id="@+id/navigation_plant_details"
+        android:name="com.nkonda.greenthumb.ui.plantdetails.PlantDetailsFragment"
+        android:label="@string/title_plant_details" >
+        <argument
+            android:name="saved"
+            app:argType="boolean"
+            android:defaultValue="false" />
+        <argument
+            android:name="plantId"
+            app:argType="long" />
+    </fragment>
 </navigation>

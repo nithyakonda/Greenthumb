@@ -49,6 +49,7 @@ class RemoteDataSource constructor(val ioDispatcher: CoroutineDispatcher = Dispa
                 Error(Exception("Network request failed"))
             }
         } catch (e: Exception) {
+            Timber.e(e.stackTraceToString())
             Error(e)
         }
     }

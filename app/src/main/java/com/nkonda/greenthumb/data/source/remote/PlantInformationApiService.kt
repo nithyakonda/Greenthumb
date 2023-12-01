@@ -45,7 +45,7 @@ interface PlantInformationApiService {
         @Query("key") apiKey: String = PLANT_INFO_API_KEY
     ): Response<SearchResult>
 
-    @GET("species/details/{plantID}")
+    @GET("species/details/{plantId}")
     suspend fun getPlantById(
         @Path("plantId") plantId: Long,
         @Query("key") apiKey: String = PLANT_INFO_API_KEY
