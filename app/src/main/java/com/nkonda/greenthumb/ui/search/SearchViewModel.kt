@@ -30,12 +30,13 @@ class SearchViewModel(private val repository: IRepository) : ViewModel() {
                 _searchResults.value = (result as Result.Success).data
                 _searchSuccess.value = true
             } else {
+                _searchResults.value = emptyList()
                 _errorMessage.value = (result as Result.Error).exception.message
                 Timber.e((result as Result.Error).exception.message)
                 _searchSuccess.value = false
             }
+            _dataLoading.value = false
         }
-        _dataLoading.value = false
     }
 }
 

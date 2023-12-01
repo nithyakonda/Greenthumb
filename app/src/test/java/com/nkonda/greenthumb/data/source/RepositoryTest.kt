@@ -62,30 +62,30 @@ class RepositoryTest {
     @Test
     fun searchPlantByName_findsMultipleSearchResults() = mainCoroutineRule.runBlockingTest {
         // When searching for a valid plant
-        val searchResult = repository.searchPlantByName("cName3")!!
+        val searchResult = repository.searchPlantByName("findThree")!!
 
         // Then correct search results are returned
         assertThat(searchResult.succeeded, `is`(true))
         searchResult as Result.Success
-        assertThat(searchResult.data?.size, `is`(2))
+        assertThat(searchResult.data!!.size, `is`(3))
     }
 
     @Test
-    fun searchPlantByName_returnsNotFound() = mainCoroutineRule.runBlockingTest {
+    fun searchPlantByName_returnsEmptyList() = mainCoroutineRule.runBlockingTest {
         // When searching for a invalid plant
-        val searchResult = repository.searchPlantByName("xyz")!!
+        val searchResult = repository.searchPlantByName("findZero")!!
 
         // Then not found is returned
-        assertThat(searchResult.succeeded, `is`(false))
-        searchResult as Result.Error
-        assertThat(searchResult.exception.message, `is`("Not found"))
+        assertThat(searchResult.succeeded, `is`(true))
+        searchResult as Result.Success
+        assertThat(searchResult.data!!.size, `is`(0))
     }
 
     @Test
     fun searchPlantByName_returnsNetworkError() = mainCoroutineRule.runBlockingTest {
         // When searching for a valid plant but network is down
         remoteDataSource.setReturnError(true)
-        val searchResult = repository.searchPlantByName("cName1")!!
+        val searchResult = repository.searchPlantByName("findOne")!!
 
         // Then network error is returned
         assertThat(searchResult.succeeded, `is`(false))

@@ -37,7 +37,9 @@ data class DefaultImage(
     @Json(name = "medium_url") val mediumUrl: String?,
     @Json(name = "small_url") val smallUrl: String?,
     val thumbnail: String?
-)
+) {
+    constructor(thumbnail: String) : this(null, null, null, null, thumbnail)
+}
 
 
 fun PlantDetails.asDomainModel(): Plant {
