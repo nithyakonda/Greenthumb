@@ -10,8 +10,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.nkonda.greenthumb.R
 import timber.log.Timber
 
-@BindingAdapter("searchResultPlantImage")
-fun bindSearchResultPlantImage(imageView: ImageView, imageUrl: String?) {
+@BindingAdapter("plantImage")
+fun bindPlantImage(imageView: ImageView, imageUrl: String?) {
     imageUrl?.let {
         val imgUri = imageUrl.toUri().buildUpon().scheme("https").build()
         Timber.d("Image Uri ::" + imgUri)

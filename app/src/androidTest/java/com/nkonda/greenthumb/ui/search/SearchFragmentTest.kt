@@ -18,4 +18,8 @@ class SearchFragmentTest {
     @Test
     fun searchPlantByName_returnsError_whenInvalidInput() {
     }
+    @Test
+    fun searchPlantByName_failsFastWhenNoNetwork() {
+        
+    }
 }

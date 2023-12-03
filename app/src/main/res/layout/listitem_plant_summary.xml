@@ -24,7 +24,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:srcCompat="@tools:sample/avatars"
-            searchResultPlantImage="@{plantSummary.defaultImage.thumbnail}"/>
+            plantImage="@{plantSummary.defaultImage.thumbnail}"/>
 
         <TextView
             android:id="@+id/tvCommonName"
