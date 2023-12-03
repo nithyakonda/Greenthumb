@@ -20,6 +20,6 @@ class SearchFragmentTest {
     }
     @Test
     fun searchPlantByName_failsFastWhenNoNetwork() {
-        
+
     }
 }

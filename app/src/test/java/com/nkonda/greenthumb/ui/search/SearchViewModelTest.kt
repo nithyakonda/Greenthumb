@@ -8,6 +8,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.pauseDispatcher
 import kotlinx.coroutines.test.resumeDispatcher
 import org.hamcrest.CoreMatchers.`is`
+import org.junit.After
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
@@ -28,6 +29,11 @@ class SearchViewModelTest {
     @Before
     fun setup() {
         searchViewModel = SearchViewModel(repository)
+    }
+
+    @After
+    fun teardown() {
+        repository.setReturnError(false)
     }
 
     @Test

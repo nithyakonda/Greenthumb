@@ -1,5 +1,6 @@
 package com.nkonda.greenthumb.data.source
 
+import com.nkonda.greenthumb.data.Plant
 import com.nkonda.greenthumb.data.source.remote.Images
 import com.nkonda.greenthumb.data.source.remote.PlantSummary
 
@@ -10,4 +11,8 @@ val plantSummaries: List<PlantSummary> = listOf(
     PlantSummary(4, "findThree", listOf("sName4"), "annual", Images(thumbnail = "url4")),
     PlantSummary(5, "findThree", listOf("sName5"), "annual", Images(thumbnail = "url5")),
     PlantSummary(6, "findThree", listOf("sName6"), "annual", Images(thumbnail = "url6")),
+)
+
+val plantDetails: List<Plant> = listOf(
+    Plant(1, "cName1", "sName1", "annual", "high", listOf("full_sun"), "high", listOf("April", "May"), "thumbnail1", "imageUrl1", "description1", null),
 )

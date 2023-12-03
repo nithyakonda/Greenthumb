@@ -42,6 +42,7 @@ data class Images(
     val thumbnail: String?
 ) {
     constructor(thumbnail: String) : this(null, null, null, null, thumbnail)
+    constructor(thumbnail: String, originalUrl: String) : this(originalUrl, null, null, null, thumbnail)
 }
 
 

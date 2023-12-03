@@ -34,7 +34,7 @@ class PlantDetailsViewModel(private val repository: IRepository) : ViewModel() {
                 _plant.value = null
                 _searchSuccess.value = false
             }
+            _dataLoading.value = false
         }
-        _dataLoading.value = false
     }
 }

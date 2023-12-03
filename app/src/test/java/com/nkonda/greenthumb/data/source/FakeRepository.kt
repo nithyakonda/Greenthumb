@@ -40,7 +40,12 @@ class FakeRepository: IRepository {
     }
 
     override suspend fun getPlantById(plantId: Long): Result<Plant?> {
-        TODO("Not yet implemented")
+        return if(!shouldReturnError) {
+            val result = plantDetails.find { it.id == plantId }
+            Result.Success(result)
+        } else {
+            Result.Error(Exception("Network error"))
+        }
     }
 
     override fun savePlant(plant: Plant) {

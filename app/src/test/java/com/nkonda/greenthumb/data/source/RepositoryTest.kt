@@ -44,7 +44,7 @@ class RepositoryTest {
     @Test
     fun getPlantById_returnsPlantDetails() =  mainCoroutineRule.runBlockingTest{
         // When requested for a plant details with id
-        val plantDetails = repository.getPlantById(1).getOrAwaitValue()
+        val plantDetails = repository.getPlantById(1)
         // Then plant details are fetched from the remote API
         assertThat(plantDetails?.succeeded, `is`(true))
     }
@@ -53,7 +53,7 @@ class RepositoryTest {
     fun getPlantById_returnsNotFound() =  mainCoroutineRule.runBlockingTest{
         remoteDataSource.setReturnError(true)
         // When requested for a plant details with invalid id
-        val plantDetails = repository.getPlantById(1).getOrAwaitValue()
+        val plantDetails = repository.getPlantById(1)
         // Then not found error is returned
         assertThat(plantDetails?.succeeded, `is`(false))
     }

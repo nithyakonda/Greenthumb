@@ -2,6 +2,7 @@ package com.nkonda.greenthumb.data.source
 
 import com.nkonda.greenthumb.data.Result
 import com.nkonda.greenthumb.data.source.remote.IRemoteDataSource
+import com.nkonda.greenthumb.data.source.remote.Images
 import com.nkonda.greenthumb.data.source.remote.PlantDetails
 import com.nkonda.greenthumb.data.source.remote.PlantSummary
 import java.lang.Exception
@@ -26,16 +27,14 @@ class FakeRemoteDataSource: IRemoteDataSource {
             return Result.Success(
                 PlantDetails(plantId,
                 "findOne",
-                "sName1",
+                listOf("sName1"),
                 "annual",
-                1,
-                listOf(1,2),
-                2,
+                "Easy",
+                listOf("part-shade", "full-sun"),
+                "High",
                 listOf("April", "May"),
-                "yearly",
-                "url1",
-                "url1",
-                "description1"
+                Images("thumbnail", "originalUrl"),
+                "description1",
             ))
         } else {
             return Result.Error(Exception("Not found"))
