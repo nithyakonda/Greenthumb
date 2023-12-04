@@ -1,14 +1,11 @@
 package com.nkonda.greenthumb
 
 import android.app.Application
-import android.util.Log
 import com.nkonda.greenthumb.data.source.IRepository
 import com.nkonda.greenthumb.data.source.Repository
 import com.nkonda.greenthumb.data.source.local.GreenthumbDatabase
-import com.nkonda.greenthumb.data.source.local.ILocalDataSource
 import com.nkonda.greenthumb.data.source.local.LocalDataSource
 import com.nkonda.greenthumb.data.source.remote.IRemoteDataSource
-import com.nkonda.greenthumb.data.source.remote.PlantInfoApi
 import com.nkonda.greenthumb.data.source.remote.RemoteDataSource
 import com.nkonda.greenthumb.ui.plantdetails.PlantDetailsViewModel
 import com.nkonda.greenthumb.ui.search.SearchViewModel
@@ -31,7 +28,7 @@ class GreenthumbApplication : Application() {
             }
             single<IRepository> { Repository(get(), get()) }
             single<IRemoteDataSource> { RemoteDataSource() }
-            single<ILocalDataSource> { LocalDataSource(get(), get()) }
+            single { LocalDataSource(get(), get()) }
             single { GreenthumbDatabase.createPlantsDao(this@GreenthumbApplication) }
             single { GreenthumbDatabase.createTasksDao(this@GreenthumbApplication) }
         }

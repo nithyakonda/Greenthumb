@@ -13,8 +13,8 @@ class LocalDataSource constructor(
     private val plantsDao: PlantsDao,
     private val tasksDao: TasksDao,
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
-): ILocalDataSource {
-    override suspend fun savePlant(plant: Plant): Result<Unit> = withContext(ioDispatcher) {
+) {
+    suspend fun savePlant(plant: Plant): Result<Unit> = withContext(ioDispatcher) {
         return@withContext  try {
             plantsDao.insertPlant(plant)
             Result.Success(Unit)
@@ -22,13 +22,5 @@ class LocalDataSource constructor(
             Timber.e(e.stackTraceToString())
             Result.Error(Exception(e.message))
         }
-    }
-
-    override fun deletePlant(plantId: String) {
-        TODO("Not yet implemented")
-    }
-
-    override fun getMyPlants(): LiveData<Result<List<Plant>>> {
-        TODO("Not yet implemented")
     }
 }
