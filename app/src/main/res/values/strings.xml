@@ -14,4 +14,5 @@
     <string name="cd_search_button">Search</string>
     <string name="cd_fab_action_add">Add to my plants</string>
     <string name="cd_fab_action_remove">Remove from my plants</string>
+    <string name="toast_msg_saved">Saved</string>
 </resources>

@@ -1,6 +1,9 @@
 package com.nkonda.greenthumb.ui.plantdetails
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.test.core.app.ApplicationProvider.getApplicationContext
+import com.nkonda.greenthumb.R
+import com.nkonda.greenthumb.data.Plant
 import com.nkonda.greenthumb.data.source.FakeRepository
 import com.nkonda.greenthumb.util.MainCoroutineRule
 import com.nkonda.greenthumb.util.getOrAwaitValue
@@ -63,7 +66,7 @@ class PlantDetailsViewModelTest {
         assertThat(plantDetailsViewModel.plant.getOrAwaitValue(), not(nullValue()))
         assertThat(plantDetailsViewModel.plant.getOrAwaitValue()?.id ?: 0, `is`(1))
     }
-    
+
     @Test
     fun getPlantById_returnsError(){
         // Given bad network
@@ -71,9 +74,21 @@ class PlantDetailsViewModelTest {
         // When get is called
         plantDetailsViewModel.getPlantById(1)
 
-        // The  assert that error message is thrown
+        // Then assert that error message is thrown
         assertThat(plantDetailsViewModel.searchSuccess.getOrAwaitValue(), `is`(false))
         assertThat(plantDetailsViewModel.plant.getOrAwaitValue(), `is`(nullValue()))
         assertThat(plantDetailsViewModel.errorMessage.getOrAwaitValue(), `is`("Network error"))
+    }
+
+    @Test
+    fun savePlant_Success() {
+        // Given a plant not already present in the database
+        val plant = Plant(2, "cName2", "sName2", "annual", "high", listOf("full_sun"), "high", listOf("April", "May"), "thumbnail2", "imageUrl2", "description2", null)
+
+        // When save is success
+        plantDetailsViewModel.savePlant(plant)
+
+        // Then assert that successMessage is set correctly
+        assertThat(plantDetailsViewModel.successMessage.getOrAwaitValue(), `is`("Saved"))
     }
 }

@@ -29,7 +29,7 @@ interface IRepository {
 
     suspend fun getPlantById(plantId: Long): Result<Plant?>
 
-    fun savePlant(plant: Plant)
+    suspend fun savePlant(plant: Plant): Result<Unit>
 
     fun deletePlant(plantId: String)
 

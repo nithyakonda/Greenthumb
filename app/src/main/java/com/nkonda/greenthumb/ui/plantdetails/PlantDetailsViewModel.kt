@@ -21,6 +21,15 @@ class PlantDetailsViewModel(private val repository: IRepository) : ViewModel() {
     private val _errorMessage = MutableLiveData<String>()
     val errorMessage = _errorMessage
 
+    private val _successMessage = MutableLiveData<String>()
+    val successMessage = _successMessage
+
+    private val _plantSaved = MutableLiveData<Boolean>()
+    val plantSaved: LiveData<Boolean> = _plantSaved
+
+    private val _plantDeleted = MutableLiveData<Boolean>()
+    val plantDeleted: LiveData<Boolean> = _plantDeleted
+
     fun getPlantById(plantId: Long) {
         _dataLoading.value = true
         viewModelScope.launch {
@@ -36,5 +45,22 @@ class PlantDetailsViewModel(private val repository: IRepository) : ViewModel() {
             }
             _dataLoading.value = false
         }
+    }
+
+    fun savePlant(plant: Plant) {
+        _dataLoading.value = true
+        viewModelScope.launch {
+            val result = repository.savePlant(plant)
+            if (result.succeeded) {
+                _successMessage.value = "Saved"
+            } else {
+                _errorMessage.value = (result as Result.Error).exception.message
+            }
+            _dataLoading.value = false
+        }
+    }
+
+    fun deletePlant(plant: Plant) {
+
     }
 }
