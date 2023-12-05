@@ -7,6 +7,7 @@ import com.nkonda.greenthumb.data.source.local.GreenthumbDatabase
 import com.nkonda.greenthumb.data.source.local.LocalDataSource
 import com.nkonda.greenthumb.data.source.remote.IRemoteDataSource
 import com.nkonda.greenthumb.data.source.remote.RemoteDataSource
+import com.nkonda.greenthumb.ui.myplants.MyPlantsViewModel
 import com.nkonda.greenthumb.ui.plantdetails.PlantDetailsViewModel
 import com.nkonda.greenthumb.ui.search.SearchViewModel
 import org.koin.android.ext.koin.androidContext
@@ -23,8 +24,11 @@ class GreenthumbApplication : Application() {
             viewModel {
                 SearchViewModel(get())
             }
-            viewModel{
+            viewModel {
                 PlantDetailsViewModel(get())
+            }
+            viewModel {
+                MyPlantsViewModel(get())
             }
             single<IRepository> { Repository(get(), get()) }
             single<IRemoteDataSource> { RemoteDataSource() }

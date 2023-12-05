@@ -38,8 +38,16 @@ class Repository constructor(
         TODO("Not yet implemented")
     }
 
-    override fun getMyPlants(): LiveData<Result<List<Plant>>> {
-        TODO("Get plants from local")
+    override fun observePlants(): LiveData<Result<List<Plant>>> {
+        wrapEspressoIdlingResource {
+            return localDataSource.observePlants()
+        }
+    }
+
+    override suspend fun getPlants(): Result<List<Plant>> {
+        wrapEspressoIdlingResource {
+            return localDataSource.getPlants()
+        }
     }
 
     override suspend fun getPlantById(plantId: Long): Result<Plant?> {

@@ -9,7 +9,9 @@
         tools:context=".ui.myplants.MyPlantsFragment">
 
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/myPlantsRv"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            tools:listitem="@layout/listitem_plant_summary"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

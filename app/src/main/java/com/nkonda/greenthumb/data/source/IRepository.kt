@@ -24,8 +24,9 @@ interface IRepository {
     /**
      * Plants
      */
+    fun observePlants(): LiveData<Result<List<Plant>>>
 
-    fun getMyPlants(): LiveData<Result<List<Plant>>>
+    suspend fun getPlants(): Result<List<Plant>>
 
     suspend fun getPlantById(plantId: Long): Result<Plant?>
 

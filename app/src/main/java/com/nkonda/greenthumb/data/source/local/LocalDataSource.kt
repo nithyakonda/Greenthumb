@@ -1,9 +1,12 @@
 package com.nkonda.greenthumb.data.source.local
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.map
 import com.nkonda.greenthumb.data.Plant
 import com.nkonda.greenthumb.data.Result
-import com.nkonda.greenthumb.util.wrapEspressoIdlingResource
+import com.nkonda.greenthumb.data.Result.Success
+import com.nkonda.greenthumb.data.Result.Error
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -15,12 +18,33 @@ class LocalDataSource constructor(
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) {
     suspend fun savePlant(plant: Plant): Result<Unit> = withContext(ioDispatcher) {
-        return@withContext  try {
+        try {
             plantsDao.insertPlant(plant)
-            Result.Success(Unit)
+            Success(Unit)
         } catch (e: Exception) {
             Timber.e(e.stackTraceToString())
-            Result.Error(Exception(e.message))
+            Error(Exception(e.message))
+        }
+    }
+
+    fun observePlants(): LiveData<Result<List<Plant>>> {
+        return try {
+            plantsDao.observePlants().map {
+                Success(it)
+            }
+        } catch (e: Exception) {
+            Timber.e(e.stackTraceToString())
+            MutableLiveData<Result<List<Plant>>>().apply {
+                value = Error(Exception(e.message))
+            }
+        }
+    }
+
+    suspend fun getPlants(): Result<List<Plant>> {
+        return try {
+            Success(plantsDao.getPlants())
+        } catch (e: Exception) {
+            Error(e)
         }
     }
 }

@@ -4,38 +4,79 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+
+import com.nkonda.greenthumb.data.Result
+import com.nkonda.greenthumb.data.Result.Success
+import com.nkonda.greenthumb.data.Result.Error
+import com.nkonda.greenthumb.data.Result.Loading
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.nkonda.greenthumb.data.source.remote.Images
+import com.nkonda.greenthumb.data.source.remote.PlantSummary
 import com.nkonda.greenthumb.databinding.FragmentMyplantsBinding
+import com.nkonda.greenthumb.ui.search.SearchResultsListAdapter
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import timber.log.Timber
 
 class MyPlantsFragment : Fragment() {
 
-private var _binding: FragmentMyplantsBinding? = null
-  // This property is only valid between onCreateView and
-  // onDestroyView.
-  private val binding get() = _binding!!
+    private lateinit var binding: FragmentMyplantsBinding
+    private val myPlantsViewModel:MyPlantsViewModel by viewModel()
 
-  override fun onCreateView(
-    inflater: LayoutInflater,
-    container: ViewGroup?,
-    savedInstanceState: Bundle?
-  ): View {
-    val myPlantsViewModel =
-            ViewModelProvider(this).get(MyPlantsViewModel::class.java)
-
-    _binding = FragmentMyplantsBinding.inflate(inflater, container, false)
-      
-    val root: View = binding.root
-
-    myPlantsViewModel.text.observe(viewLifecycleOwner) {
-
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentMyplantsBinding.inflate(inflater, container, false)
+        binding.lifecycleOwner = this
+        return binding.root
     }
-    return root
-  }
 
-override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val adapter = SearchResultsListAdapter(SearchResultsListAdapter.OnClickListener{
+            // to do navigate to plant details
+            Timber.d(" ${it.commonName} is clicked")
+        })
+        binding.apply {
+            myPlantsRv.layoutManager = LinearLayoutManager(requireActivity())
+            myPlantsRv.adapter = adapter
+        }
+
+        myPlantsViewModel.searchResults.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Success -> {
+                    // Handle the list of plants in result.data
+                    val myPlants = result.data
+                    if (myPlants.isEmpty()) {
+                        // todo handle no data
+                        Timber.e("No saved plants found")
+                    } else {
+                        Timber.d("Found ${myPlants!!.size} saved plants")
+                        // Todo Temporary - change adapter after UI updates
+                        val plantSummaries = myPlants!!.map {
+                            PlantSummary(
+                                it.id,
+                                it.commonName,
+                                listOf(it.scientificName),
+                                it.cycle,
+                                Images(thumbnail = it.thumbnail)
+                            )
+                        }
+                        adapter.submitList(plantSummaries)
+                    }
+                }
+                is Error -> {
+                    // Handle the error case
+                    val exception = result.exception
+                    Timber.e(exception.message)
+                }
+                Loading -> {
+                    // Show loading indicator or perform loading UI updates
+                }
+            }
+        }
     }
 }
