@@ -6,6 +6,7 @@ import com.nkonda.greenthumb.data.Plant
 import com.nkonda.greenthumb.data.Task
 import com.nkonda.greenthumb.data.source.remote.PlantSummary
 import com.nkonda.greenthumb.data.Result
+import com.nkonda.greenthumb.data.source.local.ILocalDataSource
 import com.nkonda.greenthumb.data.source.local.LocalDataSource
 import com.nkonda.greenthumb.data.source.remote.IRemoteDataSource
 import com.nkonda.greenthumb.data.source.remote.asDomainModel
@@ -16,7 +17,7 @@ import java.lang.Exception
 
 class Repository constructor(
     private val remoteDataSource: IRemoteDataSource,
-    private val localDataSource: LocalDataSource,
+    private val localDataSource: ILocalDataSource,
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO): IRepository {
     override fun getTasks(): LiveData<Result<List<Task>>> {
         TODO("Get tasks from Local")

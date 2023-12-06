@@ -1,10 +1,12 @@
 package com.nkonda.greenthumb.data.source
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+
 import com.nkonda.greenthumb.data.Result
 import com.nkonda.greenthumb.data.succeeded
+import com.nkonda.greenthumb.data.testdoubles.FakeLocalDataSource
+import com.nkonda.greenthumb.data.testdoubles.FakeRemoteDataSource
 import com.nkonda.greenthumb.util.MainCoroutineRule
-import com.nkonda.greenthumb.util.getOrAwaitValue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
@@ -25,6 +27,7 @@ class RepositoryTest {
     var instantExecutorRule = InstantTaskExecutorRule()
 
     private lateinit var remoteDataSource: FakeRemoteDataSource
+    private lateinit var localDataSource: FakeLocalDataSource
 
     // Class under test
     private lateinit var repository: Repository
@@ -33,7 +36,7 @@ class RepositoryTest {
     fun setup() {
         remoteDataSource = FakeRemoteDataSource()
 
-        repository = Repository(remoteDataSource, Dispatchers.Main)
+        repository = Repository(remoteDataSource, localDataSource, Dispatchers.Main)
     }
 
     @After

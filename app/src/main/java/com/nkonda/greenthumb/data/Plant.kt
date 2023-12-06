@@ -18,5 +18,5 @@ data class Plant constructor(
     val thumbnail: String,
     val image: String,
     val description: String,
-    val tasks: List<Task>?
+    val tasks: MutableList<Task>?
 )

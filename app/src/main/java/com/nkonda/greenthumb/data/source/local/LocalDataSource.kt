@@ -16,8 +16,8 @@ class LocalDataSource constructor(
     private val plantsDao: PlantsDao,
     private val tasksDao: TasksDao,
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
-) {
-    suspend fun savePlant(plant: Plant): Result<Unit> = withContext(ioDispatcher) {
+): ILocalDataSource{
+    override suspend fun savePlant(plant: Plant): Result<Unit> = withContext(ioDispatcher) {
         try {
             plantsDao.insertPlant(plant)
             Success(Unit)
@@ -27,7 +27,7 @@ class LocalDataSource constructor(
         }
     }
 
-    fun observePlants(): LiveData<Result<List<Plant>>> {
+    override fun observePlants(): LiveData<Result<List<Plant>>> {
         return try {
             plantsDao.observePlants().map {
                 Success(it)
@@ -40,7 +40,7 @@ class LocalDataSource constructor(
         }
     }
 
-    suspend fun getPlants(): Result<List<Plant>> {
+    override suspend fun getPlants(): Result<List<Plant>> {
         return try {
             Success(plantsDao.getPlants())
         } catch (e: Exception) {

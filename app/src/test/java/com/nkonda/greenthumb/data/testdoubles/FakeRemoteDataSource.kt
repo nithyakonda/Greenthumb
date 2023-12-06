@@ -1,4 +1,4 @@
-package com.nkonda.greenthumb.data.source
+package com.nkonda.greenthumb.data.testdoubles
 
 import com.nkonda.greenthumb.data.Result
 import com.nkonda.greenthumb.data.source.remote.IRemoteDataSource

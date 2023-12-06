@@ -7,7 +7,7 @@ import java.util.*
 
 @Entity( tableName = "tasks" )
 data class Task constructor(
-    @ColumnInfo (name = "plant_id") val plantId: String,
+    @ColumnInfo (name = "plant_id") val plantId: Long,
     @ColumnInfo (name = "completed") val isCompleted: Boolean,
     val type: String, // todo change to enum of water/prune
     val day: String,

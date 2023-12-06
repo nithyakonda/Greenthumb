@@ -1,10 +1,8 @@
 package com.nkonda.greenthumb.ui.plantdetails
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.test.core.app.ApplicationProvider.getApplicationContext
-import com.nkonda.greenthumb.R
 import com.nkonda.greenthumb.data.Plant
-import com.nkonda.greenthumb.data.source.FakeRepository
+import com.nkonda.greenthumb.data.testdoubles.FakeRepository
 import com.nkonda.greenthumb.util.MainCoroutineRule
 import com.nkonda.greenthumb.util.getOrAwaitValue
 import kotlinx.coroutines.ExperimentalCoroutinesApi

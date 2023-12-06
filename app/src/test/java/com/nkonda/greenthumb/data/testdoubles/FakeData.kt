@@ -1,4 +1,4 @@
-package com.nkonda.greenthumb.data.source
+package com.nkonda.greenthumb.data.testdoubles
 
 import com.nkonda.greenthumb.data.Plant
 import com.nkonda.greenthumb.data.source.remote.Images
@@ -16,3 +16,6 @@ val plantSummaries: List<PlantSummary> = listOf(
 val plantDetails: List<Plant> = listOf(
     Plant(1, "cName1", "sName1", "annual", "high", listOf("full_sun"), "high", listOf("April", "May"), "thumbnail1", "imageUrl1", "description1", null),
 )
+
+val plantOne = Plant(1, "cName1", "sName1", "annual", "high", listOf("full_sun"), "high", listOf("April", "May"), "thumbnail1", "imageUrl1", "description1", null)
+val plantTwo = Plant(2, "cName2", "sName2", "perennial", "high", listOf("full_sun"), "high", listOf("April", "May"), "thumbnail2", "imageUrl2", "description2", null)

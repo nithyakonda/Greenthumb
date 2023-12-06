@@ -1,10 +1,11 @@
-package com.nkonda.greenthumb.data.source
+package com.nkonda.greenthumb.data.testdoubles
 
 import android.graphics.Bitmap
 import androidx.lifecycle.LiveData
 import com.nkonda.greenthumb.data.Plant
 import com.nkonda.greenthumb.data.Result
 import com.nkonda.greenthumb.data.Task
+import com.nkonda.greenthumb.data.source.IRepository
 import com.nkonda.greenthumb.data.source.remote.PlantSummary
 import java.lang.Exception
 
@@ -35,7 +36,11 @@ class FakeRepository: IRepository {
         TODO("Not yet implemented")
     }
 
-    override fun getMyPlants(): LiveData<Result<List<Plant>>> {
+    override fun observePlants(): LiveData<Result<List<Plant>>> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getPlants(): Result<List<Plant>> {
         TODO("Not yet implemented")
     }
 
@@ -48,7 +53,7 @@ class FakeRepository: IRepository {
         }
     }
 
-    override fun savePlant(plant: Plant) {
+    override suspend fun savePlant(plant: Plant): Result<Unit> {
         TODO("Not yet implemented")
     }
 

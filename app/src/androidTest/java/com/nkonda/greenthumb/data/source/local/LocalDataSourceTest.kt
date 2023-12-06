@@ -5,8 +5,19 @@ import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
+import com.nkonda.greenthumb.data.Plant
+import com.nkonda.greenthumb.data.Result
+import com.nkonda.greenthumb.data.Task
+import com.nkonda.greenthumb.data.source.testdoubles.plantOne
+import com.nkonda.greenthumb.data.source.testdoubles.plantTwo
+import com.nkonda.greenthumb.data.source.testdoubles.taskOne
+import com.nkonda.greenthumb.data.succeeded
+import com.nkonda.greenthumb.util.getOrAwaitValue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.runBlocking
+import org.hamcrest.CoreMatchers.`is`
+import org.hamcrest.MatcherAssert.assertThat
 import org.junit.After
 import org.junit.Assert.*
 import org.junit.Before
@@ -26,6 +37,7 @@ class LocalDataSourceTest {
 
     @Before
     fun setup() {
+
         database = Room.inMemoryDatabaseBuilder(
             ApplicationProvider.getApplicationContext(),
             GreenthumbDatabase::class.java)
@@ -42,5 +54,67 @@ class LocalDataSourceTest {
         database.close()
     }
 
+    /**
+     * Test naming convention
+     * <method under test>_<given/when>_<then>
+     */
 
+    @Test
+    fun savePlant_givenNewPlant_isSuccess() = runBlocking {
+        localDataSource.savePlant(plantOne)
+
+        val result = localDataSource.getPlants() as Result.Success
+
+        assertThat(result.data[0], `is`(plantOne))
+    }
+
+    @Test
+    fun savePlant_givenExistingPlant_replacesOldEntry() = runBlocking {
+        val plant = plantOne
+        localDataSource.savePlant(plant)
+        var result = (localDataSource.getPlants() as Result.Success).data[0]
+        assertThat(result.tasks?.size, `is`(0))
+
+        plant.tasks?.add(taskOne)
+        localDataSource.savePlant(plant)
+        result = (localDataSource.getPlants() as Result.Success).data[0]
+        assertThat(result.tasks?.size, `is`(1))
+    }
+
+    @Test
+    fun savePlant_whenDbError_returnsError() {
+
+    }
+
+    @Test
+    fun observePlants_givenEmptyTable_returnsEmptyList() {
+        val result = localDataSource.observePlants()
+
+        assertThat(result.getOrAwaitValue().succeeded, `is`(true))
+        val plants = (result.value as Result.Success).data
+        assertThat(plants.isEmpty(), `is`(true))
+    }
+
+    @Test
+    fun observePlants_givenNonEmptyTable_returnsList() = runBlocking {
+        localDataSource.savePlant(plantOne)
+        localDataSource.savePlant(plantTwo)
+
+        val result = localDataSource.observePlants()
+
+        assertThat(result.getOrAwaitValue().succeeded, `is`(true))
+        val plants = (result.value as Result.Success).data
+
+        assertThat(plants.size, `is`(2))
+    }
+
+    @Test
+    fun observePlants_whenPlantDeleted_updatesList() {
+
+    }
+
+    @Test
+    fun observePlants_whenDbError_returnsError() {
+
+    }
 }
