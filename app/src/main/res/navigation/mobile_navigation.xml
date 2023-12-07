@@ -18,7 +18,8 @@
         tools:layout="@layout/fragment_myplants" >
         <action
             android:id="@+id/action_navigation_myplants_to_navigation_plant_details"
-            app:destination="@id/navigation_plant_details" />
+            app:destination="@id/navigation_plant_details"
+            app:popUpToInclusive="false" />
     </fragment>
 
     <fragment
@@ -28,16 +29,14 @@
         tools:layout="@layout/fragment_search" >
         <action
             android:id="@+id/action_navigation_search_to_navigation_plant_details"
-            app:destination="@id/navigation_plant_details" />
+            app:destination="@id/navigation_plant_details"
+            app:popUpToInclusive="false" />
     </fragment>
     <fragment
         android:id="@+id/navigation_plant_details"
         android:name="com.nkonda.greenthumb.ui.plantdetails.PlantDetailsFragment"
-        android:label="@string/title_plant_details" >
-        <argument
-            android:name="saved"
-            app:argType="boolean"
-            android:defaultValue="false" />
+        android:label="@string/title_plant_details"
+        tools:layout="@layout/listitem_plant_summary">
         <argument
             android:name="plantId"
             app:argType="long" />

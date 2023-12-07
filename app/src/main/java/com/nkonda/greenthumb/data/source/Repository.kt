@@ -51,20 +51,17 @@ class Repository constructor(
         }
     }
 
-    override suspend fun getPlantById(plantId: Long): Result<Plant?> {
+    override suspend fun getPlantById(plantId: Long): Pair<Result<Plant?>, Boolean> {
         wrapEspressoIdlingResource {
-            val existsInLocal = false // TODO - add implementation
-            return if (!existsInLocal) {
-                when (val result = remoteDataSource.getPlantById(plantId)) {
-                    is Result.Loading -> Result.Loading
-                    is Result.Success -> {
-                        val plant = result.data.asDomainModel()
-                        Result.Success(plant)
-                    }
-                    is Result.Error -> result
-                }
+            // check in db first before fetching from network
+            return if (localDataSource.hasPlant(plantId)) {
+                Pair(localDataSource.getPlantById(plantId), true)
             } else {
-                Result.Error(Exception("todo"))
+                when (val remoteResult = remoteDataSource.getPlantById(plantId)) {
+                    is Result.Loading -> Pair(Result.Loading, false)
+                    is Result.Success -> Pair(Result.Success(remoteResult.data.asDomainModel()), false)
+                    is Result.Error -> Pair(remoteResult, false)
+                }
             }
         }
     }

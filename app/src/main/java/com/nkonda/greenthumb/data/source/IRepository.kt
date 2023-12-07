@@ -28,7 +28,7 @@ interface IRepository {
 
     suspend fun getPlants(): Result<List<Plant>>
 
-    suspend fun getPlantById(plantId: Long): Result<Plant?>
+    suspend fun getPlantById(plantId: Long): Pair<Result<Plant?>, Boolean>
 
     suspend fun savePlant(plant: Plant): Result<Unit>
 

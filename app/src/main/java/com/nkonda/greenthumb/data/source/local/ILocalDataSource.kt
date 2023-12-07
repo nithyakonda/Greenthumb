@@ -10,4 +10,8 @@ interface ILocalDataSource {
     fun observePlants(): LiveData<Result<List<Plant>>>
 
     suspend fun getPlants(): Result<List<Plant>>
+
+    suspend fun getPlantById(plantId: Long): Result<Plant?>
+
+    suspend fun hasPlant(plantId: Long): Boolean
 }

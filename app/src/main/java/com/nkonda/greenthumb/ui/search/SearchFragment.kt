@@ -51,8 +51,7 @@ class SearchFragment : Fragment() {
 
         searchViewModel.navigateToSelectedPlant.observe(viewLifecycleOwner) { plantId ->
             if (plantId != -1L) {
-                // saved = false, because this plant is retrieved from network not the database
-                this.findNavController().navigate(SearchFragmentDirections.actionNavigationSearchToNavigationPlantDetails(plantId, false))
+                this.findNavController().navigate(SearchFragmentDirections.actionNavigationSearchToNavigationPlantDetails(plantId))
                 searchViewModel.displayPlantDetailsComplete()
             }
         }

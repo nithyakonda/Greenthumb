@@ -62,6 +62,15 @@ class RepositoryTest {
     }
 
     @Test
+    fun getPlantById_tbd() {
+        // Given plant id 1 is saved in db
+
+        // When navigating from search screen to plant details
+
+        // The FAB should show delete icon
+    }
+
+    @Test
     fun searchPlantByName_findsMultipleSearchResults() = mainCoroutineRule.runBlockingTest {
         // When searching for a valid plant
         val searchResult = repository.searchPlantByName("findThree")!!

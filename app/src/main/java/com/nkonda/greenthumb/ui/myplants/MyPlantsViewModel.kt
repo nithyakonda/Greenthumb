@@ -13,5 +13,11 @@ class MyPlantsViewModel(private val repository: IRepository) : ViewModel() {
     private val _navigateToSelectedPlant = MutableLiveData<Long>()
     val navigateToSelectedPlant:LiveData<Long> = _navigateToSelectedPlant
 
+    fun displayPlantDetails(plantId: Long) {
+        _navigateToSelectedPlant.value = plantId
+    }
 
+    fun displayPlantDetailsComplete() {
+        _navigateToSelectedPlant.value = -1L
+    }
 }

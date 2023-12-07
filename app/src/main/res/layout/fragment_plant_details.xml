@@ -34,6 +34,7 @@
             android:clickable="true"
             android:src="@android:drawable/ic_input_add"
             plantDetailsFabContentDescription="@{saved}"
+            plantDetailsFabImage="@{saved}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imageView2" />
 

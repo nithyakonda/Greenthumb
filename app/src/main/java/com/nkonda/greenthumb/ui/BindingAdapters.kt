@@ -32,3 +32,8 @@ fun bindPlantDetailsFabContentDescription(view: FloatingActionButton, saved: Boo
         if (saved) R.string.cd_fab_action_remove else R.string.cd_fab_action_add
     )
 }
+
+@BindingAdapter("plantDetailsFabImage")
+fun bindFabImage(view: FloatingActionButton, saved: Boolean){
+    view.setImageResource((if (saved) R.drawable.ic_delete else R.drawable.ic_add))
+}

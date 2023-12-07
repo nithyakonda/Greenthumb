@@ -20,4 +20,11 @@ interface PlantsDao {
 
     @Query("SELECT * FROM Plants")
     fun observePlants(): LiveData<List<Plant>>
+
+    @Query("SELECT * FROM plants WHERE id = :plantId")
+    suspend fun getPlantsById(plantId: Long): Plant?
+
+
+    @Query("SELECT COUNT(*) FROM plants WHERE id = :plantId")
+    suspend fun hasPlant(plantId: Long): Boolean
 }

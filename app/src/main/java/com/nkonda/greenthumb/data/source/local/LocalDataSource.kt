@@ -47,4 +47,16 @@ class LocalDataSource constructor(
             Error(e)
         }
     }
+
+    override suspend fun getPlantById(plantId: Long): Result<Plant?> {
+        return try {
+            Success(plantsDao.getPlantsById(plantId))
+        } catch (e: Exception) {
+            Error(e)
+        }
+    }
+
+    override suspend fun hasPlant(plantId: Long): Boolean = withContext(ioDispatcher){
+        return@withContext plantsDao.hasPlant(plantId)
+    }
 }

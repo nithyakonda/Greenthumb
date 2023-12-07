@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
+import com.nkonda.greenthumb.R
 import com.nkonda.greenthumb.databinding.FragmentPlantDetailsBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
@@ -28,7 +29,6 @@ class PlantDetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val args = PlantDetailsFragmentArgs.fromBundle(requireArguments())
-        binding.saved = args.saved
         Timber.d("Fetching details for plant id ${args.plantId}")
         plantDetailsViewModel.getPlantById(args.plantId)
 
@@ -38,12 +38,17 @@ class PlantDetailsFragment : Fragment() {
                 binding.plant = plantDetailsViewModel.plant.value
                 binding.addOrDeleteFab.isEnabled = true
             } else {
+                binding.addOrDeleteFab.isEnabled = false
                 // todo show error message
             }
         }
 
         plantDetailsViewModel.successMessage.observe(viewLifecycleOwner) { message ->
             Toast.makeText(requireActivity(), message, LENGTH_SHORT).show()
+        }
+
+        plantDetailsViewModel.isSaved.observe(viewLifecycleOwner) { saved ->
+            binding.saved = saved
         }
 
         // Click handlers

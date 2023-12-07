@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 
 import com.nkonda.greenthumb.data.Result
 import com.nkonda.greenthumb.data.Result.Success
@@ -37,8 +38,8 @@ class MyPlantsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val adapter = SearchResultsListAdapter(SearchResultsListAdapter.OnClickListener{
-            // to do navigate to plant details
             Timber.d(" ${it.commonName} is clicked")
+            myPlantsViewModel.displayPlantDetails(it.id)
         })
         binding.apply {
             myPlantsRv.layoutManager = LinearLayoutManager(requireActivity())
@@ -76,6 +77,13 @@ class MyPlantsFragment : Fragment() {
                 Loading -> {
                     // Show loading indicator or perform loading UI updates
                 }
+            }
+        }
+
+        myPlantsViewModel.navigateToSelectedPlant.observe(viewLifecycleOwner) { plantId ->
+            if (plantId != -1L) {
+                this.findNavController().navigate(MyPlantsFragmentDirections.actionNavigationMyplantsToNavigationPlantDetails(plantId))
+                myPlantsViewModel.displayPlantDetailsComplete()
             }
         }
     }
