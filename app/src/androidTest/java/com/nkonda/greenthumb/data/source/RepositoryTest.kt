@@ -1,11 +1,13 @@
 package com.nkonda.greenthumb.data.source
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.filters.MediumTest
 
 import com.nkonda.greenthumb.data.Result
+import com.nkonda.greenthumb.data.source.testdoubles.FakeLocalDataSource
+import com.nkonda.greenthumb.data.source.testdoubles.FakeRemoteDataSource
 import com.nkonda.greenthumb.data.succeeded
-import com.nkonda.greenthumb.data.testdoubles.FakeLocalDataSource
-import com.nkonda.greenthumb.data.testdoubles.FakeRemoteDataSource
 import com.nkonda.greenthumb.util.MainCoroutineRule
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -17,7 +19,10 @@ import org.junit.Before
 import org.junit.Rule
 
 import org.junit.Test
+import org.junit.runner.RunWith
 
+@MediumTest
+@RunWith(AndroidJUnit4::class)
 @ExperimentalCoroutinesApi
 class RepositoryTest {
     @get:Rule
@@ -35,6 +40,7 @@ class RepositoryTest {
     @Before
     fun setup() {
         remoteDataSource = FakeRemoteDataSource()
+        localDataSource = FakeLocalDataSource()
 
         repository = Repository(remoteDataSource, localDataSource, Dispatchers.Main)
     }
@@ -44,21 +50,34 @@ class RepositoryTest {
         remoteDataSource.setReturnError(false)
     }
 
+
+    @Test
+    fun savePlant_whenDbError_returnsError() {
+
+    }
+
+    @Test
+    fun deletePlantById_whenDbError_throwsException() {
+
+    }
+
     @Test
     fun getPlantById_returnsPlantDetails() =  mainCoroutineRule.runBlockingTest{
-        // When requested for a plant details with id
-        val plantDetails = repository.getPlantById(1)
+        // When requested for a plant details with id which is not locally present
+        val (plantDetails, saved) = repository.getPlantById(1)
         // Then plant details are fetched from the remote API
         assertThat(plantDetails?.succeeded, `is`(true))
+        assertThat(saved, `is`(false))
     }
 
     @Test
     fun getPlantById_returnsNotFound() =  mainCoroutineRule.runBlockingTest{
         remoteDataSource.setReturnError(true)
-        // When requested for a plant details with invalid id
-        val plantDetails = repository.getPlantById(1)
+        // When requested for a plant details with invalid id which is not locally present
+        val (plantDetails, saved) = repository.getPlantById(1)
         // Then not found error is returned
         assertThat(plantDetails?.succeeded, `is`(false))
+        assertThat(saved, `is`(false))
     }
 
     @Test

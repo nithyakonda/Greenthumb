@@ -13,7 +13,7 @@ val plantSummaries: List<PlantSummary> = listOf(
     PlantSummary(6, "findThree", listOf("sName6"), "annual", Images(thumbnail = "url6")),
 )
 
-val plantDetails: List<Plant> = listOf(
+val plants: MutableList<Plant> = mutableListOf(
     Plant(1, "cName1", "sName1", "annual", "high", listOf("full_sun"), "high", listOf("April", "May"), "thumbnail1", "imageUrl1", "description1", null),
 )
 

@@ -7,6 +7,8 @@ import com.nkonda.greenthumb.data.Result
 interface ILocalDataSource {
     suspend fun savePlant(plant: Plant): Result<Unit>
 
+    suspend fun deletePlant(plantId: Long): Result<Unit>
+
     fun observePlants(): LiveData<Result<List<Plant>>>
 
     suspend fun getPlants(): Result<List<Plant>>

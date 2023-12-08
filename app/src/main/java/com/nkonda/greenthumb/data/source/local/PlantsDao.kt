@@ -12,6 +12,9 @@ interface PlantsDao {
     @Insert(onConflict = REPLACE)
     suspend fun insertPlant(plant: Plant)
 
+    @Query ("DELETE FROM plants WHERE id = :plantId")
+    suspend fun deletePlantById(plantId: Long): Int
+
     @Query("SELECT COUNT(*) FROM plants")
     fun getPlantsCount(): Int
 

@@ -1,10 +1,12 @@
 package com.nkonda.greenthumb.data.source.local
 
+import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
+import com.nkonda.greenthumb.R
 import com.nkonda.greenthumb.data.Plant
 import com.nkonda.greenthumb.data.Result
 import com.nkonda.greenthumb.data.Task
@@ -34,12 +36,12 @@ class LocalDataSourceTest {
 
     private lateinit var localDataSource: LocalDataSource
     private lateinit var database: GreenthumbDatabase
+    private val context: Context = ApplicationProvider.getApplicationContext()
 
     @Before
     fun setup() {
-
         database = Room.inMemoryDatabaseBuilder(
-            ApplicationProvider.getApplicationContext(),
+            context,
             GreenthumbDatabase::class.java)
             .allowMainThreadQueries()
             .build()
@@ -81,10 +83,38 @@ class LocalDataSourceTest {
         assertThat(result.tasks?.size, `is`(1))
     }
 
+
+    /*-------------------------------------------------------------------------------------------*/
+
     @Test
-    fun savePlant_whenDbError_returnsError() {
+    fun deletePlantById_givenExistingPlant_returns1() = runBlocking {
+        localDataSource.savePlant(plantOne)
+        localDataSource.savePlant(plantTwo)
+        assertThat((localDataSource.getPlants() as Result.Success).data.size, `is`(2))
+
+        val result = localDataSource.deletePlant(plantOne.id)
+        assertThat(result.succeeded, `is`(true))
+        result as Result.Success
+        assertThat(result.data, `is`(1))
+        assertThat((localDataSource.getPlants() as Result.Success).data.size, `is`(1))
 
     }
+
+    @Test
+    fun deletePlantById_givenNonExistingPlant_returns0() = runBlocking {
+        localDataSource.savePlant(plantOne)
+        localDataSource.savePlant(plantTwo)
+        assertThat((localDataSource.getPlants() as Result.Success).data.size, `is`(2))
+
+        val result = localDataSource.deletePlant(100)
+        assertThat(result.succeeded, `is`(false))
+        result as Result.Error
+        assertThat(result.exception.message, `is`(context.getString(R.string.test_error_nothing_to_delete)))
+        assertThat((localDataSource.getPlants() as Result.Success).data.size, `is`(2))
+    }
+
+    /*-------------------------------------------------------------------------------------------*/
+
 
     @Test
     fun observePlants_givenEmptyTable_returnsEmptyList() {

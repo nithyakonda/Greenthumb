@@ -54,8 +54,10 @@ class PlantDetailsViewModel(private val repository: IRepository) : ViewModel() {
             val result = repository.savePlant(plant)
             if (result.succeeded) {
                 _successMessage.value = "Saved"
+                _isSaved.value = true
             } else {
                 _errorMessage.value = (result as Result.Error).exception.message
+                _isSaved.value = false
             }
             _dataLoading.value = false
         }

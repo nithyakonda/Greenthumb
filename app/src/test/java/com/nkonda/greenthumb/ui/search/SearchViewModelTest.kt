@@ -1,7 +1,7 @@
 package com.nkonda.greenthumb.ui.search
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.nkonda.greenthumb.data.testdoubles.FakeRepository
+import com.nkonda.greenthumb.data.source.testdoubles.FakeRepository
 import com.nkonda.greenthumb.util.MainCoroutineRule
 import com.nkonda.greenthumb.util.getOrAwaitValue
 import kotlinx.coroutines.ExperimentalCoroutinesApi

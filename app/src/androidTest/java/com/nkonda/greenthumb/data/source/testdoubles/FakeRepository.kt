@@ -11,9 +11,15 @@ import java.lang.Exception
 
 class FakeRepository: IRepository {
     private var shouldReturnError = false
+    private var getFromDb = false
 
     fun setReturnError(value : Boolean) {
         shouldReturnError = value
+    }
+
+
+    fun setGetFromDb(value: Boolean) {
+        getFromDb = value
     }
     
     override fun getTasks(): LiveData<Result<List<Task>>> {
@@ -44,12 +50,12 @@ class FakeRepository: IRepository {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getPlantById(plantId: Long): Result<Plant?> {
+    override suspend fun getPlantById(plantId: Long): Pair<Result<Plant?>, Boolean> {
         return if(!shouldReturnError) {
             val result = plantDetails.find { it.id == plantId }
-            Result.Success(result)
+            Pair(Result.Success(result), getFromDb)
         } else {
-            Result.Error(Exception("Network error"))
+            Pair(Result.Error(Exception("Network error")), getFromDb)
         }
     }
 

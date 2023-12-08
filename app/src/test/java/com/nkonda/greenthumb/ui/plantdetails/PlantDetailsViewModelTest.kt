@@ -2,7 +2,9 @@ package com.nkonda.greenthumb.ui.plantdetails
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.nkonda.greenthumb.data.Plant
-import com.nkonda.greenthumb.data.testdoubles.FakeRepository
+import com.nkonda.greenthumb.data.source.testdoubles.FakeRepository
+import com.nkonda.greenthumb.data.testdoubles.plantOne
+import com.nkonda.greenthumb.data.testdoubles.plantTwo
 import com.nkonda.greenthumb.util.MainCoroutineRule
 import com.nkonda.greenthumb.util.getOrAwaitValue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -37,7 +39,7 @@ class PlantDetailsViewModelTest {
     }
 
     @Test
-    fun getPlantById_loadingState(){
+    fun getPlantById_verifyLoadingState(){
         mainCoroutineRule.pauseDispatcher()
 
         // When fetching plant details
@@ -54,7 +56,7 @@ class PlantDetailsViewModelTest {
     }
 
     @Test
-    fun getPlantById_returnsDetails(){
+    fun getPlantById_givenValidPlant_returnsDetails(){
         // Given a valid plant Id
         // When get is called
         plantDetailsViewModel.getPlantById(1)
@@ -66,7 +68,7 @@ class PlantDetailsViewModelTest {
     }
 
     @Test
-    fun getPlantById_returnsError(){
+    fun getPlantById_whenBadNetwork_returnsError(){
         // Given bad network
         repository.setReturnError(true)
         // When get is called
@@ -79,14 +81,20 @@ class PlantDetailsViewModelTest {
     }
 
     @Test
-    fun savePlant_Success() {
+    fun savePlant_whenSuccess_showsSavedMessage() {
         // Given a plant not already present in the database
-        val plant = Plant(2, "cName2", "sName2", "annual", "high", listOf("full_sun"), "high", listOf("April", "May"), "thumbnail2", "imageUrl2", "description2", null)
-
         // When save is success
-        plantDetailsViewModel.savePlant(plant)
+        plantDetailsViewModel.savePlant(plantTwo)
 
         // Then assert that successMessage is set correctly
         assertThat(plantDetailsViewModel.successMessage.getOrAwaitValue(), `is`("Saved"))
+    }
+
+    @Test
+    fun savePlant_whenDBError_showsErrorMessage() {
+        repository.setReturnError(true)
+        plantDetailsViewModel.savePlant(plantOne)
+
+        assertThat(plantDetailsViewModel.errorMessage.getOrAwaitValue(), `is`("DB Error"))
     }
 }

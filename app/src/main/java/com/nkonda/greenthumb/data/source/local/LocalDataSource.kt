@@ -27,6 +27,10 @@ class LocalDataSource constructor(
         }
     }
 
+    override suspend fun deletePlant(plantId: Long): Result<Unit> {
+        TODO("Not yet implemented")
+    }
+
     override fun observePlants(): LiveData<Result<List<Plant>>> {
         return try {
             plantsDao.observePlants().map {
