@@ -1,16 +1,23 @@
 package com.nkonda.greenthumb.data.source
 
+import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
+import com.nkonda.greenthumb.R
 
 import com.nkonda.greenthumb.data.Result
 import com.nkonda.greenthumb.data.source.testdoubles.FakeLocalDataSource
 import com.nkonda.greenthumb.data.source.testdoubles.FakeRemoteDataSource
+import com.nkonda.greenthumb.data.source.testdoubles.plantOne
+import com.nkonda.greenthumb.data.source.testdoubles.plantTwo
 import com.nkonda.greenthumb.data.succeeded
 import com.nkonda.greenthumb.util.MainCoroutineRule
+import com.nkonda.greenthumb.util.getOrAwaitValue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
@@ -36,6 +43,7 @@ class RepositoryTest {
 
     // Class under test
     private lateinit var repository: Repository
+    private val context: Context = ApplicationProvider.getApplicationContext()
 
     @Before
     fun setup() {
@@ -47,22 +55,64 @@ class RepositoryTest {
 
     @After
     fun teardown(){
+        localDataSource.setReturnError(false)
         remoteDataSource.setReturnError(false)
     }
 
+    /*-------------------------------------------------------------------------------------------*/
 
     @Test
-    fun savePlant_whenDbError_returnsError() {
+    fun savePlant_whenDbError_returnsError() = runBlocking {
+        localDataSource.setReturnError(true)
+        val result = repository.savePlant(plantOne)
+        assertDbError(result)
+    }
+    /*-------------------------------------------------------------------------------------------*/
 
+    @Test
+    fun deletePlantById_givenValidPlantId_returnsSuccess() = runBlocking {
+        repository.savePlant(plantOne)
+        repository.savePlant(plantTwo)
+        val result = repository.deletePlant(plantOne.id)
+        assertThat(result.succeeded, `is`(true))
     }
 
     @Test
-    fun deletePlantById_whenDbError_throwsException() {
-
+    fun deletePlantById_whenNothingToDelete_returnsError() = runBlocking {
+        repository.savePlant(plantOne)
+        val result = repository.deletePlant(plantTwo.id)
+        assertThat(result.succeeded, `is`(false))
+        result as Result.Error
+        assertThat(result.exception.message, `is`(context.getString(R.string.test_error_nothing_to_delete)))
     }
 
     @Test
-    fun getPlantById_returnsPlantDetails() =  mainCoroutineRule.runBlockingTest{
+    fun deletePlantById_whenDbError_throwsException() = runBlocking {
+        repository.savePlant(plantOne)
+        localDataSource.setReturnError(true)
+        val result = repository.deletePlant(plantTwo.id)
+
+        assertDbError(result)
+    }
+
+    private fun assertDbError(result: Result<*>) {
+        assertThat(result.succeeded, `is`(false))
+        result as Result.Error
+        assertThat(result.exception.message, `is`(context.getString(R.string.test_error_db_error)))
+    }
+    /*-------------------------------------------------------------------------------------------*/
+
+    @Test
+    fun observePlants_whenDbError_throwsException() {
+        localDataSource.setReturnError(true)
+        val result = repository.observePlants().getOrAwaitValue()
+        assertDbError(result)
+    }
+
+    /*-------------------------------------------------------------------------------------------*/
+
+    @Test
+    fun getPlantById_whenNotSaved_returnsDataFromNetwork() =  mainCoroutineRule.runBlockingTest{
         // When requested for a plant details with id which is not locally present
         val (plantDetails, saved) = repository.getPlantById(1)
         // Then plant details are fetched from the remote API
@@ -71,7 +121,7 @@ class RepositoryTest {
     }
 
     @Test
-    fun getPlantById_returnsNotFound() =  mainCoroutineRule.runBlockingTest{
+    fun getPlantById_whenNotSaved_returnsNotFound() =  mainCoroutineRule.runBlockingTest{
         remoteDataSource.setReturnError(true)
         // When requested for a plant details with invalid id which is not locally present
         val (plantDetails, saved) = repository.getPlantById(1)
@@ -81,13 +131,26 @@ class RepositoryTest {
     }
 
     @Test
-    fun getPlantById_tbd() {
-        // Given plant id 1 is saved in db
+    fun getPlantById_givenSavedId_returnsDataFromDB() = runBlocking {
+        repository.savePlant(plantOne)
+        val (plantDetails, saved) = repository.getPlantById(1)
 
-        // When navigating from search screen to plant details
-
-        // The FAB should show delete icon
+        assertThat(plantDetails?.succeeded, `is`(true))
+        assertThat(saved, `is`(true))
     }
+
+    @Test
+    fun getPlantById_givenSavedId_whenDbError_returnsDataFromNetwork() = runBlocking {
+        repository.savePlant(plantOne)
+        localDataSource.setReturnError(true)
+        val (plantDetails, saved) = repository.getPlantById(1)
+
+        assertThat(plantDetails?.succeeded, `is`(true))
+        assertThat(saved, `is`(false))
+    }
+
+
+    /*-------------------------------------------------------------------------------------------*/
 
     @Test
     fun searchPlantByName_findsMultipleSearchResults() = mainCoroutineRule.runBlockingTest {
@@ -120,6 +183,6 @@ class RepositoryTest {
         // Then network error is returned
         assertThat(searchResult.succeeded, `is`(false))
         searchResult as Result.Error
-        assertThat(searchResult.exception.message, `is`("Network error"))
+        assertThat(searchResult.exception.message, `is`(context.getString(R.string.test_error_network_error)))
     }
 }

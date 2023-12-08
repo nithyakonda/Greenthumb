@@ -1,13 +1,15 @@
 package com.nkonda.greenthumb.ui.plantdetails
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.nkonda.greenthumb.data.Plant
 import com.nkonda.greenthumb.data.source.testdoubles.FakeRepository
+import com.nkonda.greenthumb.data.testdoubles.localPlantOneId
 import com.nkonda.greenthumb.data.testdoubles.plantOne
 import com.nkonda.greenthumb.data.testdoubles.plantTwo
+import com.nkonda.greenthumb.data.testdoubles.remotePlantOneId
 import com.nkonda.greenthumb.util.MainCoroutineRule
 import com.nkonda.greenthumb.util.getOrAwaitValue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.pauseDispatcher
 import kotlinx.coroutines.test.resumeDispatcher
 import org.hamcrest.CoreMatchers.*
@@ -43,7 +45,7 @@ class PlantDetailsViewModelTest {
         mainCoroutineRule.pauseDispatcher()
 
         // When fetching plant details
-        plantDetailsViewModel.getPlantById(1)
+        plantDetailsViewModel.getPlantById(remotePlantOneId)
 
         // Then loading indicator is shown
         assertThat(plantDetailsViewModel.dataLoading.getOrAwaitValue(), `is`(true))
@@ -56,15 +58,34 @@ class PlantDetailsViewModelTest {
     }
 
     @Test
-    fun getPlantById_givenValidPlant_returnsDetails(){
+    fun getPlantById_whenNotSaved_returnsDetailsFromNetwork(){
         // Given a valid plant Id
         // When get is called
-        plantDetailsViewModel.getPlantById(1)
+        plantDetailsViewModel.getPlantById(remotePlantOneId)
 
         // Then assert that plant details are returned for given id
-        assertThat(plantDetailsViewModel.searchSuccess.getOrAwaitValue(), `is`(true))
-        assertThat(plantDetailsViewModel.plant.getOrAwaitValue(), not(nullValue()))
-        assertThat(plantDetailsViewModel.plant.getOrAwaitValue()?.id ?: 0, `is`(1))
+        plantDetailsViewModel.apply {
+            assertThat(searchSuccess.getOrAwaitValue(), `is`(true))
+            assertThat(plant.getOrAwaitValue(), not(nullValue()))
+            assertThat(plant.getOrAwaitValue()?.id ?: 0, `is`(remotePlantOneId))
+            assertThat(isSaved.getOrAwaitValue(), `is`(false))
+        }
+    }
+
+    @Test
+    fun getPlantById_whenSaved_returnsDetailsFromDb(){
+        repository.setGetFromDb(true)
+        // Given a valid plant Id
+        // When get is called
+        plantDetailsViewModel.getPlantById(localPlantOneId)
+
+        // Then assert that plant details are returned for given id
+        plantDetailsViewModel.apply {
+            assertThat(searchSuccess.getOrAwaitValue(), `is`(true))
+            assertThat(plant.getOrAwaitValue(), not(nullValue()))
+            assertThat(plant.getOrAwaitValue()?.id ?: 0, `is`(localPlantOneId))
+            assertThat(isSaved.getOrAwaitValue(), `is`(true))
+        }
     }
 
     @Test
@@ -96,5 +117,34 @@ class PlantDetailsViewModelTest {
         plantDetailsViewModel.savePlant(plantOne)
 
         assertThat(plantDetailsViewModel.errorMessage.getOrAwaitValue(), `is`("DB Error"))
+    }
+
+    /*-------------------------------------------------------------------------------------------*/
+
+    @Test
+    fun deletePlant_whenSuccess() = runBlocking {
+        repository.savePlant(plantOne)
+        plantDetailsViewModel.deletePlant(plantOne)
+        assertThat(plantDetailsViewModel.isSaved.getOrAwaitValue(), `is`(false))
+    }
+
+    @Test
+    fun deletePlant_whenError() = runBlocking {
+        repository.savePlant(plantOne)
+        repository.setReturnError(true)
+        plantDetailsViewModel.deletePlant(plantOne)
+        assertThat(plantDetailsViewModel.isSaved.getOrAwaitValue(), `is`(true))
+    }
+
+    /*-------------------------------------------------------------------------------------------*/
+
+
+    @Test
+    fun getPlantById_tbd() {
+        // Given plant id 1 is saved in db
+
+        // When navigating from search screen to plant details
+
+        // The FAB should show delete icon
     }
 }

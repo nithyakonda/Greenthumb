@@ -73,7 +73,7 @@ class Repository constructor(
         }
     }
 
-    override fun deletePlant(plantId: String) {
+    override suspend fun deletePlant(plantId: Long): Result<Unit> {
         TODO("Not yet implemented")
     }
 

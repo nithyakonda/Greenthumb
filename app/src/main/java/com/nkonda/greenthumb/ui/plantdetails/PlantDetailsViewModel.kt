@@ -27,9 +27,6 @@ class PlantDetailsViewModel(private val repository: IRepository) : ViewModel() {
     private val _isSaved = MutableLiveData<Boolean>()
     val isSaved: LiveData<Boolean> = _isSaved
 
-    private val _plantDeleted = MutableLiveData<Boolean>()
-    val plantDeleted: LiveData<Boolean> = _plantDeleted
-
     fun getPlantById(plantId: Long) {
         _dataLoading.value = true
         viewModelScope.launch {

@@ -87,7 +87,7 @@ class LocalDataSourceTest {
     /*-------------------------------------------------------------------------------------------*/
 
     @Test
-    fun deletePlantById_givenExistingPlant_returns1() = runBlocking {
+    fun deletePlantById_givenExistingPlant_returnsSuccess() = runBlocking {
         localDataSource.savePlant(plantOne)
         localDataSource.savePlant(plantTwo)
         assertThat((localDataSource.getPlants() as Result.Success).data.size, `is`(2))
@@ -101,7 +101,7 @@ class LocalDataSourceTest {
     }
 
     @Test
-    fun deletePlantById_givenNonExistingPlant_returns0() = runBlocking {
+    fun deletePlantById_givenNonExistingPlant_returnsError() = runBlocking {
         localDataSource.savePlant(plantOne)
         localDataSource.savePlant(plantTwo)
         assertThat((localDataSource.getPlants() as Result.Success).data.size, `is`(2))
@@ -136,15 +136,5 @@ class LocalDataSourceTest {
         val plants = (result.value as Result.Success).data
 
         assertThat(plants.size, `is`(2))
-    }
-
-    @Test
-    fun observePlants_whenPlantDeleted_updatesList() {
-
-    }
-
-    @Test
-    fun observePlants_whenDbError_returnsError() {
-
     }
 }

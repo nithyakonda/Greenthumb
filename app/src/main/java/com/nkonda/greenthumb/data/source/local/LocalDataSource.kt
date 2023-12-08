@@ -61,6 +61,11 @@ class LocalDataSource constructor(
     }
 
     override suspend fun hasPlant(plantId: Long): Boolean = withContext(ioDispatcher){
-        return@withContext plantsDao.hasPlant(plantId)
+        return@withContext try {
+            plantsDao.hasPlant(plantId)
+        } catch (e: Exception) {
+            Timber.e(e.stackTraceToString())
+            false
+        }
     }
 }

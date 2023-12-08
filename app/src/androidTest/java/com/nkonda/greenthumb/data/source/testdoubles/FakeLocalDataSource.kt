@@ -67,6 +67,9 @@ class FakeLocalDataSource : ILocalDataSource{
     }
 
     override suspend fun hasPlant(plantId: Long): Boolean {
-        return database.plantsDao().hasPlant(plantId)
+        return if (shouldReturnError) false
+        else {
+            database.plantsDao().hasPlant(plantId)
+        }
     }
 }

@@ -7,8 +7,9 @@ import com.nkonda.greenthumb.data.Result
 import com.nkonda.greenthumb.data.Task
 import com.nkonda.greenthumb.data.source.IRepository
 import com.nkonda.greenthumb.data.source.remote.PlantSummary
-import com.nkonda.greenthumb.data.testdoubles.plants
+import com.nkonda.greenthumb.data.testdoubles.localPlants
 import com.nkonda.greenthumb.data.testdoubles.plantSummaries
+import com.nkonda.greenthumb.data.testdoubles.remotePlants
 import java.lang.Exception
 
 class FakeRepository: IRepository {
@@ -53,25 +54,34 @@ class FakeRepository: IRepository {
     }
 
     override suspend fun getPlantById(plantId: Long): Pair<Result<Plant?>, Boolean> {
-        return if(!shouldReturnError) {
-            val result = plants.find { it.id == plantId }
-            Pair(Result.Success(result), getFromDb)
+        val result = if(!shouldReturnError) {
+            if (getFromDb) {
+                Result.Success(localPlants[plantId])
+            } else {
+                Result.Success(remotePlants[plantId])
+            }
         } else {
-            Pair(Result.Error(Exception("Network error")), getFromDb)
+            Result.Error(Exception("Network error"))
         }
+        return Pair(result, getFromDb)
     }
 
     override suspend fun savePlant(plant: Plant): Result<Unit> {
         return if (shouldReturnError) {
             Result.Error(Exception("DB Error"))
         } else {
-            plants.add(plant)
+            localPlants[plant.id] = plant
             Result.Success(Unit)
         }
     }
 
-    override fun deletePlant(plantId: String) {
-        TODO("Not yet implemented")
+    override suspend fun deletePlant(plantId: Long): Result<Unit> {
+        return if (shouldReturnError) {
+            Result.Error(Exception("DB Error"))
+        } else {
+            localPlants.remove(plantId)
+            Result.Success(Unit)
+        }
     }
 
     override fun searchPlantByImage(image: Bitmap): Result<List<Plant>> {
