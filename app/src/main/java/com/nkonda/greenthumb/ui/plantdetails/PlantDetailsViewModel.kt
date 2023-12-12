@@ -27,6 +27,9 @@ class PlantDetailsViewModel(private val repository: IRepository) : ViewModel() {
     private val _isSaved = MutableLiveData<Boolean>()
     val isSaved: LiveData<Boolean> = _isSaved
 
+    private val _deleteAction = MutableLiveData<Result<Unit>>()
+    val deleteAction: LiveData<Result<Unit>> = _deleteAction
+
     fun getPlantById(plantId: Long) {
         _dataLoading.value = true
         viewModelScope.launch {
@@ -61,6 +64,17 @@ class PlantDetailsViewModel(private val repository: IRepository) : ViewModel() {
     }
 
     fun deletePlant(plant: Plant) {
-
+        _deleteAction.value = Result.Loading
+        viewModelScope.launch {
+            val result = repository.deletePlant(plant.id)
+            _deleteAction.value = result
+            if (result.succeeded) {
+                _successMessage.value = "Deleted"
+                _isSaved.value = false
+            } else {
+                _errorMessage.value = (result as Result.Error).exception.message
+                _isSaved.value = true
+            }
+        }
     }
 }

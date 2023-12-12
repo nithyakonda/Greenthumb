@@ -27,8 +27,17 @@ class LocalDataSource constructor(
         }
     }
 
-    override suspend fun deletePlant(plantId: Long): Result<Unit> {
-        TODO("Not yet implemented")
+    override suspend fun deletePlant(plantId: Long): Result<Unit> = withContext(ioDispatcher) {
+         try {
+            if (plantsDao.deletePlantById(plantId) == 1) {
+                Success(Unit)
+            } else {
+                Error(Exception("Nothing to delete"))
+            }
+        } catch (e: Exception) {
+            Timber.e(e.stackTraceToString())
+            Error(Exception(e.message))
+        }
     }
 
     override fun observePlants(): LiveData<Result<List<Plant>>> {

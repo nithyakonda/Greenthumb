@@ -74,7 +74,9 @@ class Repository constructor(
     }
 
     override suspend fun deletePlant(plantId: Long): Result<Unit> {
-        TODO("Not yet implemented")
+        wrapEspressoIdlingResource {
+            return localDataSource.deletePlant(plantId)
+        }
     }
 
     override fun searchPlantByImage(image: Bitmap): Result<List<Plant>> {

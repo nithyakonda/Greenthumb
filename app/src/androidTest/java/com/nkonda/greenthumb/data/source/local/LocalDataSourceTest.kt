@@ -95,7 +95,6 @@ class LocalDataSourceTest {
         val result = localDataSource.deletePlant(plantOne.id)
         assertThat(result.succeeded, `is`(true))
         result as Result.Success
-        assertThat(result.data, `is`(1))
         assertThat((localDataSource.getPlants() as Result.Success).data.size, `is`(1))
 
     }

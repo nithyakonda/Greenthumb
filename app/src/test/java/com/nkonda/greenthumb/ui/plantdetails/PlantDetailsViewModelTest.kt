@@ -126,6 +126,8 @@ class PlantDetailsViewModelTest {
         repository.savePlant(plantOne)
         plantDetailsViewModel.deletePlant(plantOne)
         assertThat(plantDetailsViewModel.isSaved.getOrAwaitValue(), `is`(false))
+        assertThat(plantDetailsViewModel.successMessage.getOrAwaitValue(), `is`("Deleted"))
+
     }
 
     @Test
@@ -134,6 +136,7 @@ class PlantDetailsViewModelTest {
         repository.setReturnError(true)
         plantDetailsViewModel.deletePlant(plantOne)
         assertThat(plantDetailsViewModel.isSaved.getOrAwaitValue(), `is`(true))
+        assertThat(plantDetailsViewModel.errorMessage.getOrAwaitValue(), `is`("DB Error"))
     }
 
     /*-------------------------------------------------------------------------------------------*/

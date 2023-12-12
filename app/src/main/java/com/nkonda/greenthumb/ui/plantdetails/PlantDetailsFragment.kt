@@ -7,7 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
+import androidx.appcompat.app.AlertDialog
 import com.nkonda.greenthumb.R
+import com.nkonda.greenthumb.data.Result
 import com.nkonda.greenthumb.databinding.FragmentPlantDetailsBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
@@ -28,11 +30,14 @@ class PlantDetailsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupObservers()
+        setupClickHandlers()
         val args = PlantDetailsFragmentArgs.fromBundle(requireArguments())
         Timber.d("Fetching details for plant id ${args.plantId}")
         plantDetailsViewModel.getPlantById(args.plantId)
+    }
 
-        // Observers
+    private fun setupObservers() {
         plantDetailsViewModel.searchSuccess.observe(viewLifecycleOwner) { success ->
             if (success) {
                 binding.plant = plantDetailsViewModel.plant.value
@@ -43,25 +48,53 @@ class PlantDetailsFragment : Fragment() {
             }
         }
 
+        plantDetailsViewModel.deleteAction.observe(viewLifecycleOwner) { result ->
+            when(result) {
+                is Result.Success -> {}
+                is Result.Error -> {}
+                is Result.Loading -> {}
+            }
+        }
+
         plantDetailsViewModel.successMessage.observe(viewLifecycleOwner) { message ->
+            Toast.makeText(requireActivity(), message, LENGTH_SHORT).show()
+        }
+
+        plantDetailsViewModel.errorMessage.observe(viewLifecycleOwner) { message ->
             Toast.makeText(requireActivity(), message, LENGTH_SHORT).show()
         }
 
         plantDetailsViewModel.isSaved.observe(viewLifecycleOwner) { saved ->
             binding.saved = saved
         }
+    }
 
-        // Click handlers
+    private fun setupClickHandlers() {
         binding.addOrDeleteFab.setOnClickListener {
             saveOrDeletePlant()
         }
     }
 
-    fun saveOrDeletePlant() {
+    private fun saveOrDeletePlant() {
         if(binding.saved!!) {
-            // deletePlant
+            showConfirmDeleteDialog()
         } else {
             plantDetailsViewModel.savePlant(binding.plant!!)
         }
+    }
+
+    private fun showConfirmDeleteDialog() {
+        AlertDialog.Builder(requireActivity())
+            .setTitle("Confirm")
+            .setMessage("Are you sure you want to delete this plant?")
+            .setPositiveButton("Yes") { dialogInterface,_ ->
+                plantDetailsViewModel.deletePlant(binding.plant!!)
+                dialogInterface.dismiss()
+            }
+            .setNegativeButton("No") { dialogInterface,_ ->
+                dialogInterface.dismiss()
+            }
+            .create()
+            .show()
     }
 }
