@@ -8,18 +8,6 @@ import com.nkonda.greenthumb.data.Task
 import com.nkonda.greenthumb.data.source.remote.PlantSummary
 
 interface IRepository {
-    /**
-     * Tasks
-     */
-    fun getTasks(): LiveData<Result<List<Task>>>
-
-    fun saveTask(task: Task)
-
-    fun updateTask(task: Task)
-
-    fun completeTask(task: Task)
-
-    fun deleteTask(task: Task)
 
     /**
      * Plants
@@ -37,4 +25,17 @@ interface IRepository {
     fun searchPlantByImage(image: Bitmap): Result<List<Plant>>
 
     suspend fun searchPlantByName(name: String): Result<List<PlantSummary>>
+
+    /**
+     * Tasks
+     */
+    fun getTasks(): LiveData<Result<List<Task>>>
+
+    suspend fun saveTask(task: Task): Result<Unit>
+
+    fun updateTask(task: Task)
+
+    fun completeTask(task: Task)
+
+    fun deleteTask(task: Task)
 }

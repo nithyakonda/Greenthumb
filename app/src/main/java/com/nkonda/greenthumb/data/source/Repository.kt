@@ -7,37 +7,16 @@ import com.nkonda.greenthumb.data.Task
 import com.nkonda.greenthumb.data.source.remote.PlantSummary
 import com.nkonda.greenthumb.data.Result
 import com.nkonda.greenthumb.data.source.local.ILocalDataSource
-import com.nkonda.greenthumb.data.source.local.LocalDataSource
 import com.nkonda.greenthumb.data.source.remote.IRemoteDataSource
 import com.nkonda.greenthumb.data.source.remote.asDomainModel
 import com.nkonda.greenthumb.util.wrapEspressoIdlingResource
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import java.lang.Exception
 
 class Repository constructor(
     private val remoteDataSource: IRemoteDataSource,
     private val localDataSource: ILocalDataSource,
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO): IRepository {
-    override fun getTasks(): LiveData<Result<List<Task>>> {
-        TODO("Get tasks from Local")
-    }
-
-    override fun saveTask(task: Task) {
-        TODO("Not yet implemented")
-    }
-
-    override fun updateTask(task: Task) {
-        TODO("Not yet implemented")
-    }
-
-    override fun completeTask(task: Task) {
-        TODO("Not yet implemented")
-    }
-
-    override fun deleteTask(task: Task) {
-        TODO("Not yet implemented")
-    }
 
     override fun observePlants(): LiveData<Result<List<Plant>>> {
         wrapEspressoIdlingResource {
@@ -87,5 +66,31 @@ class Repository constructor(
         wrapEspressoIdlingResource {
             return remoteDataSource.searchPlantByName(name)
         }
+    }
+
+    /*----------------------------------------------------------------------------------------*/
+
+    override suspend fun saveTask(task: Task): Result<Unit> {
+        wrapEspressoIdlingResource {
+            return localDataSource.saveTask(task)
+        }
+    }
+
+    override fun getTasks(): LiveData<Result<List<Task>>> {
+        TODO("Get tasks from Local")
+    }
+
+
+
+    override fun updateTask(task: Task) {
+        TODO("Not yet implemented")
+    }
+
+    override fun completeTask(task: Task) {
+        TODO("Not yet implemented")
+    }
+
+    override fun deleteTask(task: Task) {
+        TODO("Not yet implemented")
     }
 }

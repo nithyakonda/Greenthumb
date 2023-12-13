@@ -7,6 +7,7 @@ import com.nkonda.greenthumb.data.Plant
 import com.nkonda.greenthumb.data.Result
 import com.nkonda.greenthumb.data.Result.Success
 import com.nkonda.greenthumb.data.Result.Error
+import com.nkonda.greenthumb.data.Task
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -75,6 +76,17 @@ class LocalDataSource constructor(
         } catch (e: Exception) {
             Timber.e(e.stackTraceToString())
             false
+        }
+    }
+
+    /*----------------------------------------------------------------------------------------*/
+
+    override suspend fun saveTask(task: Task): Result<Unit> = withContext(ioDispatcher) {
+        return@withContext try {
+            Success(tasksDao.insertTask(task))
+        } catch (e: Exception) {
+            Timber.e(e.stackTraceToString())
+            Error(e)
         }
     }
 }

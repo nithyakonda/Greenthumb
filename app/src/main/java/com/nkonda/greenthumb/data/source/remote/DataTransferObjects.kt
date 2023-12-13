@@ -57,7 +57,6 @@ fun PlantDetails.asDomainModel(): Plant {
         this.pruningMonth.orEmpty(),
         this.images?.thumbnail.orEmpty(),
         this.images?.originalUrl.orEmpty(),
-        this.description.orEmpty(),
-        null
+        this.description.orEmpty()
     )
 }

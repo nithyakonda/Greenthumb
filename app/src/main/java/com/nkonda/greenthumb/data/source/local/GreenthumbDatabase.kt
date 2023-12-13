@@ -7,12 +7,12 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.nkonda.greenthumb.data.Plant
 import com.nkonda.greenthumb.data.Task
+import com.nkonda.greenthumb.util.ScheduleConverter
 import com.nkonda.greenthumb.util.StringListConverter
-import com.nkonda.greenthumb.util.TaskListConverter
 
 const val DB_NAME = "Greenthumb.db"
 @Database(entities = [Plant::class, Task::class], version = 1, exportSchema = false)
-@TypeConverters(StringListConverter::class, TaskListConverter::class)
+@TypeConverters(StringListConverter::class, ScheduleConverter::class)
 abstract class GreenthumbDatabase: RoomDatabase() {
     companion object {
         fun createPlantsDao(context: Context): PlantsDao {
