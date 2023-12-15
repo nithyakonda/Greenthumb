@@ -1,5 +1,6 @@
 package com.nkonda.greenthumb.ui
 
+import android.widget.ImageButton
 import android.widget.ImageView
 import androidx.core.net.toUri
 import androidx.databinding.BindingAdapter
@@ -36,4 +37,9 @@ fun bindPlantDetailsFabContentDescription(view: FloatingActionButton, saved: Boo
 @BindingAdapter("plantDetailsFabImage")
 fun bindFabImage(view: FloatingActionButton, saved: Boolean){
     view.setImageResource((if (saved) R.drawable.ic_delete else R.drawable.ic_add))
+}
+
+@BindingAdapter("reminderButtonState")
+fun bindReminderButtonState(view: ImageButton, saved: Boolean) {
+    view.isEnabled = saved
 }

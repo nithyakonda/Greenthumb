@@ -10,6 +10,7 @@ import android.widget.Toast.LENGTH_SHORT
 import androidx.appcompat.app.AlertDialog
 import com.nkonda.greenthumb.R
 import com.nkonda.greenthumb.data.Result
+import com.nkonda.greenthumb.data.TaskType
 import com.nkonda.greenthumb.databinding.FragmentPlantDetailsBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
@@ -70,9 +71,36 @@ class PlantDetailsFragment : Fragment() {
     }
 
     private fun setupClickHandlers() {
-        binding.addOrDeleteFab.setOnClickListener {
-            saveOrDeletePlant()
+        binding.apply {
+            addOrDeleteFab.setOnClickListener {
+                saveOrDeletePlant()
+            }
+
+            wateringReminderBtn.setOnClickListener{
+                showAddTaskView(TaskType.WATER, binding.plant?.watering ?: "")
+            }
+
+            pruningReminderBtn.setOnClickListener {
+                showAddTaskView(TaskType.PRUNE, binding.plant?.pruningMonth.toString())
+            }
+
+            reminderSwitch.setOnClickListener {
+
+            }
         }
+    }
+
+    private fun showSchedulingDialog() {
+        
+    }
+
+    private fun showAddTaskView(type: TaskType, expectedSchedule: String) {
+        binding.apply {
+            addTaskContainer.visibility = View.VISIBLE
+            reminderTitleTv.text = type.toString()
+            expectedScheduleTv.text = expectedSchedule
+        }
+
     }
 
     private fun saveOrDeletePlant() {
