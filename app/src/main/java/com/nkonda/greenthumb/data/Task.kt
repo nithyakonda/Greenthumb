@@ -1,7 +1,6 @@
 package com.nkonda.greenthumb.data
 
 import androidx.room.*
-import com.nkonda.greenthumb.util.ScheduleConverter
 import com.squareup.moshi.JsonClass
 import java.util.*
 
@@ -11,14 +10,14 @@ data class Task constructor(
     val type: TaskType,
     val start: Long,
     val end: Long,
-    val schedule: Schedule,
+    var schedule: Schedule,
     val completed: Boolean,
     @ColumnInfo (name = "custom_type") val customType: String = "",
     @PrimaryKey val id: String = UUID.randomUUID().toString(),
 ) {
     data class Builder(val plantId: Long,
                        val type: TaskType,
-                       var schedule: Schedule,
+                       var schedule: Schedule = Schedule(null, null, null, TaskOccurrence.ONCE), // todo make it better
                        var customType: String = "") {
         fun build(): Task {
             return Task(plantId, type, schedule.getStart(), schedule.getEnd(), schedule, false, customType)
@@ -31,6 +30,11 @@ data class Schedule (val days: List<Day>?,
                      val months: List<Month>?,
                      val time: String?,
                      val occurrence: TaskOccurrence) {
+
+    fun isSet(): Boolean {
+        return (days != null || months != null) && time != null
+    }
+
     fun getStart(): Long {
         // todo implement
         return 1L

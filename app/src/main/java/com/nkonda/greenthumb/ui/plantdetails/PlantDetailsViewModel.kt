@@ -1,10 +1,8 @@
 package com.nkonda.greenthumb.ui.plantdetails
 
 import androidx.lifecycle.*
-import com.nkonda.greenthumb.data.Plant
+import com.nkonda.greenthumb.data.*
 import com.nkonda.greenthumb.data.source.IRepository
-import com.nkonda.greenthumb.data.Result
-import com.nkonda.greenthumb.data.succeeded
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -30,7 +28,12 @@ class PlantDetailsViewModel(private val repository: IRepository) : ViewModel() {
     private val _deleteAction = MutableLiveData<Result<Unit>>()
     val deleteAction: LiveData<Result<Unit>> = _deleteAction
 
-    fun getPlantById(plantId: Long) {
+    private val _task = MutableLiveData<Task>()
+    val task: LiveData<Task> = _task
+
+    private lateinit var tasksMap:Map<TaskType, Task>
+
+    fun loadData(plantId: Long) {
         _dataLoading.value = true
         viewModelScope.launch {
             val (result, saved) = repository.getPlantById(plantId)
@@ -44,6 +47,7 @@ class PlantDetailsViewModel(private val repository: IRepository) : ViewModel() {
                 _plant.value = null
                 _searchSuccess.value = false
             }
+            tasksMap = repository.getUniqueTasks(plantId)
             _dataLoading.value = false
         }
     }
@@ -76,5 +80,35 @@ class PlantDetailsViewModel(private val repository: IRepository) : ViewModel() {
                 _isSaved.value = true
             }
         }
+    }
+
+    /*----------------------------------------------------------------------------------------*/
+
+    fun saveTask() {
+        _task.value?.let { currentTask ->
+            _dataLoading.value = true
+            viewModelScope.launch {
+                val result = repository.saveTask(currentTask)
+                if (result.succeeded) {
+                    _task.value = currentTask
+                    _successMessage.value = "Task Created"
+                } else {
+                    _errorMessage.value = (result as Result.Error).exception.message
+                }
+                _dataLoading.value = false
+            }
+        } ?: Timber.w("Save task failed") // todo add more error handling
+    }
+
+    fun getTask(taskType: TaskType): Task {
+        _task.value = tasksMap[taskType]
+        return _task.value!!
+    }
+
+    fun updateSchedule(newSchedule: Schedule) {
+        _task.value?.let { currentTask ->
+            val updatedTask = currentTask.copy(schedule = newSchedule)
+            _task.value = updatedTask
+        } ?: Timber.w("Update schedule failed") // todo add more error handling
     }
 }

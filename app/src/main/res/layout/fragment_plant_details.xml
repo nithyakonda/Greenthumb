@@ -208,8 +208,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginLeft="16dp"
-                    android:text="@{task.schedule.toString()}"
-                    app:layout_constraintBottom_toBottomOf="@+id/editReminderBtn"
+                    android:layout_marginTop="8dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:text="March every year" />
@@ -219,10 +218,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:contentDescription="@string/cd_edit_task_button"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.88"
-                    app:layout_constraintStart_toEndOf="@+id/actualScheduleTv"
-                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/actualScheduleTv"
+                    app:layout_constraintTop_toBottomOf="@+id/actualScheduleTv"
                     app:srcCompat="@drawable/edit_24" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 

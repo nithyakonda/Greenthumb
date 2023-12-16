@@ -3,11 +3,9 @@ package com.nkonda.greenthumb.data.source.local
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.map
-import com.nkonda.greenthumb.data.Plant
-import com.nkonda.greenthumb.data.Result
+import com.nkonda.greenthumb.data.*
 import com.nkonda.greenthumb.data.Result.Success
 import com.nkonda.greenthumb.data.Result.Error
-import com.nkonda.greenthumb.data.Task
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -88,5 +86,20 @@ class LocalDataSource constructor(
             Timber.e(e.stackTraceToString())
             Error(e)
         }
+    }
+
+    override suspend fun getUniqueTasks(plantId: Long): Map<TaskType, Task> = withContext(ioDispatcher) {
+        var resultMap: Map<TaskType, Task> = HashMap()
+        try {
+             resultMap = TaskType.values().associateWith { getTask(plantId, it) }
+        } catch (e: Exception) {
+            Timber.e(e.stackTraceToString())
+        }
+        return@withContext resultMap
+    }
+
+    private suspend fun getTask(plantId: Long, taskType: TaskType): Task = withContext(ioDispatcher) {
+        val defaultTask = Task.Builder(plantId, taskType).build()
+        return@withContext tasksDao.getTask(plantId, taskType) ?: defaultTask
     }
 }

@@ -2,10 +2,8 @@ package com.nkonda.greenthumb.data.source
 
 import android.graphics.Bitmap
 import androidx.lifecycle.LiveData
-import com.nkonda.greenthumb.data.Plant
-import com.nkonda.greenthumb.data.Task
+import com.nkonda.greenthumb.data.*
 import com.nkonda.greenthumb.data.source.remote.PlantSummary
-import com.nkonda.greenthumb.data.Result
 import com.nkonda.greenthumb.data.source.local.ILocalDataSource
 import com.nkonda.greenthumb.data.source.remote.IRemoteDataSource
 import com.nkonda.greenthumb.data.source.remote.asDomainModel
@@ -92,5 +90,11 @@ class Repository constructor(
 
     override fun deleteTask(task: Task) {
         TODO("Not yet implemented")
+    }
+
+    override suspend fun getUniqueTasks(plantId: Long): Map<TaskType, Task> {
+        wrapEspressoIdlingResource {
+            return localDataSource.getUniqueTasks(plantId)
+        }
     }
 }

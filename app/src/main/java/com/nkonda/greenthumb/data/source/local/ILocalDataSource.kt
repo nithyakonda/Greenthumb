@@ -1,9 +1,7 @@
 package com.nkonda.greenthumb.data.source.local
 
 import androidx.lifecycle.LiveData
-import com.nkonda.greenthumb.data.Plant
-import com.nkonda.greenthumb.data.Result
-import com.nkonda.greenthumb.data.Task
+import com.nkonda.greenthumb.data.*
 
 interface ILocalDataSource {
     suspend fun savePlant(plant: Plant): Result<Unit>
@@ -21,4 +19,5 @@ interface ILocalDataSource {
     /*----------------------------------------------------------------------------------------*/
 
     suspend fun saveTask(task: Task): Result<Unit>
+    suspend fun getUniqueTasks(plantId: Long): Map<TaskType, Task>
 }

@@ -5,12 +5,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Switch
 import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
 import androidx.appcompat.app.AlertDialog
-import com.nkonda.greenthumb.R
-import com.nkonda.greenthumb.data.Result
-import com.nkonda.greenthumb.data.TaskType
+import com.nkonda.greenthumb.data.*
 import com.nkonda.greenthumb.databinding.FragmentPlantDetailsBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
@@ -35,7 +34,7 @@ class PlantDetailsFragment : Fragment() {
         setupClickHandlers()
         val args = PlantDetailsFragmentArgs.fromBundle(requireArguments())
         Timber.d("Fetching details for plant id ${args.plantId}")
-        plantDetailsViewModel.getPlantById(args.plantId)
+        plantDetailsViewModel.loadData(args.plantId)
     }
 
     private fun setupObservers() {
@@ -68,6 +67,10 @@ class PlantDetailsFragment : Fragment() {
         plantDetailsViewModel.isSaved.observe(viewLifecycleOwner) { saved ->
             binding.saved = saved
         }
+
+        plantDetailsViewModel.task.observe(viewLifecycleOwner) { taskInFocus ->
+            binding.task = taskInFocus
+        }
     }
 
     private fun setupClickHandlers() {
@@ -77,28 +80,64 @@ class PlantDetailsFragment : Fragment() {
             }
 
             wateringReminderBtn.setOnClickListener{
-                showAddTaskView(TaskType.WATER, binding.plant?.watering ?: "")
+                plantDetailsViewModel.getTask(TaskType.WATER)?.let { task ->
+                    showAddTaskView(task, binding.plant?.watering ?: "")
+                }
             }
 
             pruningReminderBtn.setOnClickListener {
-                showAddTaskView(TaskType.PRUNE, binding.plant?.pruningMonth.toString())
+                plantDetailsViewModel.getTask(TaskType.PRUNE)?.let { task ->
+                    showAddTaskView(task, binding.plant?.pruningMonth.toString())
+                }
             }
 
             reminderSwitch.setOnClickListener {
+                it as Switch
+                if (it.isChecked) {
+                    addTask(task)
+                } else {
+                    deleteTask(task)
+                }
+            }
 
+            reminderSwitch.setOnCheckedChangeListener { _, checked ->
+                editTaskContainer.visibility = if (checked) View.VISIBLE else View.INVISIBLE
             }
         }
     }
 
-    private fun showSchedulingDialog() {
-        
+    private fun addTask(task: Task?) {
+        task?.let {
+            // todo replace hardcoded schedule with result from scheduling dialog
+            val schedule = if (task.type == TaskType.WATER) {
+                Schedule(listOf(Day.MONDAY, Day.WEDNESDAY), null, "10.00", TaskOccurrence.WEEKLY)
+            } else {
+                Schedule(null, listOf(Month.MARCH, Month.APRIL), "11.00", TaskOccurrence.YEARLY)
+            }
+
+            // on dialog positive click
+            plantDetailsViewModel.updateSchedule(schedule)
+            plantDetailsViewModel.saveTask()
+            binding.actualScheduleTv.text = schedule.toString()
+            binding.editTaskContainer.visibility = View.VISIBLE
+        } ?: run {
+            // todo show UI error
+            Timber.w("addTask failed, task is null")
+        }
     }
 
-    private fun showAddTaskView(type: TaskType, expectedSchedule: String) {
+    private fun deleteTask(task: Task?) {
+//        plantDetailsViewModel.deleteTask(task)
+    }
+
+    private fun showAddTaskView(task: Task, expectedSchedule: String) {
         binding.apply {
+            binding.task = task
             addTaskContainer.visibility = View.VISIBLE
-            reminderTitleTv.text = type.toString()
+            reminderTitleTv.text = task.type.toString()
             expectedScheduleTv.text = expectedSchedule
+            reminderSwitch.isChecked = task.schedule.isSet()
+            actualScheduleTv.text = if (task.schedule.isSet()) task.schedule.toString() else ""
         }
 
     }

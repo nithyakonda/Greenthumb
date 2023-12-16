@@ -2,9 +2,7 @@ package com.nkonda.greenthumb.data.source
 
 import android.graphics.Bitmap
 import androidx.lifecycle.LiveData
-import com.nkonda.greenthumb.data.Result
-import com.nkonda.greenthumb.data.Plant
-import com.nkonda.greenthumb.data.Task
+import com.nkonda.greenthumb.data.*
 import com.nkonda.greenthumb.data.source.remote.PlantSummary
 
 interface IRepository {
@@ -38,4 +36,6 @@ interface IRepository {
     fun completeTask(task: Task)
 
     fun deleteTask(task: Task)
+
+    suspend fun getUniqueTasks(plantId: Long): Map<TaskType, Task>
 }
