@@ -176,7 +176,7 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textStyle="bold"
-                android:text="@{task.type.toString()}"
+                android:text="@{task.key.taskType.toString()}"
                 tools:layout_editor_absoluteX="164dp"
                 tools:layout_editor_absoluteY="56dp"
                 tools:text="Pruning" />

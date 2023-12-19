@@ -20,6 +20,6 @@ interface ILocalDataSource {
 
     suspend fun saveTask(task: Task): Result<Unit>
 
-    suspend fun deleteTask(taskId: String): Result<Unit>
+    suspend fun deleteTask(taskKey: TaskKey): Result<Unit>
     suspend fun getUniqueTasks(plantId: Long): Map<TaskType, Task>
 }

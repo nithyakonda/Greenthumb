@@ -88,9 +88,9 @@ class Repository constructor(
         TODO("Not yet implemented")
     }
 
-    override suspend fun deleteTask(taskId: String): Result<Unit> {
+    override suspend fun deleteTask(taskKey: TaskKey): Result<Unit> {
         wrapEspressoIdlingResource {
-            return localDataSource.deleteTask(taskId)
+            return localDataSource.deleteTask(taskKey)
         }
     }
 

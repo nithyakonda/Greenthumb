@@ -34,7 +34,7 @@ class PlantDetailsViewModel(private val repository: IRepository) : ViewModel() {
     private val _task = MutableLiveData<Task>()
     val task: LiveData<Task> = _task
 
-    private lateinit var tasksMap:Map<TaskType, Task>
+    private lateinit var tasksMap:MutableMap<TaskType, Task>
 
     fun loadData(plantId: Long) {
         _dataLoading.value = true
@@ -50,7 +50,7 @@ class PlantDetailsViewModel(private val repository: IRepository) : ViewModel() {
                 _plant.value = null
                 _searchSuccess.value = false
             }
-            tasksMap = repository.getUniqueTasks(plantId)
+            tasksMap = repository.getUniqueTasks(plantId) as MutableMap<TaskType, Task>
             _dataLoading.value = false
         }
     }
@@ -94,6 +94,7 @@ class PlantDetailsViewModel(private val repository: IRepository) : ViewModel() {
                 val result = repository.saveTask(currentTask)
                 if (result.succeeded) {
                     _task.value = currentTask
+                    tasksMap[currentTask.key.taskType] = currentTask
                     _successMessage.value = "Task Created"
                 } else {
                     _errorMessage.value = (result as Result.Error).exception.message
@@ -107,10 +108,13 @@ class PlantDetailsViewModel(private val repository: IRepository) : ViewModel() {
         _task.value?.let { currentTask ->
             _deleteTaskResult.value = Result.Loading
             viewModelScope.launch {
-                val result = repository.deleteTask(currentTask.id)
+                val result = repository.deleteTask(currentTask.key)
                 _deleteTaskResult.value = result
                 if (result.succeeded) {
-                    _task.value = Task.getDefaultTask(currentTask.plantId, currentTask.type)
+                    Task.getDefaultTask(currentTask.key).also {
+                        _task.value = it
+                        tasksMap[currentTask.key.taskType] = it
+                    }
                 }
             }
         }
@@ -123,8 +127,10 @@ class PlantDetailsViewModel(private val repository: IRepository) : ViewModel() {
 
     fun updateSchedule(newSchedule: Schedule) {
         _task.value?.let { currentTask ->
-            val updatedTask = currentTask.copy(schedule = newSchedule)
-            _task.value = updatedTask
+            currentTask.copy(schedule = newSchedule).also {
+                _task.value = it
+                tasksMap[currentTask.key.taskType] = it
+            }
         } ?: Timber.w("Update schedule failed") // todo add more error handling
     }
 }

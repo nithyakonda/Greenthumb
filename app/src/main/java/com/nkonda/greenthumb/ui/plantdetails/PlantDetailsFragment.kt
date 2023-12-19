@@ -121,7 +121,7 @@ class PlantDetailsFragment : Fragment() {
     private fun addTask(task: Task?) {
         task?.let {
             // todo replace hardcoded schedule with result from scheduling dialog
-            val schedule = if (task.type == TaskType.WATER) {
+            val schedule = if (task.key.taskType == TaskType.WATER) {
                 Schedule(listOf(Day.MONDAY, Day.WEDNESDAY), null, "10.00", TaskOccurrence.WEEKLY)
             } else {
                 Schedule(null, listOf(Month.MARCH, Month.APRIL), "11.00", TaskOccurrence.YEARLY)
@@ -147,7 +147,7 @@ class PlantDetailsFragment : Fragment() {
         binding.apply {
             binding.task = task
             addTaskContainer.visibility = View.VISIBLE
-            reminderTitleTv.text = task.type.toString()
+            reminderTitleTv.text = task.key.taskType.toString()
             expectedScheduleTv.text = expectedSchedule
             reminderSwitch.isChecked = task.schedule.isSet()
             actualScheduleTv.text = if (task.schedule.isSet()) task.schedule.toString() else ""

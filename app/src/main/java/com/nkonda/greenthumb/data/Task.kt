@@ -4,33 +4,28 @@ import androidx.room.*
 import com.squareup.moshi.JsonClass
 import java.util.*
 
-@Entity( tableName = "tasks" )
+@Entity( tableName = "tasks", primaryKeys = ["plant_id", "task_type"] )
 data class Task constructor(
-    @ColumnInfo (name = "plant_id") val plantId: Long,
-    val type: TaskType,
-    val start: Long,
-    val end: Long,
+    @Embedded val key: TaskKey,
     var schedule: Schedule,
-    val completed: Boolean,
-    @ColumnInfo (name = "custom_type") var customType: String = "",
-    @PrimaryKey val id: String = UUID.randomUUID().toString(),
+    var completed: Boolean = false,
+    @ColumnInfo(name = "last_executed") var lastExecuted: Long = System.currentTimeMillis(),
+    @ColumnInfo (name = "custom_type") val customType: String = "",
 ) {
-    constructor(
-        plantId: Long,
-        type: TaskType,
-        schedule: Schedule
-    ) : this(plantId, type, schedule.getStart(), schedule.getEnd(), schedule, false)
-
     companion object {
-        fun getDefaultTask(plantId: Long, taskType: TaskType): Task {
+        fun getDefaultTask(taskKey: TaskKey): Task {
             return Task(
-                plantId,
-                taskType,
+                taskKey,
                 Schedule(null, null, null, TaskOccurrence.ONCE)
             ) // todo make it better
         }
     }
 }
+
+data class TaskKey(
+    @ColumnInfo (name = "plant_id") val plantId: Long,
+    @ColumnInfo(name = "task_type") val taskType: TaskType
+)
 
 @JsonClass(generateAdapter = true)
 data class Schedule (val days: List<Day>?,
@@ -42,13 +37,4 @@ data class Schedule (val days: List<Day>?,
         return (days != null || months != null) && time != null
     }
 
-    fun getStart(): Long {
-        // todo implement
-        return 1L
-    }
-
-    fun getEnd(): Long {
-        // todo implement
-        return 2L
-    }
 }
