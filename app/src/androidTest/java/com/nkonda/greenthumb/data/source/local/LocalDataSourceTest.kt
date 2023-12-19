@@ -75,12 +75,12 @@ class LocalDataSourceTest {
         val plant = plantOne
         localDataSource.savePlant(plant)
         var result = (localDataSource.getPlants() as Result.Success).data[0]
-        assertThat(result.tasks?.size, `is`(0))
+        assertThat(result.commonName, `is`(plantOne.commonName))
 
-        plant.tasks?.add(taskOne)
+        plant.commonName = "newCommonName"
         localDataSource.savePlant(plant)
         result = (localDataSource.getPlants() as Result.Success).data[0]
-        assertThat(result.tasks?.size, `is`(1))
+        assertThat(result.commonName, `is`("newCommonName"))
     }
 
 
@@ -135,5 +135,10 @@ class LocalDataSourceTest {
         val plants = (result.value as Result.Success).data
 
         assertThat(plants.size, `is`(2))
+    }
+
+    @Test
+    fun saveTask_() = runBlocking {
+
     }
 }

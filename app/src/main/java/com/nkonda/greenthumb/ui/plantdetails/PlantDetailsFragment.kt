@@ -48,7 +48,7 @@ class PlantDetailsFragment : Fragment() {
             }
         }
 
-        plantDetailsViewModel.deleteAction.observe(viewLifecycleOwner) { result ->
+        plantDetailsViewModel.deletePlantResult.observe(viewLifecycleOwner) { result ->
             when(result) {
                 is Result.Success -> {}
                 is Result.Error -> {}
@@ -56,12 +56,20 @@ class PlantDetailsFragment : Fragment() {
             }
         }
 
+        plantDetailsViewModel.deleteTaskResult.observe(viewLifecycleOwner) { result ->
+            when(result) {
+                is Result.Success -> {showToast("Task Deleted")}
+                is Result.Error -> {showToast(result.exception.message)}
+                is Result.Loading -> {}
+            }
+        }
+
         plantDetailsViewModel.successMessage.observe(viewLifecycleOwner) { message ->
-            Toast.makeText(requireActivity(), message, LENGTH_SHORT).show()
+            showToast(message)
         }
 
         plantDetailsViewModel.errorMessage.observe(viewLifecycleOwner) { message ->
-            Toast.makeText(requireActivity(), message, LENGTH_SHORT).show()
+            showToast(message)
         }
 
         plantDetailsViewModel.isSaved.observe(viewLifecycleOwner) { saved ->
@@ -71,6 +79,10 @@ class PlantDetailsFragment : Fragment() {
         plantDetailsViewModel.task.observe(viewLifecycleOwner) { taskInFocus ->
             binding.task = taskInFocus
         }
+    }
+
+    private fun showToast(message: String?) {
+        Toast.makeText(requireActivity(), message, LENGTH_SHORT).show()
     }
 
     private fun setupClickHandlers() {
@@ -96,7 +108,7 @@ class PlantDetailsFragment : Fragment() {
                 if (it.isChecked) {
                     addTask(task)
                 } else {
-                    deleteTask(task)
+                    deleteTask()
                 }
             }
 
@@ -126,8 +138,9 @@ class PlantDetailsFragment : Fragment() {
         }
     }
 
-    private fun deleteTask(task: Task?) {
-//        plantDetailsViewModel.deleteTask(task)
+    private fun deleteTask() {
+        plantDetailsViewModel.deleteTask()
+        // todo delete scheduled jobs
     }
 
     private fun showAddTaskView(task: Task, expectedSchedule: String) {

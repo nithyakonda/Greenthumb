@@ -8,7 +8,7 @@ import java.util.UUID
 @Entity(tableName = "plants")
 data class Plant constructor(
     @PrimaryKey val id: Long,
-    @ColumnInfo(name = "common_name") val commonName: String,
+    @ColumnInfo(name = "common_name") var commonName: String,
     @ColumnInfo(name = "scientific_name") val scientificName: String,
     val cycle: String, // Enum perennial, annual, biennial, biannual
     @ColumnInfo(name = "care_level") val careLevel: String,

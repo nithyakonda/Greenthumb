@@ -25,8 +25,11 @@ class PlantDetailsViewModel(private val repository: IRepository) : ViewModel() {
     private val _isSaved = MutableLiveData<Boolean>()
     val isSaved: LiveData<Boolean> = _isSaved
 
-    private val _deleteAction = MutableLiveData<Result<Unit>>()
-    val deleteAction: LiveData<Result<Unit>> = _deleteAction
+    private val _deletePlantResult = MutableLiveData<Result<Unit>>()
+    val deletePlantResult: LiveData<Result<Unit>> = _deletePlantResult
+
+    private val _deleteTaskResult = MutableLiveData<Result<Unit>>()
+    val deleteTaskResult: LiveData<Result<Unit>> = _deleteTaskResult
 
     private val _task = MutableLiveData<Task>()
     val task: LiveData<Task> = _task
@@ -68,10 +71,10 @@ class PlantDetailsViewModel(private val repository: IRepository) : ViewModel() {
     }
 
     fun deletePlant(plant: Plant) {
-        _deleteAction.value = Result.Loading
+        _deletePlantResult.value = Result.Loading
         viewModelScope.launch {
             val result = repository.deletePlant(plant.id)
-            _deleteAction.value = result
+            _deletePlantResult.value = result
             if (result.succeeded) {
                 _successMessage.value = "Deleted"
                 _isSaved.value = false
@@ -98,6 +101,19 @@ class PlantDetailsViewModel(private val repository: IRepository) : ViewModel() {
                 _dataLoading.value = false
             }
         } ?: Timber.w("Save task failed") // todo add more error handling
+    }
+
+    fun deleteTask() {
+        _task.value?.let { currentTask ->
+            _deleteTaskResult.value = Result.Loading
+            viewModelScope.launch {
+                val result = repository.deleteTask(currentTask.id)
+                _deleteTaskResult.value = result
+                if (result.succeeded) {
+                    _task.value = Task.getDefaultTask(currentTask.plantId, currentTask.type)
+                }
+            }
+        }
     }
 
     fun getTask(taskType: TaskType): Task {

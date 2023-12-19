@@ -35,7 +35,7 @@ interface IRepository {
 
     fun completeTask(task: Task)
 
-    fun deleteTask(task: Task)
+    suspend fun deleteTask(taskId: String): Result<Unit>
 
     suspend fun getUniqueTasks(plantId: Long): Map<TaskType, Task>
 }

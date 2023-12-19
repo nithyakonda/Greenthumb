@@ -12,15 +12,22 @@ data class Task constructor(
     val end: Long,
     var schedule: Schedule,
     val completed: Boolean,
-    @ColumnInfo (name = "custom_type") val customType: String = "",
+    @ColumnInfo (name = "custom_type") var customType: String = "",
     @PrimaryKey val id: String = UUID.randomUUID().toString(),
 ) {
-    data class Builder(val plantId: Long,
-                       val type: TaskType,
-                       var schedule: Schedule = Schedule(null, null, null, TaskOccurrence.ONCE), // todo make it better
-                       var customType: String = "") {
-        fun build(): Task {
-            return Task(plantId, type, schedule.getStart(), schedule.getEnd(), schedule, false, customType)
+    constructor(
+        plantId: Long,
+        type: TaskType,
+        schedule: Schedule
+    ) : this(plantId, type, schedule.getStart(), schedule.getEnd(), schedule, false)
+
+    companion object {
+        fun getDefaultTask(plantId: Long, taskType: TaskType): Task {
+            return Task(
+                plantId,
+                taskType,
+                Schedule(null, null, null, TaskOccurrence.ONCE)
+            ) // todo make it better
         }
     }
 }

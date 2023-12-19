@@ -88,6 +88,19 @@ class LocalDataSource constructor(
         }
     }
 
+    override suspend fun deleteTask(taskId: String): Result<Unit> = withContext(ioDispatcher) {
+        try {
+            if (tasksDao.deleteTaskById(taskId) == 1) {
+                Success(Unit)
+            } else {
+                Error(Exception("Nothing to delete"))
+            }
+        } catch (e: Exception) {
+            Timber.e(e.stackTraceToString())
+            Error(Exception(e.message))
+        }
+    }
+
     override suspend fun getUniqueTasks(plantId: Long): Map<TaskType, Task> = withContext(ioDispatcher) {
         var resultMap: Map<TaskType, Task> = HashMap()
         try {
@@ -99,7 +112,6 @@ class LocalDataSource constructor(
     }
 
     private suspend fun getTask(plantId: Long, taskType: TaskType): Task = withContext(ioDispatcher) {
-        val defaultTask = Task.Builder(plantId, taskType).build()
-        return@withContext tasksDao.getTask(plantId, taskType) ?: defaultTask
+        return@withContext tasksDao.getTask(plantId, taskType) ?: Task.getDefaultTask(plantId, taskType)
     }
 }

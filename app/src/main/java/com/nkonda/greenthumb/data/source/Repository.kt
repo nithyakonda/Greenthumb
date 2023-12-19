@@ -88,8 +88,10 @@ class Repository constructor(
         TODO("Not yet implemented")
     }
 
-    override fun deleteTask(task: Task) {
-        TODO("Not yet implemented")
+    override suspend fun deleteTask(taskId: String): Result<Unit> {
+        wrapEspressoIdlingResource {
+            return localDataSource.deleteTask(taskId)
+        }
     }
 
     override suspend fun getUniqueTasks(plantId: Long): Map<TaskType, Task> {
