@@ -7,6 +7,7 @@ import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import java.lang.reflect.Type
+import java.util.*
 
 class StringListConverter {
 
@@ -58,5 +59,40 @@ class ScheduleConverter {
         )
         val adapter: JsonAdapter<Schedule> = moshi.adapter(type)
         return adapter.toJson(schedule)
+    }
+}
+
+fun convertStringListToMonthList(months: List<String>): List<Month> {
+    return months.map { monthString ->
+        when (monthString.toLowerCase()) {
+            "january" -> Month.JANUARY
+            "february" -> Month.FEBRUARY
+            "march" -> Month.MARCH
+            "april" -> Month.APRIL
+            "may" -> Month.MAY
+            "june" -> Month.JUNE
+            "july" -> Month.JULY
+            "august" -> Month.AUGUST
+            "september" -> Month.SEPTEMBER
+            "october" -> Month.OCTOBER
+            "november" -> Month.NOVEMBER
+            "december" -> Month.DECEMBER
+            else -> throw IllegalArgumentException("Invalid month string: $monthString")
+        }
+    }
+}
+
+fun convertIntListToDayList(days: List<Int>): List<Day> {
+    return days.map { dayInt ->
+        when(dayInt) {
+            Calendar.SUNDAY -> Day.SUNDAY
+            Calendar.MONDAY -> Day.MONDAY
+            Calendar.TUESDAY -> Day.TUESDAY
+            Calendar.WEDNESDAY -> Day.WEDNESDAY
+            Calendar.THURSDAY -> Day.THURSDAY
+            Calendar.FRIDAY -> Day.FRIDAY
+            Calendar.SATURDAY -> Day.SATURDAY
+            else -> Day.NOT_SET
+        }
     }
 }

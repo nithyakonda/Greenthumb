@@ -101,6 +101,19 @@ class LocalDataSource constructor(
         }
     }
 
+    override suspend fun updateSchedule(taskKey: TaskKey, schedule: Schedule): Result<Unit> = withContext(ioDispatcher){
+        try {
+            if(tasksDao.updateSchedule(taskKey.plantId, taskKey.taskType, schedule) == 1) {
+                Success(Unit)
+            } else {
+                Error(java.lang.Exception("Nothing to update"))
+            }
+        } catch (e: Exception) {
+            Timber.e(e.stackTraceToString())
+            Error(Exception(e.message))
+        }
+    }
+
     override suspend fun getUniqueTasks(plantId: Long): Map<TaskType, Task> = withContext(ioDispatcher) {
         var resultMap: Map<TaskType, Task> = HashMap()
         try {
@@ -111,7 +124,20 @@ class LocalDataSource constructor(
         return@withContext resultMap
     }
 
+    override fun observeTask(taskKey: TaskKey): LiveData<Result<Task?>> {
+        return try {
+            tasksDao.observeTask(taskKey.plantId, taskKey.taskType).map {
+                Success(it)
+            }
+        } catch (e: java.lang.Exception) {
+            Timber.e(e.stackTraceToString())
+            MutableLiveData<Result<Task?>>().apply {
+                value = Error(Exception(e.message))
+            }
+        }
+    }
+
     private suspend fun getTask(taskKey: TaskKey): Task = withContext(ioDispatcher) {
-        return@withContext tasksDao.getTask(taskKey.plantId, taskKey.taskType) ?: Task.getDefaultTask(taskKey)
+        return@withContext tasksDao.getTask(taskKey.plantId, taskKey.taskType) ?: Task(taskKey)
     }
 }

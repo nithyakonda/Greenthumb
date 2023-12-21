@@ -31,11 +31,13 @@ interface IRepository {
 
     suspend fun saveTask(task: Task): Result<Unit>
 
-    fun updateTask(task: Task)
+    suspend fun updateSchedule(taskKey: TaskKey, schedule: Schedule): Result<Unit>
 
     fun completeTask(task: Task)
 
     suspend fun deleteTask(taskKey: TaskKey): Result<Unit>
 
     suspend fun getUniqueTasks(plantId: Long): Map<TaskType, Task>
+
+    fun observeTask(taskKey: TaskKey): LiveData<Result<Task?>>
 }

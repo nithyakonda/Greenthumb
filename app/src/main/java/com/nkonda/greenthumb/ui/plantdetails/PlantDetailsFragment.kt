@@ -1,11 +1,13 @@
 package com.nkonda.greenthumb.ui.plantdetails
 
+import android.app.TimePickerDialog
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Switch
+import android.widget.TimePicker
 import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
 import androidx.appcompat.app.AlertDialog
@@ -13,8 +15,9 @@ import com.nkonda.greenthumb.data.*
 import com.nkonda.greenthumb.databinding.FragmentPlantDetailsBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
+import java.util.Calendar
 
-class PlantDetailsFragment : Fragment() {
+class PlantDetailsFragment : Fragment(), TimePickerDialog.OnTimeSetListener {
     private lateinit var binding: FragmentPlantDetailsBinding
     private val plantDetailsViewModel:PlantDetailsViewModel by viewModel()
 
@@ -64,6 +67,14 @@ class PlantDetailsFragment : Fragment() {
             }
         }
 
+        plantDetailsViewModel.updateScheduleResult.observe(viewLifecycleOwner) { result ->
+            when(result) {
+                is Result.Success -> {showToast("Task Schedule Updated")}
+                is Result.Error -> {showToast(result.exception.message)}
+                is Result.Loading -> {}
+            }
+        }
+
         plantDetailsViewModel.successMessage.observe(viewLifecycleOwner) { message ->
             showToast(message)
         }
@@ -76,8 +87,22 @@ class PlantDetailsFragment : Fragment() {
             binding.saved = saved
         }
 
-        plantDetailsViewModel.task.observe(viewLifecycleOwner) { taskInFocus ->
-            binding.task = taskInFocus
+        plantDetailsViewModel.currentTask.observe(viewLifecycleOwner) { result ->
+            when(result) {
+                is Result.Success -> {
+                    binding.apply {
+                        result.data?.let {
+                            task = it
+                            reminderSwitch.isChecked = it.schedule.isSet()
+                            actualScheduleTv.text =
+                                if (it.schedule.isSet()) it.schedule.toString() else ""
+                        }
+                    }
+                }
+                is Result.Error -> {}
+                is Result.Loading -> {}
+            }
+
         }
     }
 
@@ -92,24 +117,25 @@ class PlantDetailsFragment : Fragment() {
             }
 
             wateringReminderBtn.setOnClickListener{
-                plantDetailsViewModel.getTask(TaskType.WATER)?.let { task ->
-                    showAddTaskView(task, binding.plant?.watering ?: "")
-                }
+                showAddTaskView(TaskKey(binding.plant!!.id, TaskType.WATER),
+                    binding.plant?.watering ?: "")
             }
 
             pruningReminderBtn.setOnClickListener {
-                plantDetailsViewModel.getTask(TaskType.PRUNE)?.let { task ->
-                    showAddTaskView(task, binding.plant?.pruningMonth.toString())
-                }
+                showAddTaskView(TaskKey(binding.plant!!.id, TaskType.PRUNE),
+                    binding.plant?.pruningMonth.toString())
             }
 
-            reminderSwitch.setOnClickListener {
-                it as Switch
+            reminderSwitch.setOnClickListener { it as Switch
                 if (it.isChecked) {
-                    addTask(task)
+                    addTask()
                 } else {
                     deleteTask()
                 }
+            }
+
+            editReminderBtn.setOnClickListener {
+                showSchedulingDialog()
             }
 
             reminderSwitch.setOnCheckedChangeListener { _, checked ->
@@ -118,41 +144,27 @@ class PlantDetailsFragment : Fragment() {
         }
     }
 
-    private fun addTask(task: Task?) {
-        task?.let {
-            // todo replace hardcoded schedule with result from scheduling dialog
-            val schedule = if (task.key.taskType == TaskType.WATER) {
-                Schedule(listOf(Day.MONDAY, Day.WEDNESDAY), null, "10.00", TaskOccurrence.WEEKLY)
-            } else {
-                Schedule(null, listOf(Month.MARCH, Month.APRIL), "11.00", TaskOccurrence.YEARLY)
-            }
+    override fun onTimeSet(view: TimePicker?, hourOfDay: Int, minute: Int) {
+        val schedule = Schedule(
+            listOf(Day.MONDAY, Day.WEDNESDAY),
+            null,
+            hourOfDay,
+            minute,
+            TaskOccurrence.WEEKLY
+        )
+        plantDetailsViewModel.updateSchedule(binding.task!!.key, schedule)
+    }
 
-            // on dialog positive click
-            plantDetailsViewModel.updateSchedule(schedule)
-            plantDetailsViewModel.saveTask()
-            binding.actualScheduleTv.text = schedule.toString()
-            binding.editTaskContainer.visibility = View.VISIBLE
-        } ?: run {
-            // todo show UI error
-            Timber.w("addTask failed, task is null")
+    private fun addTask() {
+        binding.task!!.key.apply {
+            plantDetailsViewModel.saveTask(this, binding.plant!!.getExpectedSchedule(this.taskType))
         }
+        binding.editTaskContainer.visibility = View.VISIBLE
     }
 
     private fun deleteTask() {
-        plantDetailsViewModel.deleteTask()
+        plantDetailsViewModel.deleteTask(binding.task!!.key)
         // todo delete scheduled jobs
-    }
-
-    private fun showAddTaskView(task: Task, expectedSchedule: String) {
-        binding.apply {
-            binding.task = task
-            addTaskContainer.visibility = View.VISIBLE
-            reminderTitleTv.text = task.key.taskType.toString()
-            expectedScheduleTv.text = expectedSchedule
-            reminderSwitch.isChecked = task.schedule.isSet()
-            actualScheduleTv.text = if (task.schedule.isSet()) task.schedule.toString() else ""
-        }
-
     }
 
     private fun saveOrDeletePlant() {
@@ -163,6 +175,18 @@ class PlantDetailsFragment : Fragment() {
         }
     }
 
+    private fun showAddTaskView(taskKey: TaskKey, expectedSchedule: String) {
+        binding.apply {
+            // intialize binding.task to default task so it is never null even if a db fetch fails.
+            // Worst case the existing task is replaced with new schedule following add task workflow
+            task = Task(taskKey)
+            plantDetailsViewModel.setCurrentTask(taskKey)
+            addTaskContainer.visibility = View.VISIBLE
+            reminderTitleTv.text = taskKey.taskType.toString()
+            expectedScheduleTv.text = expectedSchedule
+        }
+
+    }
     private fun showConfirmDeleteDialog() {
         AlertDialog.Builder(requireActivity())
             .setTitle("Confirm")
@@ -176,5 +200,10 @@ class PlantDetailsFragment : Fragment() {
             }
             .create()
             .show()
+    }
+
+    private fun showSchedulingDialog() {
+        val cal = Calendar.getInstance()
+        TimePickerDialog(requireActivity(), this, cal.get(Calendar.HOUR), cal.get(Calendar.MINUTE), true).show()
     }
 }

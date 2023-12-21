@@ -80,8 +80,10 @@ class Repository constructor(
 
 
 
-    override fun updateTask(task: Task) {
-        TODO("Not yet implemented")
+    override suspend fun updateSchedule(taskKey: TaskKey, schedule: Schedule): Result<Unit> {
+        wrapEspressoIdlingResource {
+            return localDataSource.updateSchedule(taskKey, schedule)
+        }
     }
 
     override fun completeTask(task: Task) {
@@ -97,6 +99,12 @@ class Repository constructor(
     override suspend fun getUniqueTasks(plantId: Long): Map<TaskType, Task> {
         wrapEspressoIdlingResource {
             return localDataSource.getUniqueTasks(plantId)
+        }
+    }
+
+    override fun observeTask(taskKey: TaskKey): LiveData<Result<Task?>> {
+        wrapEspressoIdlingResource {
+            return localDataSource.observeTask(taskKey)
         }
     }
 }

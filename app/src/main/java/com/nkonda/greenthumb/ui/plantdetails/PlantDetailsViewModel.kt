@@ -31,10 +31,14 @@ class PlantDetailsViewModel(private val repository: IRepository) : ViewModel() {
     private val _deleteTaskResult = MutableLiveData<Result<Unit>>()
     val deleteTaskResult: LiveData<Result<Unit>> = _deleteTaskResult
 
-    private val _task = MutableLiveData<Task>()
-    val task: LiveData<Task> = _task
+    private val _updateScheduleResult = MutableLiveData<Result<Unit>>()
+    val updateScheduleResult: LiveData<Result<Unit>> = _updateScheduleResult
 
-    private lateinit var tasksMap:MutableMap<TaskType, Task>
+    private val _taskKey = MutableLiveData<TaskKey>()
+    private val _currentTask = _taskKey.switchMap {
+        repository.observeTask(it)
+    }
+    val currentTask: LiveData<Result<Task?>> = _currentTask
 
     fun loadData(plantId: Long) {
         _dataLoading.value = true
@@ -50,7 +54,6 @@ class PlantDetailsViewModel(private val repository: IRepository) : ViewModel() {
                 _plant.value = null
                 _searchSuccess.value = false
             }
-            tasksMap = repository.getUniqueTasks(plantId) as MutableMap<TaskType, Task>
             _dataLoading.value = false
         }
     }
@@ -87,50 +90,39 @@ class PlantDetailsViewModel(private val repository: IRepository) : ViewModel() {
 
     /*----------------------------------------------------------------------------------------*/
 
-    fun saveTask() {
-        _task.value?.let { currentTask ->
+    fun setCurrentTask(taskKey: TaskKey) {
+        _taskKey.value = taskKey
+    }
+
+    fun saveTask(taskKey: TaskKey, expectedSchedule: Schedule) {
             _dataLoading.value = true
             viewModelScope.launch {
-                val result = repository.saveTask(currentTask)
+                val task = Task(taskKey).also {
+                    it.schedule = expectedSchedule
+                }
+                val result = repository.saveTask(task)
                 if (result.succeeded) {
-                    _task.value = currentTask
-                    tasksMap[currentTask.key.taskType] = currentTask
                     _successMessage.value = "Task Created"
                 } else {
                     _errorMessage.value = (result as Result.Error).exception.message
                 }
                 _dataLoading.value = false
             }
-        } ?: Timber.w("Save task failed") // todo add more error handling
     }
 
-    fun deleteTask() {
-        _task.value?.let { currentTask ->
+    fun deleteTask(taskKey: TaskKey) {
             _deleteTaskResult.value = Result.Loading
             viewModelScope.launch {
-                val result = repository.deleteTask(currentTask.key)
+                val result = repository.deleteTask(taskKey)
                 _deleteTaskResult.value = result
-                if (result.succeeded) {
-                    Task.getDefaultTask(currentTask.key).also {
-                        _task.value = it
-                        tasksMap[currentTask.key.taskType] = it
-                    }
-                }
-            }
         }
     }
 
-    fun getTask(taskType: TaskType): Task {
-        _task.value = tasksMap[taskType]
-        return _task.value!!
-    }
-
-    fun updateSchedule(newSchedule: Schedule) {
-        _task.value?.let { currentTask ->
-            currentTask.copy(schedule = newSchedule).also {
-                _task.value = it
-                tasksMap[currentTask.key.taskType] = it
+    fun updateSchedule(taskKey: TaskKey, newSchedule: Schedule) {
+            _updateScheduleResult.value = Result.Loading
+            viewModelScope.launch {
+                val result = repository.updateSchedule(taskKey, newSchedule)
+                _updateScheduleResult.value = result
             }
-        } ?: Timber.w("Update schedule failed") // todo add more error handling
     }
 }

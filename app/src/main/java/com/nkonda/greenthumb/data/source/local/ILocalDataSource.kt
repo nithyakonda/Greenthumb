@@ -20,6 +20,11 @@ interface ILocalDataSource {
 
     suspend fun saveTask(task: Task): Result<Unit>
 
+    suspend fun updateSchedule(taskKey: TaskKey, schedule: Schedule): Result<Unit>
+
     suspend fun deleteTask(taskKey: TaskKey): Result<Unit>
+
     suspend fun getUniqueTasks(plantId: Long): Map<TaskType, Task>
+
+    fun observeTask(taskKey: TaskKey): LiveData<Result<Task?>>
 }
