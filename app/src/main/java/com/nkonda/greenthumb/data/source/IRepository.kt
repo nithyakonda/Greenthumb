@@ -33,7 +33,7 @@ interface IRepository {
 
     suspend fun updateSchedule(taskKey: TaskKey, schedule: Schedule): Result<Unit>
 
-    fun completeTask(task: Task)
+    suspend fun completeTask(taskKey: TaskKey, isCompleted: Boolean): Result<Unit>
 
     suspend fun deleteTask(taskKey: TaskKey): Result<Unit>
 

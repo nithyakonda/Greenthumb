@@ -32,9 +32,7 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        adapter = TasksListAdapter(TasksListAdapter.OnClickListener {
-            // todo mark completed
-        })
+        adapter = TasksListAdapter(homeViewModel)
         binding.apply {
             tasksListRv.layoutManager = LinearLayoutManager(requireActivity())
             tasksListRv.adapter = adapter
@@ -66,6 +64,7 @@ class HomeFragment : Fragment() {
                     }
                 }
             }
+
             message.observe(viewLifecycleOwner) { message ->
                 Toast.makeText(requireActivity(), message, Toast.LENGTH_LONG).show()
             }

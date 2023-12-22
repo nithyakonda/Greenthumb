@@ -22,6 +22,8 @@ interface ILocalDataSource {
 
     suspend fun updateSchedule(taskKey: TaskKey, schedule: Schedule): Result<Unit>
 
+    suspend fun updateCompleted(taskKey: TaskKey, isCompleted: Boolean): Result<Unit>
+
     suspend fun deleteTask(taskKey: TaskKey): Result<Unit>
 
     fun observeTask(taskKey: TaskKey): LiveData<Result<Task?>>

@@ -114,6 +114,19 @@ class LocalDataSource constructor(
         }
     }
 
+    override suspend fun updateCompleted(taskKey: TaskKey, isCompleted: Boolean): Result<Unit> = withContext(ioDispatcher) {
+        try {
+            if (tasksDao.updateCompleted(taskKey.plantId, taskKey.taskType, isCompleted) == 1) {
+                Success(Unit)
+            } else {
+                Error(java.lang.Exception("Nothing to update"))
+            }
+        } catch (e: Exception) {
+            Timber.e(e.stackTraceToString())
+            Error(Exception(e.message))
+        }
+    }
+
     override fun observeTask(taskKey: TaskKey): LiveData<Result<Task?>> {
         return try {
             tasksDao.observeTask(taskKey.plantId, taskKey.taskType).map {

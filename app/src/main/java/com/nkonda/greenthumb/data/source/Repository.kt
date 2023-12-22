@@ -86,8 +86,10 @@ class Repository constructor(
         }
     }
 
-    override fun completeTask(task: Task) {
-        TODO("Not yet implemented")
+    override suspend fun completeTask(taskKey: TaskKey, isCompleted: Boolean): Result<Unit> {
+        wrapEspressoIdlingResource {
+            return localDataSource.updateCompleted(taskKey, isCompleted)
+        }
     }
 
     override suspend fun deleteTask(taskKey: TaskKey): Result<Unit> {
