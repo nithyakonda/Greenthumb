@@ -37,7 +37,7 @@ interface IRepository {
 
     suspend fun deleteTask(taskKey: TaskKey): Result<Unit>
 
-    suspend fun getUniqueTasks(plantId: Long): Map<TaskType, Task>
-
     fun observeTask(taskKey: TaskKey): LiveData<Result<Task?>>
+
+    fun observeTasks(): LiveData<Result<List<TaskWithPlant>>>
 }

@@ -96,15 +96,15 @@ class Repository constructor(
         }
     }
 
-    override suspend fun getUniqueTasks(plantId: Long): Map<TaskType, Task> {
-        wrapEspressoIdlingResource {
-            return localDataSource.getUniqueTasks(plantId)
-        }
-    }
-
     override fun observeTask(taskKey: TaskKey): LiveData<Result<Task?>> {
         wrapEspressoIdlingResource {
             return localDataSource.observeTask(taskKey)
+        }
+    }
+
+    override fun observeTasks(): LiveData<Result<List<TaskWithPlant>>> {
+        wrapEspressoIdlingResource {
+            return localDataSource.observeTasks()
         }
     }
 }

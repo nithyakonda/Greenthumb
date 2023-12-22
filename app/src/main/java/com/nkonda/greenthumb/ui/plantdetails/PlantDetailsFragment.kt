@@ -96,7 +96,7 @@ class PlantDetailsFragment : Fragment(), TimePickerDialog.OnTimeSetListener {
                             reminderSwitch.isChecked = it.schedule.isSet()
                             actualScheduleTv.text =
                                 if (it.schedule.isSet()) it.schedule.toString() else ""
-                        }
+                        } ?: run { reminderSwitch.isChecked = false }
                     }
                 }
                 is Result.Error -> {}

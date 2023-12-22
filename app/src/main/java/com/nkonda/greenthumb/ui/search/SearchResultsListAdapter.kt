@@ -7,9 +7,8 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.nkonda.greenthumb.data.source.remote.PlantSummary
 import com.nkonda.greenthumb.databinding.ListitemPlantSummaryBinding
-import timber.log.Timber
 
-class SearchResultsListAdapter(val onClickListener: OnClickListener) : ListAdapter<PlantSummary, SearchResultsListAdapter.SearchResultViewHolder>(DiffCallback) {
+class SearchResultsListAdapter(private val onClickListener: OnClickListener) : ListAdapter<PlantSummary, SearchResultsListAdapter.SearchResultViewHolder>(DiffCallback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchResultViewHolder {
         return SearchResultViewHolder(ListitemPlantSummaryBinding.inflate(LayoutInflater.from(parent.context), parent, false))
@@ -25,7 +24,6 @@ class SearchResultsListAdapter(val onClickListener: OnClickListener) : ListAdapt
 
     class SearchResultViewHolder(private val binding: ListitemPlantSummaryBinding): ViewHolder(binding.root) {
         fun bind(plantSummary: PlantSummary) {
-            Timber.d(plantSummary.toString())
             binding.plantSummary = plantSummary
             binding.executePendingBindings()
         }

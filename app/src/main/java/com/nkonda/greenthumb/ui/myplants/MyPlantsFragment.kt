@@ -55,7 +55,7 @@ class MyPlantsFragment : Fragment() {
                         // todo handle no data
                         Timber.e("No saved plants found")
                     } else {
-                        Timber.d("Found ${myPlants!!.size} saved plants")
+                        Timber.i("Found ${myPlants!!.size} saved plants")
                         // Todo Temporary - change adapter after UI updates
                         val plantSummaries = myPlants!!.map {
                             PlantSummary(
@@ -70,12 +70,12 @@ class MyPlantsFragment : Fragment() {
                     }
                 }
                 is Error -> {
-                    // Handle the error case
+                    // todo Handle the error case
                     val exception = result.exception
                     Timber.e(exception.message)
                 }
                 Loading -> {
-                    // Show loading indicator or perform loading UI updates
+                    // todo Show loading indicator or perform loading UI updates
                 }
             }
         }

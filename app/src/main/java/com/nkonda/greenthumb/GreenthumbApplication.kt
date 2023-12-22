@@ -8,6 +8,7 @@ import com.nkonda.greenthumb.data.source.local.ILocalDataSource
 import com.nkonda.greenthumb.data.source.local.LocalDataSource
 import com.nkonda.greenthumb.data.source.remote.IRemoteDataSource
 import com.nkonda.greenthumb.data.source.remote.RemoteDataSource
+import com.nkonda.greenthumb.ui.home.HomeViewModel
 import com.nkonda.greenthumb.ui.myplants.MyPlantsViewModel
 import com.nkonda.greenthumb.ui.plantdetails.PlantDetailsViewModel
 import com.nkonda.greenthumb.ui.search.SearchViewModel
@@ -30,6 +31,9 @@ class GreenthumbApplication : Application() {
             }
             viewModel {
                 MyPlantsViewModel(get())
+            }
+            viewModel {
+                HomeViewModel(get())
             }
             single<IRepository> { Repository(get(), get()) }
             single<IRemoteDataSource> { RemoteDataSource() }

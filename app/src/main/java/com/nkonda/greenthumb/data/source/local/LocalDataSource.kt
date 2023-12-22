@@ -114,16 +114,6 @@ class LocalDataSource constructor(
         }
     }
 
-    override suspend fun getUniqueTasks(plantId: Long): Map<TaskType, Task> = withContext(ioDispatcher) {
-        var resultMap: Map<TaskType, Task> = HashMap()
-        try {
-             resultMap = TaskType.values().associateWith { getTask(TaskKey(plantId, it)) }
-        } catch (e: Exception) {
-            Timber.e(e.stackTraceToString())
-        }
-        return@withContext resultMap
-    }
-
     override fun observeTask(taskKey: TaskKey): LiveData<Result<Task?>> {
         return try {
             tasksDao.observeTask(taskKey.plantId, taskKey.taskType).map {
@@ -137,7 +127,16 @@ class LocalDataSource constructor(
         }
     }
 
-    private suspend fun getTask(taskKey: TaskKey): Task = withContext(ioDispatcher) {
-        return@withContext tasksDao.getTask(taskKey.plantId, taskKey.taskType) ?: Task(taskKey)
+    override fun observeTasks(): LiveData<Result<List<TaskWithPlant>>> {
+        return try {
+            tasksDao.observeTasks().map {
+                Success(it)
+            }
+        } catch (e: Exception) {
+            Timber.e(e.stackTraceToString())
+            MutableLiveData<Result<List<TaskWithPlant>>>().apply {
+                value = Error(Exception(e.message))
+            }
+        }
     }
 }

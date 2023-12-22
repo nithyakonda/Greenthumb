@@ -41,7 +41,8 @@ class ScheduleConverter {
         val type: Type = Types.newParameterizedType(Schedule::class.java,
             Types.newParameterizedType(List::class.java, Day::class.java),
             Types.newParameterizedType(List::class.java, Month::class.java),
-            String::class.java,
+            Integer::class.java,
+            Integer::class.java,
             TaskOccurrence::class.java)
         val adapter: JsonAdapter<Schedule> = moshi.adapter(type)
         return adapter.fromJson(value)
@@ -54,7 +55,8 @@ class ScheduleConverter {
         val type: Type = Types.newParameterizedType(Schedule::class.java,
             Types.newParameterizedType(List::class.java, Day::class.java),
             Types.newParameterizedType(List::class.java, Month::class.java),
-            String::class.java,
+            Integer::class.java,
+            Integer::class.java,
             TaskOccurrence::class.java
         )
         val adapter: JsonAdapter<Schedule> = moshi.adapter(type)

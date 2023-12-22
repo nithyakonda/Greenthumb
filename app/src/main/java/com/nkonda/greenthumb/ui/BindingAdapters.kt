@@ -4,11 +4,14 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import androidx.core.net.toUri
 import androidx.databinding.BindingAdapter
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.nkonda.greenthumb.R
+import com.nkonda.greenthumb.data.TaskWithPlant
+import com.nkonda.greenthumb.ui.home.TasksListAdapter
 import timber.log.Timber
 
 @BindingAdapter("plantImage")

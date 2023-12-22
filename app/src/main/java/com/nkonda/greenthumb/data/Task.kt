@@ -1,11 +1,23 @@
 package com.nkonda.greenthumb.data
 
 import androidx.room.*
+import com.nkonda.greenthumb.util.ScheduleConverter
 import com.squareup.moshi.JsonClass
 
-@Entity( tableName = "tasks", primaryKeys = ["plant_id", "task_type"] )
+@Entity( tableName = "tasks",
+    primaryKeys = ["plant_id", "task_type"],
+    foreignKeys = [
+        ForeignKey(
+            entity = Plant::class,
+            parentColumns = ["id"],
+            childColumns = ["plant_id"],
+            onDelete = ForeignKey.CASCADE
+        )
+    ]
+)
 data class Task constructor(
     @Embedded val key: TaskKey,
+    @TypeConverters(ScheduleConverter::class)
     var schedule: Schedule = Schedule(),
     var completed: Boolean = false,
     @ColumnInfo(name = "last_executed") var lastExecuted: Long = System.currentTimeMillis(),
@@ -29,3 +41,8 @@ data class Schedule(
         return (days != null || months != null) && hourOfDay != -1 && minute != -1
     }
 }
+
+data class TaskWithPlant(
+    @Embedded val task: Task,
+    @ColumnInfo(name = "common_name") val plantName: String
+)
