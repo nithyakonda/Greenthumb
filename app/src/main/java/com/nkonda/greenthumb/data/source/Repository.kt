@@ -74,12 +74,6 @@ class Repository constructor(
         }
     }
 
-    override fun getTasks(): LiveData<Result<List<Task>>> {
-        TODO("Get tasks from Local")
-    }
-
-
-
     override suspend fun updateSchedule(taskKey: TaskKey, schedule: Schedule): Result<Unit> {
         wrapEspressoIdlingResource {
             return localDataSource.updateSchedule(taskKey, schedule)

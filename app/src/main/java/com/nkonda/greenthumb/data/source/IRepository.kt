@@ -27,7 +27,6 @@ interface IRepository {
     /**
      * Tasks
      */
-    fun getTasks(): LiveData<Result<List<Task>>>
 
     suspend fun saveTask(task: Task): Result<Unit>
 

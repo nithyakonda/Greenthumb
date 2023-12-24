@@ -152,4 +152,12 @@ class LocalDataSource constructor(
             }
         }
     }
+
+    override suspend fun getTasks(): Result<List<Task>> {
+        return try {
+            Success(tasksDao.getTasks())
+        } catch (e: Exception) {
+            Error(e)
+        }
+    }
 }

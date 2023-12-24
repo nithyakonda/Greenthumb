@@ -5,10 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 
-import com.nkonda.greenthumb.data.Result
 import com.nkonda.greenthumb.data.Result.Success
 import com.nkonda.greenthumb.data.Result.Error
 import com.nkonda.greenthumb.data.Result.Loading
@@ -46,7 +44,7 @@ class MyPlantsFragment : Fragment() {
             myPlantsRv.adapter = adapter
         }
 
-        myPlantsViewModel.searchResults.observe(viewLifecycleOwner) { result ->
+        myPlantsViewModel.getPlantsResult.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
                     // Handle the list of plants in result.data

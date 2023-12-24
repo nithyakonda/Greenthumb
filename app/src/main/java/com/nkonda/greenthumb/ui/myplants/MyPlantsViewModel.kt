@@ -7,9 +7,15 @@ import com.nkonda.greenthumb.data.source.IRepository
 
 class MyPlantsViewModel(private val repository: IRepository) : ViewModel() {
 
-    private val _searchResults = repository.observePlants()
-    val searchResults:LiveData<Result<List<Plant>>> = _searchResults
+    /**
+     * Results
+     */
+    private val _getPlantsResult = repository.observePlants()
+    val getPlantsResult:LiveData<Result<List<Plant>>> = _getPlantsResult
 
+    /**
+     * Navigation
+     */
     private val _navigateToSelectedPlant = MutableLiveData<Long>()
     val navigateToSelectedPlant:LiveData<Long> = _navigateToSelectedPlant
 

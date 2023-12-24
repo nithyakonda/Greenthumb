@@ -37,73 +37,64 @@ class PlantDetailsFragment : Fragment(), TimePickerDialog.OnTimeSetListener {
         setupClickHandlers()
         val args = PlantDetailsFragmentArgs.fromBundle(requireArguments())
         Timber.d("Fetching details for plant id ${args.plantId}")
-        plantDetailsViewModel.loadData(args.plantId)
+        plantDetailsViewModel.getPlant(args.plantId)
     }
 
     private fun setupObservers() {
-        plantDetailsViewModel.searchSuccess.observe(viewLifecycleOwner) { success ->
-            if (success) {
-                binding.plant = plantDetailsViewModel.plant.value
-                binding.addOrDeleteFab.isEnabled = true
-            } else {
-                binding.addOrDeleteFab.isEnabled = false
-                // todo show error message
-            }
-        }
-
-        plantDetailsViewModel.deletePlantResult.observe(viewLifecycleOwner) { result ->
-            when(result) {
-                is Result.Success -> {}
-                is Result.Error -> {}
-                is Result.Loading -> {}
-            }
-        }
-
-        plantDetailsViewModel.deleteTaskResult.observe(viewLifecycleOwner) { result ->
-            when(result) {
-                is Result.Success -> {showToast("Task Deleted")}
-                is Result.Error -> {showToast(result.exception.message)}
-                is Result.Loading -> {}
-            }
-        }
-
-        plantDetailsViewModel.updateScheduleResult.observe(viewLifecycleOwner) { result ->
-            when(result) {
-                is Result.Success -> {showToast("Task Schedule Updated")}
-                is Result.Error -> {showToast(result.exception.message)}
-                is Result.Loading -> {}
-            }
-        }
-
-        plantDetailsViewModel.successMessage.observe(viewLifecycleOwner) { message ->
-            showToast(message)
-        }
-
-        plantDetailsViewModel.errorMessage.observe(viewLifecycleOwner) { message ->
-            showToast(message)
-        }
-
-        plantDetailsViewModel.isSaved.observe(viewLifecycleOwner) { saved ->
-            binding.saved = saved
-        }
-
-        plantDetailsViewModel.currentTask.observe(viewLifecycleOwner) { result ->
-            when(result) {
-                is Result.Success -> {
-                    binding.apply {
-                        result.data?.let {
-                            task = it
-                            reminderSwitch.isChecked = it.schedule.isSet()
-                            actualScheduleTv.text =
-                                if (it.schedule.isSet()) it.schedule.toString() else ""
-                        } ?: run { reminderSwitch.isChecked = false }
+        plantDetailsViewModel.apply {
+            getPlantResult.observe(viewLifecycleOwner) { result ->
+                when(result) {
+                    is Result.Success -> {
+                        binding.plant = result.data
+                        binding.addOrDeleteFab.isEnabled = true
+                    }
+                    is Result.Error -> {
+                        binding.addOrDeleteFab.isEnabled = false
+                        // todo show error message/full screen
+                    }
+                    Result.Loading -> {
+                        // todo show loading icon
                     }
                 }
-                is Result.Error -> {}
-                is Result.Loading -> {}
             }
 
+            isPlantSaved.observe(viewLifecycleOwner) { saved ->
+                binding.saved = saved
+            }
+
+            currentTask.observe(viewLifecycleOwner) { result ->
+                when (result) {
+                    is Result.Success -> {
+                        binding.apply {
+                            result.data?.let {
+                                task = it
+                                reminderSwitch.isChecked = it.schedule.isSet()
+                                actualScheduleTv.text =
+                                    if (it.schedule.isSet()) it.schedule.toString() else ""
+                            } ?: run { reminderSwitch.isChecked = false }
+                        }
+                    }
+                    is Result.Error -> {}
+                    is Result.Loading -> {}
+                }
+            }
+
+            successMessage.observe(viewLifecycleOwner) { message ->
+                showToast(message)
+            }
+
+            errorMessage.observe(viewLifecycleOwner) { message ->
+                showToast(message)
+            }
+
+            progressIndicator.observe(viewLifecycleOwner) { isLoading ->
+                showProgressIndicator(isLoading)
+            }
         }
+    }
+
+    private fun showProgressIndicator(loading: Boolean) {
+        TODO("Not yet implemented")
     }
 
     private fun showToast(message: String?) {
