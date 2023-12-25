@@ -8,10 +8,9 @@ import androidx.test.filters.MediumTest
 import com.nkonda.greenthumb.R
 
 import com.nkonda.greenthumb.data.Result
-import com.nkonda.greenthumb.data.source.testdoubles.FakeLocalDataSource
-import com.nkonda.greenthumb.data.source.testdoubles.FakeRemoteDataSource
-import com.nkonda.greenthumb.data.source.testdoubles.plantOne
-import com.nkonda.greenthumb.data.source.testdoubles.plantTwo
+import com.nkonda.greenthumb.data.TaskKey
+import com.nkonda.greenthumb.data.TaskType
+import com.nkonda.greenthumb.data.source.testdoubles.*
 import com.nkonda.greenthumb.data.succeeded
 import com.nkonda.greenthumb.util.MainCoroutineRule
 import com.nkonda.greenthumb.util.getOrAwaitValue
@@ -54,7 +53,7 @@ class RepositoryTest {
     }
 
     @After
-    fun teardown(){
+    fun teardown() {
         localDataSource.setReturnError(false)
         remoteDataSource.setReturnError(false)
     }
@@ -83,7 +82,10 @@ class RepositoryTest {
         val result = repository.deletePlant(plantTwo.id)
         assertThat(result.succeeded, `is`(false))
         result as Result.Error
-        assertThat(result.exception.message, `is`(context.getString(R.string.test_error_nothing_to_delete)))
+        assertThat(
+            result.exception.message,
+            `is`(context.getString(R.string.test_error_nothing_to_delete))
+        )
     }
 
     @Test
@@ -112,7 +114,15 @@ class RepositoryTest {
     /*-------------------------------------------------------------------------------------------*/
 
     @Test
-    fun getPlantById_whenNotSaved_returnsDataFromNetwork() =  mainCoroutineRule.runBlockingTest{
+    fun getPlants_whenDBError_returnsError() = runBlocking {
+        localDataSource.setReturnError(true)
+        val result = repository.getPlants()
+        assertDbError(result)
+    }
+    /*-------------------------------------------------------------------------------------------*/
+
+    @Test
+    fun getPlantById_whenNotSaved_returnsDataFromNetwork() = mainCoroutineRule.runBlockingTest {
         // When requested for a plant details with id which is not locally present
         val (plantDetails, saved) = repository.getPlantById(1)
         // Then plant details are fetched from the remote API
@@ -121,7 +131,7 @@ class RepositoryTest {
     }
 
     @Test
-    fun getPlantById_whenNotSaved_returnsNotFound() =  mainCoroutineRule.runBlockingTest{
+    fun getPlantById_whenNotSaved_returnsNotFound() = mainCoroutineRule.runBlockingTest {
         remoteDataSource.setReturnError(true)
         // When requested for a plant details with invalid id which is not locally present
         val (plantDetails, saved) = repository.getPlantById(1)
@@ -183,6 +193,69 @@ class RepositoryTest {
         // Then network error is returned
         assertThat(searchResult.succeeded, `is`(false))
         searchResult as Result.Error
-        assertThat(searchResult.exception.message, `is`(context.getString(R.string.test_error_network_error)))
+        assertThat(
+            searchResult.exception.message,
+            `is`(context.getString(R.string.test_error_network_error))
+        )
     }
+
+/*-------------------------------------------------------------------------------------------*/
+
+    @Test
+    fun saveTask_whenDBError_returnsError() = runBlocking {
+        repository.savePlant(plantOne)
+        localDataSource.setReturnError(true)
+        val result = repository.saveTask(plantOneWateringTaskDefaultSchedule)
+        assertDbError(result)
+    }
+/*-------------------------------------------------------------------------------------------*/
+
+    @Test
+    fun updateSchedule_whenDBError_returnsError() = runBlocking {
+        repository.savePlant(plantOne)
+        repository.saveTask(plantOneWateringTaskDefaultSchedule)
+        localDataSource.setReturnError(true)
+        val result = repository.updateSchedule(TaskKey(plantOne.id, TaskType.WATER), wateringOneExpectedSchedule)
+        assertDbError(result)
+    }
+
+    /*-------------------------------------------------------------------------------------------*/
+    @Test
+    fun updateCompleted_whenDBError_returnsError() = runBlocking {
+        repository.savePlant(plantOne)
+        repository.saveTask(plantOneWateringTaskDefaultSchedule)
+        localDataSource.setReturnError(true)
+        val result = repository.completeTask(TaskKey(plantOne.id, TaskType.WATER), true)
+        assertDbError(result)
+    }
+/*-------------------------------------------------------------------------------------------*/
+
+    @Test
+    fun deleteTask_whenDBError_returnsError() = runBlocking {
+        repository.savePlant(plantOne)
+        repository.saveTask(plantOneWateringTaskDefaultSchedule)
+        localDataSource.setReturnError(true)
+        val result = repository.deleteTask(TaskKey(plantOne.id, TaskType.WATER))
+        assertDbError(result)
+    }
+/*-------------------------------------------------------------------------------------------*/
+
+    @Test
+    fun observeTask_whenDBError_returnsError() = runBlocking {
+        localDataSource.setReturnError(true)
+        val result = repository.observeTask(TaskKey(plantOne.id, TaskType.WATER)).getOrAwaitValue()
+        assertDbError(result)
+    }
+/*-------------------------------------------------------------------------------------------*/
+
+    @Test
+    fun observeTasks_whenDBError_returnsError() = runBlocking {
+        localDataSource.setReturnError(true)
+        val result = repository.observeTasks().getOrAwaitValue()
+        assertDbError(result)
+    }
+/*-------------------------------------------------------------------------------------------*/
 }
+
+
+

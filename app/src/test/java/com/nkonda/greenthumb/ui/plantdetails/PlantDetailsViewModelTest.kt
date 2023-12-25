@@ -1,7 +1,9 @@
 package com.nkonda.greenthumb.ui.plantdetails
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.nkonda.greenthumb.data.source.testdoubles.FakeRepository
+import com.nkonda.greenthumb.data.Result
+import com.nkonda.greenthumb.data.succeeded
+import com.nkonda.greenthumb.data.testdoubles.FakeRepository
 import com.nkonda.greenthumb.data.testdoubles.localPlantOneId
 import com.nkonda.greenthumb.data.testdoubles.plantOne
 import com.nkonda.greenthumb.data.testdoubles.plantTwo
@@ -45,46 +47,50 @@ class PlantDetailsViewModelTest {
         mainCoroutineRule.pauseDispatcher()
 
         // When fetching plant details
-        plantDetailsViewModel.getPlantById(remotePlantOneId)
+        plantDetailsViewModel.getPlant(remotePlantOneId)
 
         // Then loading indicator is shown
-        assertThat(plantDetailsViewModel.dataLoading.getOrAwaitValue(), `is`(true))
+        assertThat(plantDetailsViewModel.getPlantResult.getOrAwaitValue(), `is`(Result.Loading))
 
         // After the results are returned
         mainCoroutineRule.resumeDispatcher()
 
         // Then the loading indicator is hidden
-        assertThat(plantDetailsViewModel.dataLoading.getOrAwaitValue(), `is`(false))
+        assertThat(plantDetailsViewModel.getPlantResult.getOrAwaitValue(), `is`(not(Result.Loading)))
     }
 
     @Test
     fun getPlantById_whenNotSaved_returnsDetailsFromNetwork(){
-        // Given a valid plant Id
-        // When get is called
-        plantDetailsViewModel.getPlantById(remotePlantOneId)
-
-        // Then assert that plant details are returned for given id
         plantDetailsViewModel.apply {
-            assertThat(searchSuccess.getOrAwaitValue(), `is`(true))
-            assertThat(plant.getOrAwaitValue(), not(nullValue()))
-            assertThat(plant.getOrAwaitValue()?.id ?: 0, `is`(remotePlantOneId))
-            assertThat(isSaved.getOrAwaitValue(), `is`(false))
+            // Given a valid plant Id
+            // When get is called
+            getPlant(remotePlantOneId)
+
+            // Then assert that plant details are returned for given id
+            assertThat(getPlantResult.getOrAwaitValue().succeeded, `is`(true))
+            val plant = (getPlantResult.getOrAwaitValue() as Result.Success).data
+
+            assertThat(plant, not(nullValue()))
+            assertThat(plant?.id ?: 0, `is`(remotePlantOneId))
+            assertThat(isPlantSaved.getOrAwaitValue(), `is`(false))
         }
     }
 
     @Test
     fun getPlantById_whenSaved_returnsDetailsFromDb(){
         repository.setGetFromDb(true)
-        // Given a valid plant Id
-        // When get is called
-        plantDetailsViewModel.getPlantById(localPlantOneId)
-
-        // Then assert that plant details are returned for given id
         plantDetailsViewModel.apply {
-            assertThat(searchSuccess.getOrAwaitValue(), `is`(true))
-            assertThat(plant.getOrAwaitValue(), not(nullValue()))
-            assertThat(plant.getOrAwaitValue()?.id ?: 0, `is`(localPlantOneId))
-            assertThat(isSaved.getOrAwaitValue(), `is`(true))
+            // Given a valid plant Id
+            // When get is called
+            getPlant(localPlantOneId)
+
+            // Then assert that plant details are returned for given id
+            assertThat(getPlantResult.getOrAwaitValue().succeeded, `is`(true))
+            val plant = (getPlantResult.getOrAwaitValue() as Result.Success).data
+
+            assertThat(plant, not(nullValue()))
+            assertThat(plant?.id ?: 0, `is`(localPlantOneId))
+            assertThat(isPlantSaved.getOrAwaitValue(), `is`(true))
         }
     }
 
@@ -92,56 +98,175 @@ class PlantDetailsViewModelTest {
     fun getPlantById_whenBadNetwork_returnsError(){
         // Given bad network
         repository.setReturnError(true)
-        // When get is called
-        plantDetailsViewModel.getPlantById(1)
+        plantDetailsViewModel.apply {
+            // When get is called
+            getPlant(1)
 
-        // Then assert that error message is thrown
-        assertThat(plantDetailsViewModel.searchSuccess.getOrAwaitValue(), `is`(false))
-        assertThat(plantDetailsViewModel.plant.getOrAwaitValue(), `is`(nullValue()))
-        assertThat(plantDetailsViewModel.errorMessage.getOrAwaitValue(), `is`("Network error"))
+            // Then assert that error message is thrown
+            assertThat(getPlantResult.getOrAwaitValue().succeeded, `is`(false))
+            assertThat(errorMessage.getOrAwaitValue(), `is`("Network error"))
+        }
     }
+    /*-------------------------------------------------------------------------------------------*/
 
     @Test
     fun savePlant_whenSuccess_showsSavedMessage() {
-        // Given a plant not already present in the database
-        // When save is success
-        plantDetailsViewModel.savePlant(plantTwo)
+        plantDetailsViewModel.apply {
+            // Given a plant not already present in the database
+            // When save is success
+            savePlant(plantTwo)
 
-        // Then assert that successMessage is set correctly
-        assertThat(plantDetailsViewModel.successMessage.getOrAwaitValue(), `is`("Saved"))
+            // Then assert that successMessage is set correctly
+            assertThat(successMessage.getOrAwaitValue(), `is`("Saved"))
+            assertThat(isPlantSaved, `is`(true))
+        }
     }
 
     @Test
     fun savePlant_whenDBError_showsErrorMessage() {
         repository.setReturnError(true)
-        plantDetailsViewModel.savePlant(plantOne)
+        plantDetailsViewModel.apply {
+            savePlant(plantOne)
 
-        assertThat(plantDetailsViewModel.errorMessage.getOrAwaitValue(), `is`("DB Error"))
+            assertThat(errorMessage.getOrAwaitValue(), `is`("DB Error"))
+            assertThat(isPlantSaved, `is`(false))
+        }
     }
 
     /*-------------------------------------------------------------------------------------------*/
 
     @Test
-    fun deletePlant_whenSuccess() = runBlocking {
+    fun deletePlant_givenValidPlant_returnsSuccess() = runBlocking {
         repository.savePlant(plantOne)
-        plantDetailsViewModel.deletePlant(plantOne)
-        assertThat(plantDetailsViewModel.isSaved.getOrAwaitValue(), `is`(false))
-        assertThat(plantDetailsViewModel.successMessage.getOrAwaitValue(), `is`("Deleted"))
+        plantDetailsViewModel.apply {
+            deletePlant(plantOne)
 
+            assertThat(isPlantSaved.getOrAwaitValue(), `is`(false))
+            assertThat(successMessage.getOrAwaitValue(), `is`("Deleted"))
+        }
+        Unit
     }
 
     @Test
-    fun deletePlant_whenError() = runBlocking {
+    fun deletePlant_givenInvalidPlant_returnsError() = runBlocking {
+        repository.savePlant(plantOne)
+//        plantDetailsViewModel.apply {
+//            deletePlant(plantOne)
+//
+//            assertThat(isPlantSaved.getOrAwaitValue(), `is`(false))
+//            assertThat(successMessage.getOrAwaitValue(), `is`("Deleted"))
+//        }
+//        Unit
+    }
+
+    @Test
+    fun deletePlant_whenDbError_returnsError() = runBlocking {
         repository.savePlant(plantOne)
         repository.setReturnError(true)
-        plantDetailsViewModel.deletePlant(plantOne)
-        assertThat(plantDetailsViewModel.isSaved.getOrAwaitValue(), `is`(true))
-        assertThat(plantDetailsViewModel.errorMessage.getOrAwaitValue(), `is`("DB Error"))
+        plantDetailsViewModel.apply {
+            deletePlant(plantOne)
+
+            assertThat(isPlantSaved.getOrAwaitValue(), `is`(true))
+            assertThat(errorMessage.getOrAwaitValue(), `is`("DB Error"))
+        }
+        Unit
     }
 
     /*-------------------------------------------------------------------------------------------*/
 
+    @Test
+    fun setCurrentTask_givenValidTaskKey_switchesToRequestedTask() {
 
+    }
+
+    @Test
+    fun setCurrentTask_givenInvalidTaskKey_switchesToNullTask() {
+
+    }
+
+    @Test
+    fun setCurrentTask_givenValidTaskKey_whenDbError_returnsError() {
+
+    }
+
+    /*-------------------------------------------------------------------------------------------*/
+
+    @Test
+    fun saveTask_whenSuccess_showsSuccessMessage() {
+        plantDetailsViewModel.apply {
+            // Given a plant not already present in the database
+            // When save is success
+//            savePlant(plantTwo)
+//
+//            // Then assert that successMessage is set correctly
+//            assertThat(successMessage.getOrAwaitValue(), `is`("Saved"))
+//            assertThat(isPlantSaved, `is`(true))
+        }
+    }
+
+    @Test
+    fun saveTask_whenDBError_showsErrorMessage() {
+        repository.setReturnError(true)
+        plantDetailsViewModel.apply {
+//            savePlant(plantOne)
+//
+//            assertThat(errorMessage.getOrAwaitValue(), `is`("DB Error"))
+//            assertThat(isPlantSaved, `is`(false))
+        }
+    }
+    /*-------------------------------------------------------------------------------------------*/
+    @Test
+    fun deleteTask_givenValidTask_returnsSuccess() = runBlocking {
+//        repository.savePlant(plantOne)
+//        plantDetailsViewModel.apply {
+//            deletePlant(plantOne)
+//
+//            assertThat(isPlantSaved.getOrAwaitValue(), `is`(false))
+//            assertThat(successMessage.getOrAwaitValue(), `is`("Deleted"))
+//        }
+//        Unit
+    }
+
+    @Test
+    fun deleteTask_givenInvalidTask_returnsError() = runBlocking {
+        repository.savePlant(plantOne)
+//        plantDetailsViewModel.apply {
+//            deletePlant(plantOne)
+//
+//            assertThat(isPlantSaved.getOrAwaitValue(), `is`(false))
+//            assertThat(successMessage.getOrAwaitValue(), `is`("Deleted"))
+//        }
+//        Unit
+    }
+
+    @Test
+    fun deleteTask_whenDbError_returnsError() = runBlocking {
+//        repository.savePlant(plantOne)
+//        repository.setReturnError(true)
+//        plantDetailsViewModel.apply {
+//            deletePlant(plantOne)
+//
+//            assertThat(isPlantSaved.getOrAwaitValue(), `is`(true))
+//            assertThat(errorMessage.getOrAwaitValue(), `is`("DB Error"))
+//        }
+//        Unit
+    }
+    /*-------------------------------------------------------------------------------------------*/
+
+    @Test
+    fun updateSchedule_givenValidTaskKey_returnsSuccess() {
+
+    }
+
+    @Test
+    fun updateSchedule_givenInvalidTaskKey_returnsError() {
+
+    }
+
+    @Test
+    fun updateSchedule_givenValidTaskKey_whenDbError_returnsError() {
+
+    }
     @Test
     fun getPlantById_tbd() {
         // Given plant id 1 is saved in db

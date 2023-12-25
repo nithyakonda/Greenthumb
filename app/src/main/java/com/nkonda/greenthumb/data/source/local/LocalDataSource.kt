@@ -56,14 +56,16 @@ class LocalDataSource constructor(
         return try {
             Success(plantsDao.getPlants())
         } catch (e: Exception) {
+            Timber.e(e.stackTraceToString())
             Error(e)
         }
     }
 
-    override suspend fun getPlantById(plantId: Long): Result<Plant?> {
+    override suspend fun getPlantById(plantId: Long): Result<Plant> {
         return try {
-            Success(plantsDao.getPlantsById(plantId))
+            plantsDao.getPlantsById(plantId)?.let { Success(it) } ?: Error(Exception("Not found"))
         } catch (e: Exception) {
+            Timber.e(e.stackTraceToString())
             Error(e)
         }
     }
@@ -130,7 +132,7 @@ class LocalDataSource constructor(
     override fun observeTask(taskKey: TaskKey): LiveData<Result<Task?>> {
         return try {
             tasksDao.observeTask(taskKey.plantId, taskKey.taskType).map {
-                Success(it)
+                it?.let { Success(it) } ?: Error(Exception("Not found"))
             }
         } catch (e: java.lang.Exception) {
             Timber.e(e.stackTraceToString())
@@ -157,6 +159,7 @@ class LocalDataSource constructor(
         return try {
             Success(tasksDao.getTasks())
         } catch (e: Exception) {
+            Timber.e(e.stackTraceToString())
             Error(e)
         }
     }

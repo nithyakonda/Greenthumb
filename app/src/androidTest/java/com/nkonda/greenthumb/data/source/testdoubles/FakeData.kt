@@ -1,7 +1,6 @@
 package com.nkonda.greenthumb.data.source.testdoubles
 
-import com.nkonda.greenthumb.data.Plant
-import com.nkonda.greenthumb.data.Task
+import com.nkonda.greenthumb.data.*
 import com.nkonda.greenthumb.data.source.remote.Images
 import com.nkonda.greenthumb.data.source.remote.PlantSummary
 
@@ -14,11 +13,20 @@ val plantSummaries: List<PlantSummary> = listOf(
     PlantSummary(6, "findThree", listOf("sName6"), "annual", Images(thumbnail = "url6")),
 )
 
-val plantDetails: List<Plant> = listOf(
-    Plant(1, "cName1", "sName1", "annual", "high", listOf("full_sun"), "high", listOf("April", "May"), "thumbnail1", "imageUrl1", "description1", null),
+val plants: HashMap<Long, Plant> = hashMapOf(
+    51L to Plant(51, "cName51", "sName51", "annual", "high", listOf("full_sun"), "high", listOf("April", "May"), "thumbnail51", "imageUrl51", "description51"))
+
+val plantOne = Plant(1, "cName1", "sName1", "annual", "high", listOf("full_sun"), "high", listOf("April", "May"), "thumbnail1", "imageUrl1", "description1")
+val plantTwo = Plant(2, "cName2", "sName2", "perennial", "high", listOf("full_sun"), "high", listOf("April", "May"), "thumbnail2", "imageUrl2", "description2")
+
+val tasks:HashMap<TaskKey, Task> = hashMapOf(
+    TaskKey(51L, TaskType.WATER) to Task(TaskKey(51L, TaskType.WATER)),
+    TaskKey(51L, TaskType.PRUNE) to Task(TaskKey(51L, TaskType.PRUNE))
 )
 
-val plantOne = Plant(1, "cName1", "sName1", "annual", "high", listOf("full_sun"), "high", listOf("April", "May"), "thumbnail1", "imageUrl1", "description1", mutableListOf())
-val plantTwo = Plant(2, "cName2", "sName2", "perennial", "high", listOf("full_sun"), "high", listOf("April", "May"), "thumbnail2", "imageUrl2", "description2", mutableListOf())
+val plantOneWateringTaskDefaultSchedule = Task(TaskKey(1, TaskType.WATER))
+val plantOnePruningTaskDefaultSchedule = Task(TaskKey(1, TaskType.PRUNE))
+//val plantOneWateringTaskExpectedSchedule = plantOneWateringTaskDefaultSchedule.apply {  schedule = wateringOneExpectedSchedule }
 
-val taskOne = Task(1, false, "type1", "Monday", "10.00", "weekly")
+
+val wateringOneExpectedSchedule = Schedule(listOf(Day.MONDAY, Day.TUESDAY), null, 12, 0, TaskOccurrence.ONCE)

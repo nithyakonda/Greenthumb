@@ -58,6 +58,7 @@ class PlantDetailsFragment : Fragment(), TimePickerDialog.OnTimeSetListener {
                 }
             }
 
+            //2. remove this
             isPlantSaved.observe(viewLifecycleOwner) { saved ->
                 binding.saved = saved
             }
@@ -104,6 +105,7 @@ class PlantDetailsFragment : Fragment(), TimePickerDialog.OnTimeSetListener {
     private fun setupClickHandlers() {
         binding.apply {
             addOrDeleteFab.setOnClickListener {
+                // 3. move to vew model
                 saveOrDeletePlant()
             }
 

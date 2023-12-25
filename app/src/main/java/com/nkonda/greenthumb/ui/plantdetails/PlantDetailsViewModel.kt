@@ -17,6 +17,7 @@ class PlantDetailsViewModel(private val repository: IRepository) : ViewModel() {
     /**
      * Observed Data
      * */
+    // 1. this need not be an observable but a local state
     private val _isPlantSaved = MutableLiveData<Boolean>()
     val isPlantSaved: LiveData<Boolean> = _isPlantSaved
 

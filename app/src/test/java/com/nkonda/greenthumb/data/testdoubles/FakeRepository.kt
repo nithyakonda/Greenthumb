@@ -1,15 +1,10 @@
-package com.nkonda.greenthumb.data.source.testdoubles
+package com.nkonda.greenthumb.data.testdoubles
 
 import android.graphics.Bitmap
 import androidx.lifecycle.LiveData
-import com.nkonda.greenthumb.data.Plant
-import com.nkonda.greenthumb.data.Result
-import com.nkonda.greenthumb.data.Task
+import com.nkonda.greenthumb.data.*
 import com.nkonda.greenthumb.data.source.IRepository
 import com.nkonda.greenthumb.data.source.remote.PlantSummary
-import com.nkonda.greenthumb.data.testdoubles.localPlants
-import com.nkonda.greenthumb.data.testdoubles.plantSummaries
-import com.nkonda.greenthumb.data.testdoubles.remotePlants
 import java.lang.Exception
 
 class FakeRepository: IRepository {
@@ -23,26 +18,6 @@ class FakeRepository: IRepository {
 
     fun setGetFromDb(value: Boolean) {
         getFromDb = value
-    }
-
-    override fun getTasks(): LiveData<Result<List<Task>>> {
-        TODO("Not yet implemented")
-    }
-
-    override fun saveTask(task: Task) {
-        TODO("Not yet implemented")
-    }
-
-    override fun updateTask(task: Task) {
-        TODO("Not yet implemented")
-    }
-
-    override fun completeTask(task: Task) {
-        TODO("Not yet implemented")
-    }
-
-    override fun deleteTask(task: Task) {
-        TODO("Not yet implemented")
     }
 
     override fun observePlants(): LiveData<Result<List<Plant>>> {
@@ -96,4 +71,29 @@ class FakeRepository: IRepository {
             Result.Error(Exception("Network error"))
         }
     }
+
+    override suspend fun saveTask(task: Task): Result<Unit> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun updateSchedule(taskKey: TaskKey, schedule: Schedule): Result<Unit> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun completeTask(taskKey: TaskKey, isCompleted: Boolean): Result<Unit> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun deleteTask(taskKey: TaskKey): Result<Unit> {
+        TODO("Not yet implemented")
+    }
+
+    override fun observeTask(taskKey: TaskKey): LiveData<Result<Task?>> {
+        TODO("Not yet implemented")
+    }
+
+    override fun observeTasks(): LiveData<Result<List<TaskWithPlant>>> {
+        TODO("Not yet implemented")
+    }
+
 }
