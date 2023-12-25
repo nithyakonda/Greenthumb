@@ -2,12 +2,10 @@ package com.nkonda.greenthumb.ui.plantdetails
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.nkonda.greenthumb.data.Result
+import com.nkonda.greenthumb.data.TaskKey
+import com.nkonda.greenthumb.data.TaskType
 import com.nkonda.greenthumb.data.succeeded
-import com.nkonda.greenthumb.data.testdoubles.FakeRepository
-import com.nkonda.greenthumb.data.testdoubles.localPlantOneId
-import com.nkonda.greenthumb.data.testdoubles.plantOne
-import com.nkonda.greenthumb.data.testdoubles.plantTwo
-import com.nkonda.greenthumb.data.testdoubles.remotePlantOneId
+import com.nkonda.greenthumb.data.testdoubles.*
 import com.nkonda.greenthumb.util.MainCoroutineRule
 import com.nkonda.greenthumb.util.getOrAwaitValue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -118,7 +116,7 @@ class PlantDetailsViewModelTest {
 
             // Then assert that successMessage is set correctly
             assertThat(successMessage.getOrAwaitValue(), `is`("Saved"))
-            assertThat(isPlantSaved, `is`(true))
+            assertThat(isPlantSaved.value , `is`(true))
         }
     }
 
@@ -129,7 +127,7 @@ class PlantDetailsViewModelTest {
             savePlant(plantOne)
 
             assertThat(errorMessage.getOrAwaitValue(), `is`("DB Error"))
-            assertThat(isPlantSaved, `is`(false))
+            assertThat(isPlantSaved.value, `is`(false))
         }
     }
 
@@ -138,133 +136,159 @@ class PlantDetailsViewModelTest {
     @Test
     fun deletePlant_givenValidPlant_returnsSuccess() = runBlocking {
         repository.savePlant(plantOne)
-        plantDetailsViewModel.apply {
-            deletePlant(plantOne)
+        plantDetailsViewModel.deletePlant(plantOne)
 
-            assertThat(isPlantSaved.getOrAwaitValue(), `is`(false))
-            assertThat(successMessage.getOrAwaitValue(), `is`("Deleted"))
-        }
-        Unit
+        assertThat(plantDetailsViewModel.isPlantSaved.getOrAwaitValue(), `is`(false))
+        assertThat(plantDetailsViewModel.successMessage.getOrAwaitValue(), `is`("Deleted"))
     }
 
     @Test
     fun deletePlant_givenInvalidPlant_returnsError() = runBlocking {
         repository.savePlant(plantOne)
-//        plantDetailsViewModel.apply {
-//            deletePlant(plantOne)
-//
-//            assertThat(isPlantSaved.getOrAwaitValue(), `is`(false))
-//            assertThat(successMessage.getOrAwaitValue(), `is`("Deleted"))
-//        }
-//        Unit
+        plantDetailsViewModel.deletePlant(plantTwo)
+
+        assertThat(plantDetailsViewModel.isPlantSaved.getOrAwaitValue(), `is`(false))
+        assertThat(plantDetailsViewModel.errorMessage.getOrAwaitValue(), `is`("Nothing to delete"))
     }
 
     @Test
     fun deletePlant_whenDbError_returnsError() = runBlocking {
         repository.savePlant(plantOne)
         repository.setReturnError(true)
-        plantDetailsViewModel.apply {
-            deletePlant(plantOne)
+        plantDetailsViewModel.deletePlant(plantOne)
 
-            assertThat(isPlantSaved.getOrAwaitValue(), `is`(true))
-            assertThat(errorMessage.getOrAwaitValue(), `is`("DB Error"))
-        }
-        Unit
+        assertThat(plantDetailsViewModel.isPlantSaved.getOrAwaitValue(), `is`(true))
+        assertThat(plantDetailsViewModel.errorMessage.getOrAwaitValue(), `is`("DB Error"))
     }
 
     /*-------------------------------------------------------------------------------------------*/
 
     @Test
     fun setCurrentTask_givenValidTaskKey_switchesToRequestedTask() {
+        val validTaskKey = TaskKey(51L, TaskType.WATER)
+        plantDetailsViewModel.setCurrentTask(validTaskKey)
 
+        val result = plantDetailsViewModel.currentTask.getOrAwaitValue() as Result.Success
+        assertThat(result.data, `is`(tasks[validTaskKey]))
     }
 
     @Test
     fun setCurrentTask_givenInvalidTaskKey_switchesToNullTask() {
+        val invalidTaskKey = TaskKey(61L, TaskType.WATER)
+        plantDetailsViewModel.setCurrentTask(invalidTaskKey)
 
+        val result = plantDetailsViewModel.currentTask.getOrAwaitValue() as Result.Success
+        assertThat(result.data, `is`(nullValue()))
     }
 
     @Test
     fun setCurrentTask_givenValidTaskKey_whenDbError_returnsError() {
+        repository.setReturnError(true)
+        val validTaskKey = TaskKey(51L, TaskType.WATER)
+        plantDetailsViewModel.setCurrentTask(validTaskKey)
 
+        val result = plantDetailsViewModel.currentTask.getOrAwaitValue() as Result.Error
+        assertThat(result.exception.message, `is`("DB error"))
     }
 
     /*-------------------------------------------------------------------------------------------*/
 
     @Test
-    fun saveTask_whenSuccess_showsSuccessMessage() {
-        plantDetailsViewModel.apply {
-            // Given a plant not already present in the database
-            // When save is success
-//            savePlant(plantTwo)
-//
-//            // Then assert that successMessage is set correctly
-//            assertThat(successMessage.getOrAwaitValue(), `is`("Saved"))
-//            assertThat(isPlantSaved, `is`(true))
-        }
+    fun saveTask_whenSuccess_showsSuccessMessage() = runBlocking{
+        repository.savePlant(plantOne)
+        val taskKey = TaskKey(plantOne.id, TaskType.WATER)
+        val schedule = plantOne.getExpectedSchedule(TaskType.WATER)
+        plantDetailsViewModel.saveTask(taskKey, schedule)
+
+        // Then assert that successMessage is set correctly
+        assertThat(plantDetailsViewModel.successMessage.getOrAwaitValue(), `is`("Task Created"))
     }
 
     @Test
-    fun saveTask_whenDBError_showsErrorMessage() {
+    fun saveTask_givenMismatchedScheduleAndTaskKey_showsError() {
+
+    }
+
+    @Test
+    fun saveTask_whenDBError_showsErrorMessage() = runBlocking {
+        repository.savePlant(plantOne)
         repository.setReturnError(true)
-        plantDetailsViewModel.apply {
-//            savePlant(plantOne)
-//
-//            assertThat(errorMessage.getOrAwaitValue(), `is`("DB Error"))
-//            assertThat(isPlantSaved, `is`(false))
-        }
+        val taskKey = TaskKey(plantOne.id, TaskType.WATER)
+        val schedule = plantOne.getExpectedSchedule(TaskType.WATER)
+
+        plantDetailsViewModel.saveTask(taskKey, schedule)
+
+        assertThat(plantDetailsViewModel.errorMessage.getOrAwaitValue(), `is`("DB error"))
+
     }
     /*-------------------------------------------------------------------------------------------*/
     @Test
     fun deleteTask_givenValidTask_returnsSuccess() = runBlocking {
-//        repository.savePlant(plantOne)
-//        plantDetailsViewModel.apply {
-//            deletePlant(plantOne)
-//
-//            assertThat(isPlantSaved.getOrAwaitValue(), `is`(false))
-//            assertThat(successMessage.getOrAwaitValue(), `is`("Deleted"))
-//        }
-//        Unit
+        repository.savePlant(plantOne)
+        repository.saveTask(plantOneWateringTaskDefaultSchedule)
+        val validTaskKey = TaskKey(plantOne.id, TaskType.WATER)
+
+        plantDetailsViewModel.deleteTask(validTaskKey)
+
+        assertThat(plantDetailsViewModel.successMessage.getOrAwaitValue(), `is`("Task Deleted"))
     }
 
     @Test
-    fun deleteTask_givenInvalidTask_returnsError() = runBlocking {
+    fun deleteTask_givenInvalidTask_returnsError() = runBlocking {repository.savePlant(plantOne)
         repository.savePlant(plantOne)
-//        plantDetailsViewModel.apply {
-//            deletePlant(plantOne)
-//
-//            assertThat(isPlantSaved.getOrAwaitValue(), `is`(false))
-//            assertThat(successMessage.getOrAwaitValue(), `is`("Deleted"))
-//        }
-//        Unit
+        repository.saveTask(plantOneWateringTaskDefaultSchedule)
+        val invalidTaskKey = TaskKey(plantOne.id, TaskType.PRUNE)
+
+        plantDetailsViewModel.deleteTask(invalidTaskKey)
+
+        assertThat(plantDetailsViewModel.errorMessage.getOrAwaitValue(), `is`("Nothing to delete"))
     }
 
     @Test
     fun deleteTask_whenDbError_returnsError() = runBlocking {
-//        repository.savePlant(plantOne)
-//        repository.setReturnError(true)
-//        plantDetailsViewModel.apply {
-//            deletePlant(plantOne)
-//
-//            assertThat(isPlantSaved.getOrAwaitValue(), `is`(true))
-//            assertThat(errorMessage.getOrAwaitValue(), `is`("DB Error"))
-//        }
-//        Unit
+        repository.saveTask(plantOneWateringTaskDefaultSchedule)
+        repository.setReturnError(true)
+
+        plantDetailsViewModel.deleteTask(TaskKey(plantOne.id, TaskType.WATER))
+
+        assertThat(plantDetailsViewModel.errorMessage.getOrAwaitValue(), `is`("DB error"))
     }
     /*-------------------------------------------------------------------------------------------*/
 
     @Test
-    fun updateSchedule_givenValidTaskKey_returnsSuccess() {
+    fun updateSchedule_givenValidTaskKey_returnsSuccess() = runBlocking {
+        repository.savePlant(plantOne)
+        repository.saveTask(plantOneWateringTaskDefaultSchedule)
+        val validTaskKey = TaskKey(plantOne.id, TaskType.WATER)
+
+        plantDetailsViewModel.updateSchedule(validTaskKey, wateringOneExpectedSchedule)
+
+        assertThat(plantDetailsViewModel.successMessage.getOrAwaitValue(), `is`("Task Schedule Updated"))
 
     }
 
     @Test
-    fun updateSchedule_givenInvalidTaskKey_returnsError() {
+    fun updateSchedule_givenInvalidTaskKey_returnsError() = runBlocking {
+        repository.savePlant(plantOne)
+        repository.saveTask(plantOneWateringTaskDefaultSchedule)
+        val invalidTaskKey = TaskKey(plantOne.id, TaskType.PRUNE)
+
+        plantDetailsViewModel.updateSchedule(invalidTaskKey, wateringOneExpectedSchedule)
+
+        assertThat(plantDetailsViewModel.errorMessage.getOrAwaitValue(), `is`("Nothing to update"))
 
     }
 
     @Test
-    fun updateSchedule_givenValidTaskKey_whenDbError_returnsError() {
+    fun updateSchedule_givenValidTaskKey_whenDbError_returnsError() = runBlocking {
+        repository.saveTask(plantOneWateringTaskDefaultSchedule)
+        repository.saveTask(plantOneWateringTaskDefaultSchedule)
+        val validTaskKey = TaskKey(plantOne.id, TaskType.WATER)
+        repository.setReturnError(true)
+
+        plantDetailsViewModel.updateSchedule(validTaskKey, wateringOneExpectedSchedule)
+
+        assertThat(plantDetailsViewModel.errorMessage.getOrAwaitValue(), `is`("DB error"))
 
     }
     @Test

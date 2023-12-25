@@ -94,14 +94,6 @@ class PlantDetailsFragment : Fragment(), TimePickerDialog.OnTimeSetListener {
         }
     }
 
-    private fun showProgressIndicator(loading: Boolean) {
-        TODO("Not yet implemented")
-    }
-
-    private fun showToast(message: String?) {
-        Toast.makeText(requireActivity(), message, LENGTH_SHORT).show()
-    }
-
     private fun setupClickHandlers() {
         binding.apply {
             addOrDeleteFab.setOnClickListener {
@@ -198,5 +190,13 @@ class PlantDetailsFragment : Fragment(), TimePickerDialog.OnTimeSetListener {
     private fun showSchedulingDialog() {
         val cal = Calendar.getInstance()
         TimePickerDialog(requireActivity(), this, cal.get(Calendar.HOUR), cal.get(Calendar.MINUTE), true).show()
+    }
+
+    private fun showProgressIndicator(loading: Boolean) {
+        TODO("Not yet implemented")
+    }
+
+    private fun showToast(message: String?) {
+        Toast.makeText(requireActivity(), message, LENGTH_SHORT).show()
     }
 }

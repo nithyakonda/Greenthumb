@@ -2,6 +2,8 @@ package com.nkonda.greenthumb.data.testdoubles
 
 import android.graphics.Bitmap
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.liveData
 import com.nkonda.greenthumb.data.*
 import com.nkonda.greenthumb.data.source.IRepository
 import com.nkonda.greenthumb.data.source.remote.PlantSummary
@@ -20,12 +22,22 @@ class FakeRepository: IRepository {
         getFromDb = value
     }
 
-    override fun observePlants(): LiveData<Result<List<Plant>>> {
-        TODO("Not yet implemented")
+    override fun observePlants(): LiveData<Result<List<Plant>>> = liveData {
+        emit(
+            if (!shouldReturnError) {
+                Result.Success(plants.values.toList())
+            } else {
+                Result.Error(Exception("DB error"))
+            }
+        )
     }
 
     override suspend fun getPlants(): Result<List<Plant>> {
-        TODO("Not yet implemented")
+        return if (!shouldReturnError) {
+            Result.Success(plants.values.toList())
+        } else {
+            Result.Error(Exception("DB error"))
+        }
     }
 
     override suspend fun getPlantById(plantId: Long): Pair<Result<Plant?>, Boolean> {
@@ -54,8 +66,12 @@ class FakeRepository: IRepository {
         return if (shouldReturnError) {
             Result.Error(Exception("DB Error"))
         } else {
-            localPlants.remove(plantId)
-            Result.Success(Unit)
+            if (localPlants.containsKey(plantId)) {
+                localPlants.remove(plantId)
+                Result.Success(Unit)
+            } else {
+                Result.Error(Exception("Nothing to delete"))
+            }
         }
     }
 
@@ -73,27 +89,75 @@ class FakeRepository: IRepository {
     }
 
     override suspend fun saveTask(task: Task): Result<Unit> {
-        TODO("Not yet implemented")
+        return if (!shouldReturnError) {
+            tasks[task.key] = task
+            Result.Success(Unit)
+        } else {
+            Result.Error(Exception("DB error"))
+        }
     }
 
-    override suspend fun updateSchedule(taskKey: TaskKey, schedule: Schedule): Result<Unit> {
-        TODO("Not yet implemented")
+    override suspend fun updateSchedule(taskKey: TaskKey, newSchedule: Schedule): Result<Unit> {
+        return if (!shouldReturnError) {
+            if (tasks.containsKey(taskKey)) {
+                tasks[taskKey]?.schedule = newSchedule
+                Result.Success(Unit)
+            } else {
+                Result.Error(Exception("Nothing to update"))
+            }
+
+        } else {
+            Result.Error(Exception("DB error"))
+        }
     }
 
     override suspend fun completeTask(taskKey: TaskKey, isCompleted: Boolean): Result<Unit> {
-        TODO("Not yet implemented")
+        return if (!shouldReturnError) {
+            if (tasks.containsKey(taskKey)) {
+                tasks[taskKey]?.completed = isCompleted
+                Result.Success(Unit)
+            } else {
+                Result.Error(Exception("Nothing to update"))
+            }
+
+        } else {
+            Result.Error(Exception("DB error"))
+        }
     }
 
     override suspend fun deleteTask(taskKey: TaskKey): Result<Unit> {
-        TODO("Not yet implemented")
+        return if (!shouldReturnError) {
+            if (tasks.containsKey(taskKey)) {
+                tasks.remove(taskKey)
+                Result.Success(Unit)
+            } else {
+                Result.Error(Exception("Nothing to delete"))
+            }
+
+        } else {
+            Result.Error(Exception("DB error"))
+        }
     }
 
-    override fun observeTask(taskKey: TaskKey): LiveData<Result<Task?>> {
-        TODO("Not yet implemented")
+    override fun observeTask(taskKey: TaskKey): LiveData<Result<Task?>> = liveData {
+        emit(
+            if (!shouldReturnError) {
+                Result.Success(tasks.getOrDefault(taskKey, null))
+            } else {
+                Result.Error(Exception("DB error"))
+            }
+        )
     }
 
-    override fun observeTasks(): LiveData<Result<List<TaskWithPlant>>> {
-        TODO("Not yet implemented")
+
+    override fun observeTasks(): LiveData<Result<List<TaskWithPlant>>> = liveData {
+        emit(
+            if (!shouldReturnError) {
+                Result.Success(tasksWithPlant.values.toList())
+            } else {
+                Result.Error(Exception("DB error"))
+            }
+        )
     }
 
 }
