@@ -2,7 +2,6 @@ package com.nkonda.greenthumb.data.testdoubles
 
 import android.graphics.Bitmap
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.liveData
 import com.nkonda.greenthumb.data.*
 import com.nkonda.greenthumb.data.source.IRepository
@@ -62,15 +61,15 @@ class FakeRepository: IRepository {
         }
     }
 
-    override suspend fun deletePlant(plantId: Long): Result<Unit> {
+    override suspend fun deletePlant(plantId: Long): Result<Int> {
         return if (shouldReturnError) {
             Result.Error(Exception("DB Error"))
         } else {
             if (localPlants.containsKey(plantId)) {
                 localPlants.remove(plantId)
-                Result.Success(Unit)
+                Result.Success(1)
             } else {
-                Result.Error(Exception("Nothing to delete"))
+                Result.Success(0)
             }
         }
     }

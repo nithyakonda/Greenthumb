@@ -31,14 +31,11 @@ class FakeLocalDataSource : ILocalDataSource{
         return Result.Success(database.plantsDao().insertPlant(plant))
     }
 
-    override suspend fun deletePlant(plantId: Long): Result<Unit> {
-        if (shouldReturnError) {
+    override suspend fun deletePlant(plantId: Long): Result<Int> {
+        return if (shouldReturnError) {
             return Result.Error(Exception(context.getString(R.string.test_error_db_error)))
-        }
-        return if (database.plantsDao().deletePlantById(plantId) == 1) {
-            Result.Success(Unit)
         } else {
-            Result.Error(Exception(context.getString(R.string.test_error_nothing_to_delete)))
+            Result.Success(database.plantsDao().deletePlantById(plantId))
         }
     }
 

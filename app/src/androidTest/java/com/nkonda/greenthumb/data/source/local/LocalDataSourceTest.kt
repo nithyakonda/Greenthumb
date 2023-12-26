@@ -17,7 +17,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.`is`
-import org.hamcrest.CoreMatchers.nullValue
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.After
 import org.junit.Assert.*
@@ -120,9 +119,9 @@ class LocalDataSourceTest {
         assertThat((localDataSource.getPlants() as Result.Success).data.size, `is`(2))
 
         val result = localDataSource.deletePlant(100)
-        assertThat(result.succeeded, `is`(false))
-        result as Result.Error
-        assertThat(result.exception.message, `is`(context.getString(R.string.test_error_nothing_to_delete)))
+        assertThat(result.succeeded, `is`(true))
+        result as Result.Success
+        assertThat(result.data, `is`(0))
         assertThat((localDataSource.getPlants() as Result.Success).data.size, `is`(2))
     }
 

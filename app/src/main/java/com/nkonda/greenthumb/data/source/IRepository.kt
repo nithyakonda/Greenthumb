@@ -18,7 +18,7 @@ interface IRepository {
 
     suspend fun savePlant(plant: Plant): Result<Unit>
 
-    suspend fun deletePlant(plantId: Long): Result<Unit>
+    suspend fun deletePlant(plantId: Long): Result<Int>
 
     fun searchPlantByImage(image: Bitmap): Result<List<Plant>>
 

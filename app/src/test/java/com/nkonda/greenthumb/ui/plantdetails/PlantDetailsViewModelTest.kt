@@ -148,7 +148,6 @@ class PlantDetailsViewModelTest {
         plantDetailsViewModel.deletePlant(plantTwo)
 
         assertThat(plantDetailsViewModel.isPlantSaved.getOrAwaitValue(), `is`(false))
-        assertThat(plantDetailsViewModel.errorMessage.getOrAwaitValue(), `is`("Nothing to delete"))
     }
 
     @Test

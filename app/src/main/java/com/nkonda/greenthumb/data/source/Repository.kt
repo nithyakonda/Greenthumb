@@ -50,7 +50,7 @@ class Repository constructor(
         }
     }
 
-    override suspend fun deletePlant(plantId: Long): Result<Unit> {
+    override suspend fun deletePlant(plantId: Long): Result<Int> {
         wrapEspressoIdlingResource {
             return localDataSource.deletePlant(plantId)
         }

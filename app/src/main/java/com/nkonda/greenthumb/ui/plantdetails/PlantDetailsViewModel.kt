@@ -73,7 +73,11 @@ class PlantDetailsViewModel(private val repository: IRepository) : ViewModel() {
         viewModelScope.launch {
             val result = repository.deletePlant(plant.id)
             if (result.succeeded) {
-                _successMessage.value = "Deleted"
+                if ((result as Result.Success).data == 1) {
+                    _successMessage.value = "Deleted"
+                } else {
+                    _errorMessage.value = "Nothing to delete"
+                }
                 _isPlantSaved.value = false
             } else {
                 _errorMessage.value = (result as Result.Error).exception.message

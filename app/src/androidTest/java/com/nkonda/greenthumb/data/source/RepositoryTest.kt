@@ -69,23 +69,22 @@ class RepositoryTest {
     /*-------------------------------------------------------------------------------------------*/
 
     @Test
-    fun deletePlantById_givenValidPlantId_returnsSuccess() = runBlocking {
+    fun deletePlantById_givenValidPlantId_returns1() = runBlocking {
         repository.savePlant(plantOne)
         repository.savePlant(plantTwo)
         val result = repository.deletePlant(plantOne.id)
         assertThat(result.succeeded, `is`(true))
+        result as Result.Success
+        assertThat(result.data, `is`(1))
     }
 
     @Test
-    fun deletePlantById_whenNothingToDelete_returnsError() = runBlocking {
+    fun deletePlantById_whenNothingToDelete_returns0() = runBlocking {
         repository.savePlant(plantOne)
         val result = repository.deletePlant(plantTwo.id)
-        assertThat(result.succeeded, `is`(false))
-        result as Result.Error
-        assertThat(
-            result.exception.message,
-            `is`(context.getString(R.string.test_error_nothing_to_delete))
-        )
+        assertThat(result.succeeded, `is`(true))
+        result as Result.Success
+        assertThat(result.data, `is`(0))
     }
 
     @Test

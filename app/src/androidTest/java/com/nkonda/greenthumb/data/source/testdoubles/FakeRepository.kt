@@ -57,12 +57,12 @@ class FakeRepository: IRepository {
         }
     }
 
-    override suspend fun deletePlant(plantId: Long): Result<Unit> {
+    override suspend fun deletePlant(plantId: Long): Result<Int> {
         return if(!shouldReturnError) {
             plants.getOrDefault(plantId, null)?.let {
                 plants.remove(plantId)
-                Result.Success(Unit)
-            } ?: Result.Error(Exception("Nothing to delete"))
+                Result.Success(1)
+            } ?: Result.Success(0)
         } else {
             Result.Error(Exception("DB Error"))
         }
