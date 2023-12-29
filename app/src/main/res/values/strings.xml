@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Greenthumb</string>
 
-    <string name="title_home">Home</string>
+    <string name="title_home">My Tasks</string>
     <string name="title_myplants">My Plants</string>
     <string name="title_search">Search</string>
     <string name="title_plant_details">Plant Details</string>

@@ -39,7 +39,7 @@
             android:id="@+id/btnNameSearch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/purple_500"
+            android:backgroundTint="@color/md_theme_primary"
             android:contentDescription="@string/cd_search_button"
             android:src="@android:drawable/ic_menu_search"
             app:layout_constraintEnd_toEndOf="parent"
