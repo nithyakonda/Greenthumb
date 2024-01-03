@@ -13,14 +13,18 @@ import retrofit2.create
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
+import java.util.concurrent.TimeUnit
 
 private const val BASE_URL = "https://perenual.com/api/"
+private const val TIMEOUT_SECONDS = 30L
 
 val loggingInterceptor = HttpLoggingInterceptor().apply {
     level = HttpLoggingInterceptor.Level.BODY
 }
 
 val client = OkHttpClient.Builder()
+    .readTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
+    .connectTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
     .addInterceptor(loggingInterceptor)
     .build()
 
