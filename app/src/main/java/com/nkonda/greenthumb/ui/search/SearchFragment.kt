@@ -1,19 +1,17 @@
 package com.nkonda.greenthumb.ui.search
 
-import android.content.Context
-import android.content.Context.INPUT_METHOD_SERVICE
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.widget.SearchView.OnQueryTextListener
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.nkonda.greenthumb.ConnectivityChangeListener
+import com.nkonda.greenthumb.MainActivity
 import com.nkonda.greenthumb.R
-import com.nkonda.greenthumb.data.ErrorCodes
+import com.nkonda.greenthumb.data.ErrorCode
 import com.nkonda.greenthumb.data.Result
 import com.nkonda.greenthumb.data.source.remote.PlantSummary
 import com.nkonda.greenthumb.databinding.FragmentSearchBinding
@@ -22,11 +20,13 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
 
-class SearchFragment : Fragment() {
+class SearchFragment : Fragment(), ConnectivityChangeListener {
 
     private lateinit var binding: FragmentSearchBinding
     private lateinit var adapter: SearchResultsListAdapter
     private val searchViewModel:SearchViewModel by viewModel()
+
+    private enum class SearchState{NOT_RUN, NO_INTERNET, SUCCESS, NOT_FOUND, ERROR}
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -45,16 +45,29 @@ class SearchFragment : Fragment() {
         binding.apply {
             plantSearchResultsRv.layoutManager = LinearLayoutManager(requireActivity())
             plantSearchResultsRv.adapter = adapter
-            // todo check network and show correct state image
         }
-
         setupListeners()
         setupObservers()
+        (requireActivity() as MainActivity).registerForConnectivityUpdates(this)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        (requireActivity() as MainActivity).unregisterFromConnectivityUpdates(this)
+    }
+
+    override fun onConnectivityChanged(isConnected: Boolean) {
+        binding.apply {
+            if (isConnected) {
+                updateSearchState(SearchState.NOT_RUN)
+            } else {
+                updateSearchState(SearchState.NO_INTERNET)
+            }
+        }
     }
 
     private fun setupListeners() {
         binding.apply {
-            // todo clear previous results and show loading icon
             searchView.setOnQueryTextListener(object : OnQueryTextListener {
                 override fun onQueryTextSubmit(query: String?): Boolean {
                     query?.let {
@@ -100,30 +113,51 @@ class SearchFragment : Fragment() {
         result: List<PlantSummary>?
     ) {
         LoadingUtils.hideDialog()
-        binding.apply {
-            searchStateIv.visibility = View.GONE
-            errorTv.visibility = View.GONE
-            plantSearchResultsRv.visibility = View.VISIBLE
-        }
+        updateSearchState(SearchState.SUCCESS)
         adapter.submitList(result)
     }
 
-    // test - get error first then success
-
-    private fun showError(message: String?) {
+    private fun showError(codeStr: String?) {
         LoadingUtils.hideDialog()
         binding.apply {
-            plantSearchResultsRv.visibility = View.GONE
-            searchStateIv.visibility = View.VISIBLE
-            errorTv.visibility = View.VISIBLE
-
-            if (message == ErrorCodes.NOT_FOUND) {
-                searchStateIv.setImageResource(R.drawable.search_state_not_found)
-                errorTv.text = getString(R.string.error_not_found)
+            if (codeStr == ErrorCode.NOT_FOUND.code) {
+                updateSearchState(SearchState.NOT_FOUND, codeStr)
             } else {
-                // todo test
-                searchStateIv.setImageResource(R.drawable.search_state_error)
-                errorTv.text = message
+                updateSearchState(SearchState.ERROR, codeStr ?: "")
+            }
+        }
+    }
+
+    private fun updateSearchState(state: SearchState, codeStr: String = ErrorCode.UNKNOWN_ERROR.code) {
+        activity?.runOnUiThread {
+            binding.apply {
+                plantSearchResultsRv.visibility =
+                    if (state == SearchState.SUCCESS) View.VISIBLE else View.GONE
+                searchStateIv.visibility =
+                    if (state == SearchState.SUCCESS) View.GONE else View.VISIBLE
+                errorTv.visibility =
+                    if (state == SearchState.SUCCESS || state == SearchState.NOT_RUN) View.GONE else View.VISIBLE
+
+                when (state) {
+                    SearchState.NOT_RUN -> {
+                        searchStateIv.setImageResource(R.drawable.search_state_not_run)
+                    }
+                    SearchState.NO_INTERNET -> {
+                        searchStateIv.setImageResource(R.drawable.search_state_error)
+                        errorTv.text = getString(R.string.error_no_internet)
+                    }
+                    SearchState.SUCCESS -> {
+                        // nothing
+                    }
+                    SearchState.NOT_FOUND -> {
+                        searchStateIv.setImageResource(R.drawable.search_state_not_found)
+                        errorTv.text = ErrorCode.fromCode(codeStr).message
+                    }
+                    SearchState.ERROR -> {
+                        searchStateIv.setImageResource(R.drawable.search_state_error)
+                        errorTv.text = ErrorCode.fromCode(codeStr).message
+                    }
+                }
             }
         }
     }

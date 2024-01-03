@@ -21,8 +21,21 @@ enum class Month {
     NOT_SET; // DEFAULT
 }
 
-class ErrorCodes {
+enum class ErrorCode(val code: String, val message: String) {
+    
+        // Errors from mobile device
+        NO_INTERNET("1000", "Looks like our internet connection is taking a nap in the shade!\\n Please try later."),
+        // Errors from remote api
+        NOT_FOUND("2000", "Well, this is awkward... \\n No matching records found!"),
+        TIMEOUT("2001", ""),
+        FAILED("2002", ""),
+
+        UNKNOWN_ERROR("9000", "");
+
+
     companion object {
-        const val NOT_FOUND = "2000"
+        fun fromCode(code: String): ErrorCode {
+            return values().find { it.code == code } ?: UNKNOWN_ERROR
+        }
     }
 }

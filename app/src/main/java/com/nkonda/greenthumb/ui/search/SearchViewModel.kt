@@ -1,7 +1,7 @@
 package com.nkonda.greenthumb.ui.search
 
 import androidx.lifecycle.*
-import com.nkonda.greenthumb.data.ErrorCodes
+import com.nkonda.greenthumb.data.ErrorCode
 import com.nkonda.greenthumb.data.Result
 import com.nkonda.greenthumb.data.source.IRepository
 import com.nkonda.greenthumb.data.source.remote.PlantSummary
@@ -43,7 +43,7 @@ class SearchViewModel(private val repository: IRepository) : ViewModel() {
                     _searchResult.value = result
                     _successMessage.value = "Found ${result.data.size} results"
                 } else {
-                    _searchResult.value = Result.Error(Exception(ErrorCodes.NOT_FOUND))
+                    _searchResult.value = Result.Error(Exception(ErrorCode.NOT_FOUND.code))
                 }
             } else {
                 _errorMessage.value = (result as Result.Error).exception.message

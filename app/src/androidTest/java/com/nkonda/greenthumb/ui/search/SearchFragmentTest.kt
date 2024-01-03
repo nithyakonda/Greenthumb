@@ -16,10 +16,45 @@ class SearchFragmentTest {
 
 
     @Test
-    fun searchPlantByName_returnsError_whenInvalidInput() {
+    fun searchPlantByName_returnsNotFound_whenInvalidInput() {
+    }
+
+    @Test
+    fun givenEmptyPlantName_whenSearchSoftKeyClicked_thenSearchDoesntStart() {
+
     }
     @Test
     fun searchPlantByName_failsFastWhenNoNetwork() {
+
+    }
+
+    @Test
+    fun givenNetwork_whenConnectivityDrops_thenNoNetworkImageAndMessageAreDisplayed() {
+
+    }
+
+    @Test
+    fun givenErrorState_whenSearchIsSuccess_thenErrorStateIsReplaced() {
+
+    }
+
+    @Test
+    fun givenNoNetwork_whenConnectivityIsBack_thenNotRunStateIsDisplayed() {
+
+    }
+
+    @Test
+    fun givenValidPlant_whenNetworkTimeouts_thenAppropriateErrorIsDisplayed() {
+
+    }
+
+    @Test
+    fun givenValidPlant_whenRequestFails_thenAppropriateErrorIsDisplayed() {
+
+    }
+
+    @Test
+    fun givenListOfResults_whenListItemSelected_thenNavigatesToDetailsScreen() {
 
     }
 }

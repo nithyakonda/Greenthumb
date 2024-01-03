@@ -1,20 +1,37 @@
 package com.nkonda.greenthumb
 
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.Network
 import android.os.Bundle
 import android.view.View
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.nkonda.greenthumb.databinding.ActivityMainBinding
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), ConnectivityChangeListener {
 
-private lateinit var binding: ActivityMainBinding
-private lateinit var navController: NavController
+    private lateinit var binding: ActivityMainBinding
+    private lateinit var navController: NavController
+    private val connectivityManager by lazy {
+        getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    }
+    private val networkCallback = object : ConnectivityManager.NetworkCallback() {
+        override fun onAvailable(network: Network) {
+            onConnectivityChanged(true)
+        }
+
+        override fun onLost(network: Network) {
+            onConnectivityChanged(false)
+        }
+    }
+
+    private val connectivityListeners = mutableSetOf<ConnectivityChangeListener>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,6 +39,8 @@ private lateinit var navController: NavController
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
+        connectivityManager.registerDefaultNetworkCallback(networkCallback)
+
 
         val navView: BottomNavigationView = binding.navView
 
@@ -41,7 +60,31 @@ private lateinit var navController: NavController
         navView.setupWithNavController(navController)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        connectivityManager.unregisterNetworkCallback(networkCallback)
+    }
+
     override fun onSupportNavigateUp(): Boolean {
         return navController.navigateUp() ||  super.onSupportNavigateUp()
     }
+
+    override fun onConnectivityChanged(isConnected: Boolean) {
+        for (listener in connectivityListeners) {
+            listener.onConnectivityChanged(isConnected)
+        }
+    }
+
+    fun registerForConnectivityUpdates(listener: ConnectivityChangeListener) {
+        connectivityListeners.add(listener)
+    }
+
+    fun unregisterFromConnectivityUpdates(listener: ConnectivityChangeListener) {
+        connectivityListeners.remove(listener)
+    }
+
+}
+
+interface ConnectivityChangeListener {
+    fun onConnectivityChanged(isConnected: Boolean)
 }

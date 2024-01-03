@@ -35,18 +35,22 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/searchView"
-            tools:visibility="invisible" />
+            tools:visibility="visible" />
 
         <TextView
             android:id="@+id/errorTv"
+            style="@style/GTErrorTextViewStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/GTErrorTextViewStyle"
-            tools:text="Error"
+            android:layout_marginTop="16dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/searchStateIv"
-            android:visibility="gone"/>
+            app:layout_constraintVertical_bias="0.0"
+            tools:text="Error"
+            tools:visibility="visible" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/plantSearchResultsRv"
@@ -59,7 +63,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/searchView"
             tools:listitem="@layout/listitem_plant_summary"
-            tools:visibility="visible" />
+            tools:visibility="gone" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
