@@ -1,8 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <style name="CircularShapeAppearanceOverlay" parent="">
-        <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">50%</item>
+    <style name="GTSearchViewStyle" parent="Widget.AppCompat.SearchView">
+        <item name="background">@drawable/round_rect</item>
+        <item name="android:textColorHint">@color/md_theme_onSurfaceVariant</item>
+        <item name="android:textColor">@color/md_theme_onSurface</item>
+        <item name="backgroundTint">@color/md_theme_surface</item>
+        <item name="queryBackground">"@android:color/transparent"</item>
+        <item name="iconifiedByDefault">false</item>
     </style>
+
+    <style name="GTErrorTextViewStyle" parent="Widget.AppCompat.TextView">
+        <item name="android:gravity">center</item>
+        <item name="android:textAppearance">@style/TextAppearance.Material3.BodyLarge</item>
+        <item name="android:textColor">@color/md_theme_error</item>
+    </style>
+
 </resources>

@@ -20,3 +20,9 @@ enum class Month {
     JANUARY, FEBRUARY, MARCH, APRIL, MAY, JUNE, JULY, AUGUST, SEPTEMBER, OCTOBER, NOVEMBER, DECEMBER,
     NOT_SET; // DEFAULT
 }
+
+class ErrorCodes {
+    companion object {
+        const val NOT_FOUND = "2000"
+    }
+}

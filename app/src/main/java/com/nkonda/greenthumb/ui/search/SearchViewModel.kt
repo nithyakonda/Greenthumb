@@ -1,12 +1,14 @@
 package com.nkonda.greenthumb.ui.search
 
 import androidx.lifecycle.*
+import com.nkonda.greenthumb.data.ErrorCodes
 import com.nkonda.greenthumb.data.Result
 import com.nkonda.greenthumb.data.source.IRepository
 import com.nkonda.greenthumb.data.source.remote.PlantSummary
 import com.nkonda.greenthumb.data.succeeded
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.lang.Exception
 
 class SearchViewModel(private val repository: IRepository) : ViewModel() {
 
@@ -35,9 +37,14 @@ class SearchViewModel(private val repository: IRepository) : ViewModel() {
         _searchResult.value = Result.Loading
         viewModelScope.launch {
             val result = repository.searchPlantByName(name)
-            _searchResult.value = result
             if(result.succeeded) {
-                _successMessage.value = "Found ${(result as Result.Success).data.size} results"
+                result as Result.Success
+                if (result.data.isNotEmpty()) {
+                    _searchResult.value = result
+                    _successMessage.value = "Found ${result.data.size} results"
+                } else {
+                    _searchResult.value = Result.Error(Exception(ErrorCodes.NOT_FOUND))
+                }
             } else {
                 _errorMessage.value = (result as Result.Error).exception.message
                 Timber.e((result as Result.Error).exception.message)

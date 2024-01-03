@@ -2,7 +2,7 @@
 
 buildscript {
     ext {
-        minSdkVersion = 14
+        minSdkVersion = 16
         targetSdkVersion = 30
         compileSdkVersion = 34
 
@@ -14,6 +14,7 @@ buildscript {
         glideVersion = "4.14.2"
         junitVersion = '4.12'
         koinVersion = '3.4.0'
+        lottieVersion = "3.4.0"
         moshiVersion = "1.9.3"
         navigationVersion = '2.7.1'
         okhttpVersion = '4.11.0'

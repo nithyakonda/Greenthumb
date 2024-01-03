@@ -6,21 +6,24 @@
     <string name="title_search">Search</string>
     <string name="title_plant_details">Plant Details</string>
 
-    <string name="btn_search_by_photo">Search by photo</string>
-
     <string name="et_hint_plant_search">Enter plant name to search</string>
 
     <string name="cd_listitem_plant_image">plant image from search result</string>
     <string name="cd_search_button">Search</string>
     <string name="cd_fab_action_add">Add to my plants</string>
     <string name="cd_fab_action_remove">Remove from my plants</string>
-    <string name="toast_msg_saved">Saved</string>
-    <string name="test_error_db_error">DB Error</string>
-    <string name="test_error_nothing_to_delete">Nothing to delete</string>
-    <string name="test_error_network_error">Network error</string>
     <string name="cd_plant_details_image">%s image</string>
     <string name="cd_edit_task_button">Edit task</string>
     <string name="cd_reminder_switch">set reminder</string>
+
+    <string name="toast_msg_saved">Saved</string>
+
+    <string name="test_error_db_error">DB Error</string>
+    <string name="test_error_nothing_to_delete">Nothing to delete</string>
+    <string name="test_error_network_error">Network error</string>
     <string name="test_error_nothing_to_update">Nothing to update</string>
     <string name="test_error_not_found">Not found</string>
+
+    <string name="error_not_found">Well, this is awkward... no matching records found!</string>
+
 </resources>

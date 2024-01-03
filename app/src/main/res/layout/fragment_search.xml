@@ -13,46 +13,53 @@
         android:padding="@dimen/padding_default"
         tools:context=".ui.search.SearchFragment">
 
-        <Button
-            android:id="@+id/btnPhotoSearch"
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/searchView"
+            style="@style/GTSearchViewStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/btn_search_by_photo"
+            android:background="@drawable/round_rect"
+            android:backgroundTint="@color/md_theme_primaryContainer"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:queryHint="@string/et_hint_plant_search"/>
 
-        <EditText
-            android:id="@+id/etNameSearch"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:layout_marginRight="16dp"
-            android:ems="10"
-            android:hint="@string/et_hint_plant_search"
-            android:inputType="textPersonName"
-            app:layout_constraintEnd_toStartOf="@+id/btnNameSearch"
-            app:layout_constraintStart_toStartOf="@+id/btnPhotoSearch"
-            app:layout_constraintTop_toBottomOf="@+id/btnPhotoSearch"/>
 
-        <ImageButton
-            android:id="@+id/btnNameSearch"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/md_theme_primary"
-            android:contentDescription="@string/cd_search_button"
-            android:src="@android:drawable/ic_menu_search"
+        <ImageView
+            android:id="@+id/searchStateIv"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:src="@drawable/search_state_not_run"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/etNameSearch" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/searchView"
+            tools:visibility="invisible" />
+
+        <TextView
+            android:id="@+id/errorTv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/GTErrorTextViewStyle"
+            tools:text="Error"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/searchStateIv"
+            android:visibility="gone"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/plantSearchResultsRv"
-            android:layout_width="409dp"
-            android:layout_height="568dp"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:layout_marginTop="24dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/etNameSearch"
-            tools:listitem="@layout/listitem_plant_summary" />
+            app:layout_constraintTop_toBottomOf="@+id/searchView"
+            tools:listitem="@layout/listitem_plant_summary"
+            tools:visibility="visible" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
