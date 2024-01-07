@@ -61,7 +61,7 @@ class SearchFragment : Fragment(), ConnectivityChangeListener {
             if (isConnected) {
                 updateSearchState(SearchState.NOT_RUN)
             } else {
-                updateSearchState(SearchState.NO_INTERNET)
+                updateSearchState(SearchState.NO_INTERNET, ErrorCode.NO_INTERNET.code)
             }
         }
     }
@@ -144,7 +144,7 @@ class SearchFragment : Fragment(), ConnectivityChangeListener {
                     }
                     SearchState.NO_INTERNET -> {
                         searchStateIv.setImageResource(R.drawable.search_state_error)
-                        errorTv.text = getString(R.string.error_no_internet)
+                        errorTv.text = ErrorCode.fromCode(codeStr).message
                     }
                     SearchState.SUCCESS -> {
                         // nothing

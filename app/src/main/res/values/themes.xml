@@ -1,5 +1,6 @@
 <resources>
     <style name="Theme.Greenthumb" parent="Theme.Material3.Light.NoActionBar">
+        <item name="android:statusBarColor">@color/md_theme_surface</item>
         <item name="colorPrimary">@color/md_theme_primary</item>
         <item name="colorOnPrimary">@color/md_theme_onPrimary</item>
         <item name="colorPrimaryContainer">@color/md_theme_primaryContainer</item>
@@ -46,5 +47,21 @@
         <item name="colorSurfaceContainer">@color/md_theme_surfaceContainer</item>
         <item name="colorSurfaceContainerHigh">@color/md_theme_surfaceContainerHigh</item>
         <item name="colorSurfaceContainerHighest">@color/md_theme_surfaceContainerHighest</item>
+        <item name="colorSunlight">@color/colorSunlight</item>
+        <item name="colorOnSunlight">@color/colorOnSunlight</item>
+        <item name="colorSunlightContainer">@color/colorSunlightContainer</item>
+        <item name="colorOnSunlightContainer">@color/colorOnSunlightContainer</item>
+        <item name="colorWater">@color/colorWater</item>
+        <item name="colorOnWater">@color/colorOnWater</item>
+        <item name="colorWaterContainer">@color/colorWaterContainer</item>
+        <item name="colorOnWaterContainer">@color/colorOnWaterContainer</item>
+        <item name="colorPrune">@color/colorPrune</item>
+        <item name="colorOnPrune">@color/colorOnPrune</item>
+        <item name="colorPruneContainer">@color/colorPruneContainer</item>
+        <item name="colorOnPruneContainer">@color/colorOnPruneContainer</item>
+        <item name="colorCareLevel">@color/colorCareLevel</item>
+        <item name="colorOnCareLevel">@color/colorOnCareLevel</item>
+        <item name="colorCareLevelContainer">@color/colorCareLevelContainer</item>
+        <item name="colorOnCareLevelContainer">@color/colorOnCareLevelContainer</item>
     </style>
 </resources>

@@ -13,10 +13,44 @@
         <item name="fontFamily">@font/roboto_condensed_light</item>
     </style>
 
+    <style name="GTTitleTextViewStyle" parent="GTTextViewStyle">
+        <item name="fontFamily">@font/roboto_condensed_bold</item>
+        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Large</item>
+    </style>
+
+    <style name="GTSubtitleTextViewStyle" parent="GTTextViewStyle">
+        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Medium</item>
+        <item name="color">@color/md_theme_onSurfaceVariant</item>
+    </style>
+
+    <style name="GTHeadingTextViewStyle" parent="GTTitleTextViewStyle">
+        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Medium</item>
+    </style>
+
+    <style name="GTLabelTextViewStyle" parent="GTTitleTextViewStyle">
+        <item name="fontFamily">@font/roboto_condensed_bold</item>
+        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Small</item>
+    </style>
+
+    <style name="GTPropertyLabelTextViewStyle" parent="GTTextViewStyle">
+        <item name="android:textAlignment">center</item>
+        <item name="android:textAppearance">@style/TextAppearance.Material3.LabelSmall</item>
+    </style>
+
     <style name="GTErrorTextViewStyle" parent="GTTextViewStyle">
         <item name="android:gravity">center</item>
         <item name="android:textAppearance">@style/TextAppearance.AppCompat.Large</item>
         <item name="android:textColor">@color/md_theme_error</item>
+    </style>
+
+    <style name="GTRoundImageViewStyle">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+
+    <style name="GTCardViewStyle" parent="ShapeAppearance.MaterialComponents.MediumComponent">
+        <item name="cornerFamilyTopLeft">rounded</item>
+        <item name="cornerSizeTopLeft">100dp</item>
     </style>
 
 </resources>

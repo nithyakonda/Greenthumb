@@ -46,6 +46,22 @@
         <item name="colorSurfaceContainer">@color/md_theme_surfaceContainer_mediumContrast</item>
         <item name="colorSurfaceContainerHigh">@color/md_theme_surfaceContainerHigh_mediumContrast</item>
         <item name="colorSurfaceContainerHighest">@color/md_theme_surfaceContainerHighest_mediumContrast</item>
+        <item name="colorSunlight">@color/colorSunlight_mediumContrast</item>
+        <item name="colorOnSunlight">@color/colorOnSunlight_mediumContrast</item>
+        <item name="colorSunlightContainer">@color/colorSunlightContainer_mediumContrast</item>
+        <item name="colorOnSunlightContainer">@color/colorOnSunlightContainer_mediumContrast</item>
+        <item name="colorWater">@color/colorWater_mediumContrast</item>
+        <item name="colorOnWater">@color/colorOnWater_mediumContrast</item>
+        <item name="colorWaterContainer">@color/colorWaterContainer_mediumContrast</item>
+        <item name="colorOnWaterContainer">@color/colorOnWaterContainer_mediumContrast</item>
+        <item name="colorPrune">@color/colorPrune_mediumContrast</item>
+        <item name="colorOnPrune">@color/colorOnPrune_mediumContrast</item>
+        <item name="colorPruneContainer">@color/colorPruneContainer_mediumContrast</item>
+        <item name="colorOnPruneContainer">@color/colorOnPruneContainer_mediumContrast</item>
+        <item name="colorCareLevel">@color/colorCareLevel_mediumContrast</item>
+        <item name="colorOnCareLevel">@color/colorOnCareLevel_mediumContrast</item>
+        <item name="colorCareLevelContainer">@color/colorCareLevelContainer_mediumContrast</item>
+        <item name="colorOnCareLevelContainer">@color/colorOnCareLevelContainer_mediumContrast</item>
     </style>
     <style name="ThemeOverlay.AppTheme.HighContrast" parent="Theme.Material3.Light.NoActionBar">
         <item name="colorPrimary">@color/md_theme_primary_highContrast</item>
@@ -94,5 +110,21 @@
         <item name="colorSurfaceContainer">@color/md_theme_surfaceContainer_highContrast</item>
         <item name="colorSurfaceContainerHigh">@color/md_theme_surfaceContainerHigh_highContrast</item>
         <item name="colorSurfaceContainerHighest">@color/md_theme_surfaceContainerHighest_highContrast</item>
+        <item name="colorSunlight">@color/colorSunlight_highContrast</item>
+        <item name="colorOnSunlight">@color/colorOnSunlight_highContrast</item>
+        <item name="colorSunlightContainer">@color/colorSunlightContainer_highContrast</item>
+        <item name="colorOnSunlightContainer">@color/colorOnSunlightContainer_highContrast</item>
+        <item name="colorWater">@color/colorWater_highContrast</item>
+        <item name="colorOnWater">@color/colorOnWater_highContrast</item>
+        <item name="colorWaterContainer">@color/colorWaterContainer_highContrast</item>
+        <item name="colorOnWaterContainer">@color/colorOnWaterContainer_highContrast</item>
+        <item name="colorPrune">@color/colorPrune_highContrast</item>
+        <item name="colorOnPrune">@color/colorOnPrune_highContrast</item>
+        <item name="colorPruneContainer">@color/colorPruneContainer_highContrast</item>
+        <item name="colorOnPruneContainer">@color/colorOnPruneContainer_highContrast</item>
+        <item name="colorCareLevel">@color/colorCareLevel_highContrast</item>
+        <item name="colorOnCareLevel">@color/colorOnCareLevel_highContrast</item>
+        <item name="colorCareLevelContainer">@color/colorCareLevelContainer_highContrast</item>
+        <item name="colorOnCareLevelContainer">@color/colorOnCareLevelContainer_highContrast</item>
     </style>
 </resources>

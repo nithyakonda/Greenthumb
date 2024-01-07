@@ -1,17 +1,14 @@
 package com.nkonda.greenthumb.ui
 
-import android.widget.ImageButton
+import android.widget.Button
 import android.widget.ImageView
 import androidx.core.net.toUri
 import androidx.databinding.BindingAdapter
-import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.nkonda.greenthumb.R
-import com.nkonda.greenthumb.data.TaskWithPlant
-import com.nkonda.greenthumb.ui.home.TasksListAdapter
 import timber.log.Timber
 
 @BindingAdapter("plantImage")
@@ -39,10 +36,10 @@ fun bindPlantDetailsFabContentDescription(view: FloatingActionButton, saved: Boo
 
 @BindingAdapter("plantDetailsFabImage")
 fun bindFabImage(view: FloatingActionButton, saved: Boolean){
-    view.setImageResource((if (saved) R.drawable.ic_delete else R.drawable.ic_add))
+    view.setImageResource((if (saved) R.drawable.ic_delete else R.drawable.ic_save))
 }
 
 @BindingAdapter("reminderButtonState")
-fun bindReminderButtonState(view: ImageButton, saved: Boolean) {
+fun bindReminderButtonState(view: Button, saved: Boolean) {
     view.isEnabled = saved
 }

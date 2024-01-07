@@ -25,5 +25,8 @@
     <string name="test_error_not_found">Not found</string>
 
     <string name="error_not_found">Well, this is awkward... no matching records found!</string>
+    <string name="tv_label_tasks">Tasks</string>
+    <string name="tv_label_about">About</string>
+    <string name="tv_label_task_reminders">Task Reminders</string>
 
 </resources>

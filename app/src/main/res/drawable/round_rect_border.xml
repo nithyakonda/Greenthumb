@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+            <corners android:radius="25dp" />
+            <stroke android:width="2dp" android:color="@color/md_theme_secondary" />
+        </shape>
+    </item>
+    <!-- Optional: Add a transparent background to the interior -->
+    <item android:drawable="@android:color/transparent">
+        <shape android:shape="rectangle">
+            <corners android:radius="25dp" />
+        </shape>
+    </item>
+</layer-list>

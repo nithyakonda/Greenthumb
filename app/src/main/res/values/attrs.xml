@@ -1,0 +1,18 @@
+<resources>
+    <attr name="colorSunlight" format="color" />
+    <attr name="colorOnSunlight" format="color" />
+    <attr name="colorSunlightContainer" format="color" />
+    <attr name="colorOnSunlightContainer" format="color" />
+    <attr name="colorWater" format="color" />
+    <attr name="colorOnWater" format="color" />
+    <attr name="colorWaterContainer" format="color" />
+    <attr name="colorOnWaterContainer" format="color" />
+    <attr name="colorPrune" format="color" />
+    <attr name="colorOnPrune" format="color" />
+    <attr name="colorPruneContainer" format="color" />
+    <attr name="colorOnPruneContainer" format="color" />
+    <attr name="colorCareLevel" format="color" />
+    <attr name="colorOnCareLevel" format="color" />
+    <attr name="colorCareLevelContainer" format="color" />
+    <attr name="colorOnCareLevelContainer" format="color" />
+</resources>

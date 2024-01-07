@@ -101,12 +101,12 @@ class PlantDetailsFragment : Fragment(), TimePickerDialog.OnTimeSetListener {
                 saveOrDeletePlant()
             }
 
-            wateringReminderBtn.setOnClickListener{
+            wateringTaskBtn.setOnClickListener{
                 showAddTaskView(TaskKey(binding.plant!!.id, TaskType.WATER),
                     binding.plant?.watering ?: "")
             }
 
-            pruningReminderBtn.setOnClickListener {
+            pruningTaskBtn.setOnClickListener {
                 showAddTaskView(TaskKey(binding.plant!!.id, TaskType.PRUNE),
                     binding.plant?.pruningMonth.toString())
             }
