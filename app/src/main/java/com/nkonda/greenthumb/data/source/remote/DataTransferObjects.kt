@@ -1,6 +1,7 @@
 package com.nkonda.greenthumb.data.source.remote
 
 import com.nkonda.greenthumb.data.Plant
+import com.nkonda.greenthumb.util.*
 import com.squareup.moshi.Json
 
 data class SearchResult(val data: List<PlantSummary>)
@@ -25,11 +26,12 @@ data class PlantDetails(
     val sunlight: List<String>?,
     val watering: String?,
     @Json(name = "pruning_month") val pruningMonth: List<String>?,
+    @Json(name = "pruning_count") val pruningCount: PruningCount?,
     @Json(name = "default_image") val images: Images?,
     val description: String?,
 )
 
-data class Pruning(
+data class PruningCount(
     val amount: Int?,
     val interval: String? // enum
 )
@@ -45,16 +47,15 @@ data class Images(
     constructor(thumbnail: String, originalUrl: String) : this(originalUrl, null, null, null, thumbnail)
 }
 
-
 fun PlantDetails.asDomainModel(): Plant {
     return Plant(this.id,
         this.commonName.orEmpty(),
         this.scientificNames.orEmpty().getOrElse(0) {"Unknown"},
         this.cycle.orEmpty(),
-        this.careLevel.orEmpty(),
-        this.sunlight.orEmpty(),
-        this.watering.orEmpty(),
-        this.pruningMonth.orEmpty(),
+        getCareLevelEnumFrom(this.careLevel),
+        getSunlightEnumListFrom(this.sunlight)!!,
+        getWateringEnumFrom(this.watering),
+        getPruningFrom(this.pruningCount, this.pruningMonth),
         this.images?.thumbnail.orEmpty(),
         this.images?.originalUrl.orEmpty(),
         this.description.orEmpty()

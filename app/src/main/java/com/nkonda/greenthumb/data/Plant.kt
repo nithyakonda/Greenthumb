@@ -3,8 +3,8 @@ package com.nkonda.greenthumb.data
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.nkonda.greenthumb.util.convertIntListToDayList
-import com.nkonda.greenthumb.util.convertStringListToMonthList
+import androidx.room.TypeConverters
+import com.nkonda.greenthumb.util.*
 import java.util.*
 
 @Entity(tableName = "plants")
@@ -13,16 +13,16 @@ data class Plant constructor(
     @ColumnInfo(name = "common_name") var commonName: String,
     @ColumnInfo(name = "scientific_name") val scientificName: String,
     val cycle: String, // Enum perennial, annual, biennial, biannual
-    @ColumnInfo(name = "care_level") val careLevel: String,
-    val sunlight: List<String>, // full_shade, part_shade, sun-part_shade, full_sun
-    val watering: String, // frequent, average, minimum, none
-    @ColumnInfo(name = "pruning_month") val _pruningMonth: List<String>,
+    @ColumnInfo(name = "care_level") val careLevel: CareLevel,
+    @TypeConverters(SunlightListConverter::class)
+    val sunlight: List<Sunlight>,
+    val watering: Watering,
+    @TypeConverters(PruningConverter::class,MonthListConverter::class)
+    val pruning: Pruning,
     val thumbnail: String,
     val image: String,
     val description: String,
 ) {
-    val pruningMonth: List<Month>
-        get() = convertStringListToMonthList(_pruningMonth)
     fun getExpectedSchedule(taskType: TaskType):Schedule {
         // todo implement
         val cal = Calendar.getInstance()
@@ -31,10 +31,10 @@ data class Plant constructor(
         return when(taskType) {
             TaskType.PRUNE -> Schedule(
                 null,
-                pruningMonth,
+                pruning.months,
                 hour,
                 min,
-                getExpectedOccurrence(pruningMonth)
+                getExpectedOccurrence(pruning.months)
             )
             TaskType.WATER -> Schedule(
                 convertIntListToDayList(listOf(cal.get(Calendar.DAY_OF_WEEK))),
@@ -44,13 +44,34 @@ data class Plant constructor(
         }
     }
 
+    fun getSunlightText(): String {
+        return buildString {
+            for((i, v) in sunlight.withIndex()) {
+                append(v)
+                if (i < sunlight.size - 1) {
+                    append("\n")
+                }
+            }
+        }
+    }
+
     private fun getExpectedOccurrence(pruningMonth: List<Month>): TaskOccurrence {
         return TaskOccurrence.YEARLY
         TODO("Not yet implemented")
     }
 
-    private fun getExpectedOccurrence(watering: String): TaskOccurrence {
+    private fun getExpectedOccurrence(watering: Watering): TaskOccurrence {
         return TaskOccurrence.WEEKLY
         TODO("Not yet implemented")
+    }
+
+    data class Pruning(
+        val months:List<Month>,
+        val amount: Int,
+        val interval: String) {
+        override fun toString(): String {
+            return super.toString()
+            // todo
+        }
     }
 }

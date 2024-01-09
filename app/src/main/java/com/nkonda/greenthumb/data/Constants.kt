@@ -21,16 +21,40 @@ enum class Month {
     NOT_SET; // DEFAULT
 }
 
-enum class ErrorCode(val code: String, val message: String) {
-    
-        // Errors from mobile device
-        NO_INTERNET("1000", "Looks like our internet connection is taking a nap in the shade!\\n Please try later."),
-        // Errors from remote api
-        NOT_FOUND("2000", "Well, this is awkward... \\n No matching records found!"),
-        TIMEOUT("2001", ""),
-        FAILED("2002", ""),
+enum class CareLevel {
+    Low, Medium, High, Unknown
+}
 
-        UNKNOWN_ERROR("9000", "");
+enum class Sunlight(val string: String) {
+    FullShade("Full sun"),
+    PartShade("Part shade"),
+    SunPartShade("Sun part shade"),
+    FullSun("Full sun"),
+    Unknown("Unknown");
+
+    override fun toString(): String {
+        return this.string
+    }
+}
+
+enum class Watering {
+    Frequent, Average, Minimum, None, Unknown
+}
+
+enum class ErrorCode(val code: String, val message: String) {
+
+    // Errors from mobile device
+    NO_INTERNET(
+        "1000",
+        "Looks like our internet connection is taking a nap in the shade!\\n Please try later."
+    ),
+
+    // Errors from remote api
+    NOT_FOUND("2000", "Well, this is awkward... \\n No matching records found!"),
+    TIMEOUT("2001", ""),
+    FAILED("2002", ""),
+
+    UNKNOWN_ERROR("9000", "");
 
 
     companion object {

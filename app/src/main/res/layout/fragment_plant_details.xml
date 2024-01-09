@@ -104,13 +104,13 @@
             tools:text="Perennial" />
 
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/carelevelBtn"
             style="@style/Widget.Material3.Button.IconButton.Outlined"
+            careLevelIconAndContentDesc="@{plant.careLevel}"
             android:layout_width="70dp"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            app:icon="@drawable/ic_care_level_hard"
             app:iconGravity="textTop"
             app:iconTint="@color/colorCareLevel"
             app:layout_constraintBottom_toTopOf="@+id/carelevelTv"
@@ -120,13 +120,16 @@
             app:layout_constraintTop_toTopOf="@+id/hGuide2"
             app:layout_constraintVertical_bias="0.0"
             app:layout_constraintVertical_chainStyle="packed"
-            app:strokeColor="@color/colorCareLevel" />
+            app:strokeColor="@color/colorCareLevel"
+            tools:ignore="SpeakableTextPresentCheck" />
 
         <TextView
             android:id="@+id/carelevelTv"
             style="@style/GTPropertyLabelTextViewStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:text="@{String.format(@string/tv_label_care_level, plant.careLevel)}"
+            android:visibility="@{plant.careLevel != null ? android.view.View.VISIBLE : android.view.View.INVISIBLE}"
             app:layout_constraintBottom_toTopOf="@+id/sunlightBtn"
             app:layout_constraintEnd_toEndOf="@id/vGuide1"
             app:layout_constraintHorizontal_bias="0.5"
@@ -134,9 +137,10 @@
             app:layout_constraintTop_toBottomOf="@+id/carelevelBtn"
             tools:text="High \n Maintenance" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/sunlightBtn"
             style="@style/Widget.Material3.Button.IconButton.Outlined"
+            sunlightIconAndContentDesc="@{plant.sunlight}"
             android:layout_width="70dp"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
@@ -159,6 +163,7 @@
             android:layout_marginBottom="16dp"
             android:paddingStart="8dp"
             android:paddingRight="8dp"
+            android:text="@{plant.getSunlightText}"
             app:layout_constraintBottom_toTopOf="@+id/divider"
             app:layout_constraintEnd_toEndOf="@id/vGuide1"
             app:layout_constraintHorizontal_bias="0.5"
@@ -187,16 +192,18 @@
             android:layout_marginTop="8dp"
             android:text="@string/tv_label_tasks"
             android:textAlignment="center"
+            viewVisibility="@{saved}"
             app:layout_constraintBottom_toTopOf="@+id/wateringTaskBtn"
             app:layout_constraintEnd_toEndOf="@id/vGuide1"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="@id/carelevelTv"
             app:layout_constraintTop_toBottomOf="@+id/divider" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/wateringTaskBtn"
             style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
             reminderButtonState="@{saved}"
+            wateringIconAndContentDesc="@{plant.watering}"
             android:layout_width="70dp"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
@@ -218,6 +225,7 @@
             android:fontFamily="@font/roboto_condensed_light"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.Material3.LabelSmall"
+            android:text="@{plant.watering.toString()}"
             app:layout_constraintBottom_toTopOf="@+id/pruningTaskBtn"
             app:layout_constraintEnd_toEndOf="@id/vGuide1"
             app:layout_constraintHorizontal_bias="0.5"
@@ -249,6 +257,7 @@
             android:fontFamily="@font/roboto_condensed_light"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.Material3.LabelSmall"
+            android:text="@{plant.pruning.interval}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@id/vGuide1"
             app:layout_constraintHorizontal_bias="0.5"

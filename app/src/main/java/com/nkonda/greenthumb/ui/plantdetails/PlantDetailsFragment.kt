@@ -2,7 +2,6 @@ package com.nkonda.greenthumb.ui.plantdetails
 
 import android.app.TimePickerDialog
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,11 +10,12 @@ import android.widget.TimePicker
 import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
 import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.Fragment
 import com.nkonda.greenthumb.data.*
 import com.nkonda.greenthumb.databinding.FragmentPlantDetailsBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
-import java.util.Calendar
+import java.util.*
 
 class PlantDetailsFragment : Fragment(), TimePickerDialog.OnTimeSetListener {
     private lateinit var binding: FragmentPlantDetailsBinding
@@ -103,12 +103,12 @@ class PlantDetailsFragment : Fragment(), TimePickerDialog.OnTimeSetListener {
 
             wateringTaskBtn.setOnClickListener{
                 showAddTaskView(TaskKey(binding.plant!!.id, TaskType.WATER),
-                    binding.plant?.watering ?: "")
+                    binding.plant?.watering.toString() ?: "")
             }
 
             pruningTaskBtn.setOnClickListener {
                 showAddTaskView(TaskKey(binding.plant!!.id, TaskType.PRUNE),
-                    binding.plant?.pruningMonth.toString())
+                    binding.plant?.pruning?.months.toString())
             }
 
             reminderSwitch.setOnClickListener { it as Switch
