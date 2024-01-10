@@ -1,7 +1,7 @@
 package com.nkonda.greenthumb.data.source.remote
 
 import com.nkonda.greenthumb.BuildConfig
-import com.squareup.moshi.Moshi
+import com.squareup.moshi.*
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -9,7 +9,6 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
-import retrofit2.create
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -30,6 +29,7 @@ val client = OkHttpClient.Builder()
 
 private val moshi = Moshi.Builder()
     .add(KotlinJsonAdapterFactory())
+    .add(PruningCountAdapter())
     .build()
 
 private val retrofit = Retrofit.Builder()
@@ -59,5 +59,30 @@ interface PlantInformationApiService {
 object PlantInfoApi {
     val retrofitService : PlantInformationApiService by lazy {
         retrofit.create(PlantInformationApiService::class.java)
+    }
+}
+
+class PruningCountAdapter {
+    @FromJson
+    fun fromJson(reader: JsonReader): List<PruningCount>? {
+        val moshiForPruningCount = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
+
+        return when (reader.peek()) {
+            JsonReader.Token.BEGIN_OBJECT -> {
+                val jsonAdapter = moshiForPruningCount.adapter(PruningCount::class.java)
+                val singleObject = jsonAdapter.fromJson(reader)
+                listOfNotNull(singleObject)
+            }
+            JsonReader.Token.BEGIN_ARRAY -> {
+                val listType = Types.newParameterizedType(List::class.java, PruningCount::class.java)
+                val adapter: JsonAdapter<List<PruningCount>> = moshiForPruningCount.adapter(listType)
+                val list = adapter.fromJson(reader)
+                // Check if the list is not empty and return the first item; otherwise, return null
+                emptyList()
+            }
+            else -> {
+                null
+            }
+        }
     }
 }

@@ -13,6 +13,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import com.nkonda.greenthumb.data.*
 import com.nkonda.greenthumb.databinding.FragmentPlantDetailsBinding
+import com.nkonda.greenthumb.ui.LoadingUtils
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 import java.util.*
@@ -45,20 +46,22 @@ class PlantDetailsFragment : Fragment(), TimePickerDialog.OnTimeSetListener {
             getPlantResult.observe(viewLifecycleOwner) { result ->
                 when(result) {
                     is Result.Success -> {
+                        LoadingUtils.hideDialog()
                         binding.plant = result.data
                         binding.addOrDeleteFab.isEnabled = true
                     }
                     is Result.Error -> {
-                        binding.addOrDeleteFab.isEnabled = false
-                        // todo show error message/full screen
+                        LoadingUtils.hideDialog()
+                        binding.mainContainer.visibility = View.GONE
+                        binding.errorView.root.visibility = View.VISIBLE
+                        binding.errorView.errorText.text = ErrorCode.fromCode(result.exception.message ?: ErrorCode.UNKNOWN_ERROR.code).message
                     }
                     Result.Loading -> {
-                        // todo show loading icon
+                        LoadingUtils.showDialog(requireContext())
                     }
                 }
             }
 
-            //2. remove this
             isPlantSaved.observe(viewLifecycleOwner) { saved ->
                 binding.saved = saved
             }
@@ -89,7 +92,11 @@ class PlantDetailsFragment : Fragment(), TimePickerDialog.OnTimeSetListener {
             }
 
             progressIndicator.observe(viewLifecycleOwner) { isLoading ->
-                showProgressIndicator(isLoading)
+                if (isLoading) {
+                    LoadingUtils.showDialog(requireContext())
+                } else {
+                    LoadingUtils.hideDialog()
+                }
             }
         }
     }
@@ -190,10 +197,6 @@ class PlantDetailsFragment : Fragment(), TimePickerDialog.OnTimeSetListener {
     private fun showSchedulingDialog() {
         val cal = Calendar.getInstance()
         TimePickerDialog(requireActivity(), this, cal.get(Calendar.HOUR), cal.get(Calendar.MINUTE), true).show()
-    }
-
-    private fun showProgressIndicator(loading: Boolean) {
-        TODO("Not yet implemented")
     }
 
     private fun showToast(message: String?) {

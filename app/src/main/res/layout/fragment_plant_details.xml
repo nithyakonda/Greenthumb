@@ -18,404 +18,420 @@
             type="com.nkonda.greenthumb.data.Task" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="16dp"
-        tools:context=".ui.plantdetails.PlantDetailsFragment">
+        android:layout_height="match_parent">
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/vGuide1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.2" />
+        <include
+            android:id="@+id/errorView"
+            layout="@layout/view_error"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/search_state_error"
+            android:visibility="gone" />
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/vGuide2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.4" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/mainContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="16dp"
+            tools:context=".ui.plantdetails.PlantDetailsFragment">
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/hGuide1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.22" />
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/vGuide1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.2" />
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/hGuide2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.26" />
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/vGuide2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.4" />
 
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/plantIv"
-            plantImage="@{plant.image}"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:layout_marginStart="16dp"
-            android:contentDescription="@{@string/cd_plant_details_image(plant.commonName)}"
-            android:padding="5dp"
-            android:scaleType="centerCrop"
-            app:layout_constraintBottom_toTopOf="@+id/hGuide1"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:shapeAppearanceOverlay="@style/GTRoundImageViewStyle"
-            app:strokeColor="@color/md_theme_secondary"
-            app:strokeWidth="5dp"
-            tools:src="@tools:sample/avatars" />
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/hGuide1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.22" />
 
-        <TextView
-            android:id="@+id/commonNameTv"
-            style="@style/GTTitleTextViewStyle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/roboto_condensed_bold"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:text="@{plant.commonName}"
-            android:textAlignment="textEnd"
-            app:layout_constraintBottom_toTopOf="@+id/cycleTv"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="@+id/vGuide2"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_chainStyle="packed"
-            tools:text="Black Eyed Susan" />
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/hGuide2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.26" />
 
-        <TextView
-            android:id="@+id/cycleTv"
-            style="@style/GTSubtitleTextViewStyle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:text="@{plant.cycle}"
-            android:textAlignment="textEnd"
-            app:layout_constraintBottom_toTopOf="@+id/add_or_delete_fab"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="@+id/vGuide2"
-            app:layout_constraintTop_toBottomOf="@+id/commonNameTv"
-            tools:text="Perennial" />
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/plantIv"
+                plantImage="@{plant.image}"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_marginStart="16dp"
+                android:contentDescription="@{@string/cd_plant_details_image(plant.commonName)}"
+                android:padding="5dp"
+                android:scaleType="centerCrop"
+                app:layout_constraintBottom_toTopOf="@+id/hGuide1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:shapeAppearanceOverlay="@style/GTRoundImageViewStyle"
+                app:strokeColor="@color/md_theme_secondary"
+                app:strokeWidth="5dp"
+                tools:src="@tools:sample/avatars" />
 
+            <TextView
+                android:id="@+id/commonNameTv"
+                style="@style/GTTitleTextViewStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto_condensed_bold"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:text="@{plant.commonName}"
+                android:textAlignment="textEnd"
+                app:layout_constraintBottom_toTopOf="@+id/cycleTv"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="@+id/vGuide2"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="packed"
+                tools:text="Black Eyed Susan" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/carelevelBtn"
-            style="@style/Widget.Material3.Button.IconButton.Outlined"
-            careLevelIconAndContentDesc="@{plant.careLevel}"
-            android:layout_width="70dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            app:iconGravity="textTop"
-            app:iconTint="@color/colorCareLevel"
-            app:layout_constraintBottom_toTopOf="@+id/carelevelTv"
-            app:layout_constraintEnd_toStartOf="@+id/vGuide1"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/hGuide2"
-            app:layout_constraintVertical_bias="0.0"
-            app:layout_constraintVertical_chainStyle="packed"
-            app:strokeColor="@color/colorCareLevel"
-            tools:ignore="SpeakableTextPresentCheck" />
-
-        <TextView
-            android:id="@+id/carelevelTv"
-            style="@style/GTPropertyLabelTextViewStyle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="@{String.format(@string/tv_label_care_level, plant.careLevel)}"
-            android:visibility="@{plant.careLevel != null ? android.view.View.VISIBLE : android.view.View.INVISIBLE}"
-            app:layout_constraintBottom_toTopOf="@+id/sunlightBtn"
-            app:layout_constraintEnd_toEndOf="@id/vGuide1"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/carelevelBtn"
-            tools:text="High \n Maintenance" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/sunlightBtn"
-            style="@style/Widget.Material3.Button.IconButton.Outlined"
-            sunlightIconAndContentDesc="@{plant.sunlight}"
-            android:layout_width="70dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            app:icon="@drawable/ic_full_sun"
-            app:iconGravity="textTop"
-            app:iconTint="@color/colorSunlight"
-            app:layout_constraintBottom_toTopOf="@+id/sunlightTv"
-            app:layout_constraintEnd_toStartOf="@+id/vGuide1"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/carelevelTv"
-            app:strokeColor="@color/colorSunlight" />
+            <TextView
+                android:id="@+id/cycleTv"
+                style="@style/GTSubtitleTextViewStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:text="@{plant.cycle}"
+                android:textAlignment="textEnd"
+                app:layout_constraintBottom_toTopOf="@+id/add_or_delete_fab"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="@+id/vGuide2"
+                app:layout_constraintTop_toBottomOf="@+id/commonNameTv"
+                tools:text="Perennial" />
 
 
-        <TextView
-            android:id="@+id/sunlightTv"
-            style="@style/GTPropertyLabelTextViewStyle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:paddingStart="8dp"
-            android:paddingRight="8dp"
-            android:text="@{plant.getSunlightText}"
-            app:layout_constraintBottom_toTopOf="@+id/divider"
-            app:layout_constraintEnd_toEndOf="@id/vGuide1"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/sunlightBtn"
-            tools:text="Full Sun" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/carelevelBtn"
+                style="@style/Widget.Material3.Button.IconButton.Outlined"
+                careLevelIconAndContentDesc="@{plant.careLevel}"
+                android:layout_width="70dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                app:iconGravity="textTop"
+                app:iconTint="@color/colorCareLevel"
+                app:layout_constraintBottom_toTopOf="@+id/carelevelTv"
+                app:layout_constraintEnd_toStartOf="@+id/vGuide1"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/hGuide2"
+                app:layout_constraintVertical_bias="0.0"
+                app:layout_constraintVertical_chainStyle="packed"
+                app:strokeColor="@color/colorCareLevel"
+                tools:ignore="SpeakableTextPresentCheck"
+                tools:src="@drawable/ic_care_level_high"/>
 
-        <View
-            android:id="@+id/divider"
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:background="?android:attr/listDivider"
-            app:layout_constraintBottom_toTopOf="@+id/textView"
-            app:layout_constraintEnd_toStartOf="@+id/vGuide1"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/sunlightTv" />
+            <TextView
+                android:id="@+id/carelevelTv"
+                style="@style/GTPropertyLabelTextViewStyle"
+                careLevelTvVisibility="@{plant.careLevel}"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@{String.format(@string/tv_label_care_level, plant.careLevel)}"
+                app:layout_constraintBottom_toTopOf="@+id/sunlightBtn"
+                app:layout_constraintEnd_toEndOf="@id/vGuide1"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/carelevelBtn"
+                tools:text="High \n Maintenance" />
 
-        <TextView
-            android:id="@+id/textView"
-            style="@style/GTLabelTextViewStyle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="@string/tv_label_tasks"
-            android:textAlignment="center"
-            viewVisibility="@{saved}"
-            app:layout_constraintBottom_toTopOf="@+id/wateringTaskBtn"
-            app:layout_constraintEnd_toEndOf="@id/vGuide1"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="@id/carelevelTv"
-            app:layout_constraintTop_toBottomOf="@+id/divider" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/wateringTaskBtn"
-            style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
-            reminderButtonState="@{saved}"
-            wateringIconAndContentDesc="@{plant.watering}"
-            android:layout_width="70dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:backgroundTint="@color/colorWaterContainer"
-            app:icon="@drawable/ic_water_frequent"
-            app:iconGravity="textTop"
-            app:iconTint="@color/colorOnWaterContainer"
-            app:layout_constraintBottom_toTopOf="@+id/wateringTv"
-            app:layout_constraintDimensionRatio="1:1"
-            app:layout_constraintEnd_toStartOf="@+id/vGuide1"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView" />
-
-        <TextView
-            android:id="@+id/wateringTv"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/roboto_condensed_light"
-            android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.Material3.LabelSmall"
-            android:text="@{plant.watering.toString()}"
-            app:layout_constraintBottom_toTopOf="@+id/pruningTaskBtn"
-            app:layout_constraintEnd_toEndOf="@id/vGuide1"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/wateringTaskBtn"
-            tools:text="Frequent" />
-
-        <Button
-            android:id="@+id/pruningTaskBtn"
-            style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
-            reminderButtonState="@{saved}"
-            android:layout_width="70dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:backgroundTint="@color/colorPruneContainer"
-            app:icon="@drawable/ic_prune"
-            app:iconGravity="textTop"
-            app:iconTint="@color/colorOnPruneContainer"
-            app:layout_constraintBottom_toTopOf="@+id/pruningTv"
-            app:layout_constraintEnd_toStartOf="@+id/vGuide1"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/wateringTv" />
-
-        <TextView
-            android:id="@+id/pruningTv"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/roboto_condensed_light"
-            android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.Material3.LabelSmall"
-            android:text="@{plant.pruning.interval}"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@id/vGuide1"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/pruningTaskBtn"
-            tools:text="Yearly" />
-
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/materialCardView"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:cardElevation="8dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/vGuide1"
-            app:layout_constraintTop_toTopOf="@+id/hGuide1"
-            app:shapeAppearanceOverlay="@style/GTCardViewStyle">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <TextView
-                    android:id="@+id/aboutTv"
-                    style="@style/GTHeadingTextViewStyle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/tv_label_about"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/descriptionTv"
-                    style="@style/GTTextViewStyle"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:text="@{plant.description}"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/aboutTv"
-                    tools:ignore="VisualLintLongText"
-                    tools:text="Rudbeckia hirta, commonly called black-eyed Susan, is a North American flowering plant in the family Asteraceae, native to Eastern and Central North America and naturalized in the Western part of the continent as well as in China." />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/sunlightBtn"
+                style="@style/Widget.Material3.Button.IconButton.Outlined"
+                sunlightIconAndContentDesc="@{plant.sunlight}"
+                android:layout_width="70dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                app:icon="@drawable/ic_full_sun"
+                app:iconGravity="textTop"
+                app:iconTint="@color/colorSunlight"
+                app:layout_constraintBottom_toTopOf="@+id/sunlightTv"
+                app:layout_constraintEnd_toStartOf="@+id/vGuide1"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/carelevelTv"
+                app:strokeColor="@color/colorSunlight" />
 
 
-                <androidx.constraintlayout.widget.Guideline
-                    android:id="@+id/hGuide3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    app:layout_constraintGuide_percent="0.5" />
+            <TextView
+                android:id="@+id/sunlightTv"
+                style="@style/GTPropertyLabelTextViewStyle"
+                sunlightTvVisibility="@{plant.sunlight}"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingStart="8dp"
+                android:paddingRight="8dp"
+                android:text="@{plant.getSunlightText}"
+                app:layout_constraintBottom_toTopOf="@+id/divider"
+                app:layout_constraintEnd_toEndOf="@id/vGuide1"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/sunlightBtn"
+                tools:text="Full Sun" />
+
+            <View
+                android:id="@+id/divider"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="16dp"
+                android:background="?android:attr/listDivider"
+                app:layout_constraintBottom_toTopOf="@+id/textView"
+                app:layout_constraintEnd_toStartOf="@+id/vGuide1"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/sunlightTv" />
+
+            <TextView
+                android:id="@+id/textView"
+                style="@style/GTLabelTextViewStyle"
+                viewVisibility="@{saved}"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:text="@string/tv_label_tasks"
+                android:textAlignment="center"
+                app:layout_constraintBottom_toTopOf="@+id/wateringTaskBtn"
+                app:layout_constraintEnd_toEndOf="@id/vGuide1"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="@id/carelevelTv"
+                app:layout_constraintTop_toBottomOf="@+id/divider" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/wateringTaskBtn"
+                style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
+                reminderButtonState="@{saved}"
+                wateringIconAndContentDesc="@{plant.watering}"
+                android:layout_width="70dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:backgroundTint="@color/colorWaterContainer"
+                app:icon="@drawable/ic_water_frequent"
+                app:iconGravity="textTop"
+                app:iconTint="@color/colorOnWaterContainer"
+                app:layout_constraintBottom_toTopOf="@+id/wateringTv"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintEnd_toStartOf="@+id/vGuide1"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+            <TextView
+                android:id="@+id/wateringTv"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto_condensed_light"
+                android:text="@{plant.watering.toString()}"
+                android:textAlignment="center"
+                android:textAppearance="@style/TextAppearance.Material3.LabelSmall"
+                app:layout_constraintBottom_toTopOf="@+id/pruningTaskBtn"
+                app:layout_constraintEnd_toEndOf="@id/vGuide1"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/wateringTaskBtn"
+                tools:text="Frequent" />
+
+            <Button
+                android:id="@+id/pruningTaskBtn"
+                style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
+                reminderButtonState="@{saved}"
+                android:layout_width="70dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:backgroundTint="@color/colorPruneContainer"
+                app:icon="@drawable/ic_prune"
+                app:iconGravity="textTop"
+                app:iconTint="@color/colorOnPruneContainer"
+                app:layout_constraintBottom_toTopOf="@+id/pruningTv"
+                app:layout_constraintEnd_toStartOf="@+id/vGuide1"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/wateringTv" />
+
+            <TextView
+                android:id="@+id/pruningTv"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto_condensed_light"
+                android:text="@{plant.pruning.interval}"
+                android:textAlignment="center"
+                android:textAppearance="@style/TextAppearance.Material3.LabelSmall"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@id/vGuide1"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/pruningTaskBtn"
+                tools:text="Yearly" />
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/materialCardView"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:cardElevation="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/vGuide1"
+                app:layout_constraintTop_toTopOf="@+id/hGuide1"
+                app:shapeAppearanceOverlay="@style/GTCardViewStyle">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/addTaskContainer"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:background="@drawable/round_rect_border"
-                    android:padding="8dp"
-                    android:visibility="invisible"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/hGuide3"
-                    tools:visibility="visible">
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
 
                     <TextView
-                        android:id="@+id/reminderTitleTv"
+                        android:id="@+id/aboutTv"
                         style="@style/GTHeadingTextViewStyle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@{task.key.taskType.toString()}"
+                        android:text="@string/tv_label_about"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        tools:text="Pruning" />
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
-                        android:id="@+id/reminderLabelTv"
-                        style="@style/GTLabelTextViewStyle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:text="@string/tv_label_task_reminders"
-                        app:layout_constraintEnd_toStartOf="@+id/reminderSwitch"
-                        app:layout_constraintHorizontal_bias="0.0"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/reminderTitleTv" />
-
-                    <TextView
-                        android:id="@+id/expectedScheduleTv"
+                        android:id="@+id/descriptionTv"
                         style="@style/GTTextViewStyle"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="@{plant.description}"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/aboutTv"
+                        tools:ignore="VisualLintLongText"
+                        tools:text="Rudbeckia hirta, commonly called black-eyed Susan, is a North American flowering plant in the family Asteraceae, native to Eastern and Central North America and naturalized in the Western part of the continent as well as in China." />
+
+
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/hGuide3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="24dp"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/reminderLabelTv"
-                        tools:text="Prune every year in March, April" />
+                        android:orientation="horizontal"
+                        app:layout_constraintGuide_percent="0.5" />
 
                     <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/editTaskContainer"
-                        android:layout_width="match_parent"
+                        android:id="@+id/addTaskContainer"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:background="@drawable/round_rect_border"
+                        android:padding="16dp"
                         android:visibility="invisible"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="@+id/expectedScheduleTv"
-                        app:layout_constraintTop_toBottomOf="@+id/expectedScheduleTv"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/hGuide3"
                         tools:visibility="visible">
 
                         <TextView
-                            android:id="@+id/actualScheduleTv"
-                            style="@style/GTTextViewStyle"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toStartOf="@+id/editReminderBtn"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            tools:text="Task scheduled for Sat, Mar 4, 9 AM \n Repeats every year" />
-
-                        <Button
-                            android:id="@+id/editReminderBtn"
-                            style="?attr/materialIconButtonOutlinedStyle"
+                            android:id="@+id/reminderTitleTv"
+                            style="@style/GTHeadingTextViewStyle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:contentDescription="@string/cd_edit_task_button"
-                            app:icon="@drawable/ic_edit_task"
+                            android:text="@{task.key.taskType.toString()}"
                             app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:text="Pruning" />
+
+                        <TextView
+                            android:id="@+id/reminderLabelTv"
+                            style="@style/GTLabelTextViewStyle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:text="@string/tv_label_task_reminders"
+                            app:layout_constraintEnd_toStartOf="@+id/reminderSwitch"
+                            app:layout_constraintHorizontal_bias="0.0"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/reminderTitleTv" />
+
+                        <TextView
+                            android:id="@+id/expectedScheduleTv"
+                            style="@style/GTTextViewStyle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="24dp"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/reminderLabelTv"
+                            tools:text="Prune every year in March, April" />
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/editTaskContainer"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:visibility="invisible"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="@+id/expectedScheduleTv"
+                            app:layout_constraintTop_toBottomOf="@+id/expectedScheduleTv"
+                            tools:visibility="visible">
+
+                            <TextView
+                                android:id="@+id/actualScheduleTv"
+                                style="@style/GTTextViewStyle"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toStartOf="@+id/editReminderBtn"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                tools:text="Task scheduled for Sat, Mar 4, 9 AM \n Repeats every year" />
+
+                            <Button
+                                android:id="@+id/editReminderBtn"
+                                style="?attr/materialIconButtonOutlinedStyle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:contentDescription="@string/cd_edit_task_button"
+                                app:icon="@drawable/ic_edit_task"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        <com.google.android.material.materialswitch.MaterialSwitch
+                            android:id="@+id/reminderSwitch"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:contentDescription="@string/cd_reminder_switch"
+                            app:layout_constraintBottom_toBottomOf="@+id/reminderLabelTv"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="@+id/reminderLabelTv" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
-
-                    <com.google.android.material.materialswitch.MaterialSwitch
-                        android:id="@+id/reminderSwitch"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:contentDescription="@string/cd_reminder_switch"
-                        app:layout_constraintBottom_toBottomOf="@+id/reminderLabelTv"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="@+id/reminderLabelTv" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
-            </androidx.constraintlayout.widget.ConstraintLayout>
 
-        </com.google.android.material.card.MaterialCardView>
+            </com.google.android.material.card.MaterialCardView>
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/add_or_delete_fab"
-            plantDetailsFabContentDescription="@{saved}"
-            plantDetailsFabImage="@{saved}"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="32dp"
-            android:enabled="false"
-            android:src="@drawable/ic_save"
-            app:elevation="16dp"
-            app:layout_constraintBottom_toTopOf="@+id/materialCardView"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/materialCardView"
-            tools:ignore="ContentDescription,SpeakableTextPresentCheck" />
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/add_or_delete_fab"
+                plantDetailsFabContentDescription="@{saved}"
+                plantDetailsFabImage="@{saved}"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="32dp"
+                android:enabled="false"
+                android:src="@drawable/ic_save"
+                app:elevation="16dp"
+                app:layout_constraintBottom_toTopOf="@+id/materialCardView"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/materialCardView"
+                tools:ignore="ContentDescription,SpeakableTextPresentCheck" />
 
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </FrameLayout>
 </layout>

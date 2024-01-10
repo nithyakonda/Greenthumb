@@ -8,11 +8,13 @@ data class SearchResult(val data: List<PlantSummary>)
 
 data class PlantSummary(
     val id: Long,
-    @Json(name = "common_name") val commonName: String?,
+    @Json(name = "common_name") val _commonName: String?,
     @Json(name = "scientific_name") val scientificNames: List<String>?,
     val cycle: String?,
     @Json(name = "default_image") val defaultImage: Images?,
     ) {
+    val commonName: String
+        get() = capitalizeEachWord(_commonName)
     val scientificName: String
         get() = scientificNames.orEmpty().getOrElse(0) {"Unknown"}
 }
@@ -26,7 +28,7 @@ data class PlantDetails(
     val sunlight: List<String>?,
     val watering: String?,
     @Json(name = "pruning_month") val pruningMonth: List<String>?,
-    @Json(name = "pruning_count") val pruningCount: PruningCount?,
+    @Json(name = "pruning_count") val pruningCount: List<PruningCount>?,
     @Json(name = "default_image") val images: Images?,
     val description: String?,
 )
@@ -49,7 +51,7 @@ data class Images(
 
 fun PlantDetails.asDomainModel(): Plant {
     return Plant(this.id,
-        this.commonName.orEmpty(),
+        capitalizeEachWord(this.commonName),
         this.scientificNames.orEmpty().getOrElse(0) {"Unknown"},
         this.cycle.orEmpty(),
         getCareLevelEnumFrom(this.careLevel),
@@ -60,4 +62,10 @@ fun PlantDetails.asDomainModel(): Plant {
         this.images?.originalUrl.orEmpty(),
         this.description.orEmpty()
     )
+}
+
+fun capitalizeEachWord(input: String?): String {
+    return input?.let {
+        it.split(" ").joinToString(" ") { it.capitalize() }
+    } ?: ""
 }

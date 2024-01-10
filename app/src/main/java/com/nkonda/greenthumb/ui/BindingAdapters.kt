@@ -3,6 +3,7 @@ package com.nkonda.greenthumb.ui
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.core.net.toUri
 import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
@@ -47,6 +48,7 @@ fun bindFabImage(view: FloatingActionButton, saved: Boolean){
 @BindingAdapter("careLevelIconAndContentDesc")
 fun bindCareLevelIconAndContentDesc(button: MaterialButton, careLevel: CareLevel?) {
     careLevel?.let {
+        button.visibility = if (careLevel != CareLevel.Unknown) View.VISIBLE else View.GONE
         button.contentDescription = String.format(
             button.context.getString(R.string.cd_care_level_button),
             careLevel.toString()
@@ -64,9 +66,18 @@ fun bindCareLevelIconAndContentDesc(button: MaterialButton, careLevel: CareLevel
     }
 }
 
+@BindingAdapter("careLevelTvVisibility")
+fun bindCareLevelTvVisibility(view: TextView, careLevel: CareLevel?) {
+    view.visibility = View.GONE
+    careLevel?.let {
+        if( it != CareLevel.Unknown) view.visibility = View.VISIBLE
+    }
+}
+
 @BindingAdapter("sunlightIconAndContentDesc")
 fun bindSunlightIconAndContentDesc(button: MaterialButton, sunlightList: List<Sunlight>?) {
     sunlightList?.let {
+        button.visibility = if (sunlightList.isNotEmpty() && !it.any { sunlight -> sunlight == Sunlight.Unknown }) View.VISIBLE else View.GONE
         button.contentDescription = String.format(button.context.getString(R.string.cd_sunlight_button), sunlightList.toString())
         val sunlight = if (sunlightList.size != 1 &&
                 sunlightList.contains(Sunlight.PartShade) ||
@@ -86,6 +97,14 @@ fun bindSunlightIconAndContentDesc(button: MaterialButton, sunlightList: List<Su
         )
     }?: run {
         button.visibility = View.INVISIBLE
+    }
+}
+
+@BindingAdapter("sunlightTvVisibility")
+fun bindSunlightTvVisibility(view: TextView, sunlightList: List<Sunlight>?) {
+    view.visibility = View.GONE
+    sunlightList?.let {
+        if(it.isNotEmpty() && !it.any { sunlight -> sunlight == Sunlight.Unknown }) view.visibility = View.VISIBLE
     }
 }
 
@@ -113,5 +132,5 @@ fun bindReminderButtonState(view: Button, saved: Boolean) {
 
 @BindingAdapter("viewVisibility")
 fun bindViewVisibility(view: View, saved: Boolean) {
-    view.visibility = if (saved) View.VISIBLE else View.INVISIBLE
+    view.visibility = if (saved) View.VISIBLE else View.GONE
 }

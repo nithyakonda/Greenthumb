@@ -160,13 +160,21 @@ fun getWateringEnumFrom(watering: String?): Watering {
     } ?: Watering.Unknown
 }
 
-fun getPruningFrom(pruningCount: PruningCount?, pruningMonth: List<String>?): Plant.Pruning {
-    return Plant.Pruning(
-        convertStringListToMonthList(pruningMonth),
-        pruningCount?.amount ?: 0,
-        pruningCount?.interval?.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
-            ?: ""
-    )
+fun getPruningFrom(pruningCount: List<PruningCount>?, pruningMonth: List<String>?): Plant.Pruning {
+    return if (pruningCount?.isEmpty() == true) {
+         Plant.Pruning(convertStringListToMonthList(pruningMonth))
+    } else {
+        Plant.Pruning(
+            convertStringListToMonthList(pruningMonth),
+            pruningCount?.get(0)?.amount ?: 0,
+            pruningCount?.get(0)?.interval?.replaceFirstChar {
+                if (it.isLowerCase()) it.titlecase(
+                    Locale.getDefault()
+                ) else it.toString()
+            }
+                ?: ""
+        )
+    }
 }
 
 fun convertIntListToDayList(days: List<Int>): List<Day> {

@@ -67,8 +67,8 @@ data class Plant constructor(
 
     data class Pruning(
         val months:List<Month>,
-        val amount: Int,
-        val interval: String) {
+        val amount: Int = 0,
+        val interval: String = "") {
         override fun toString(): String {
             return super.toString()
             // todo

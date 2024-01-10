@@ -46,15 +46,15 @@ enum class ErrorCode(val code: String, val message: String) {
     // Errors from mobile device
     NO_INTERNET(
         "1000",
-        "Looks like our internet connection is taking a nap in the shade!\\n Please try later."
+        "Looks like your internet connection is taking a nap in the shade!"
     ),
 
     // Errors from remote api
-    NOT_FOUND("2000", "Well, this is awkward... \\n No matching records found!"),
+    NOT_FOUND("2000", "Well, this is awkward... \\n Plant not found in the digital garden!"),
     TIMEOUT("2001", ""),
     FAILED("2002", ""),
 
-    UNKNOWN_ERROR("9000", "");
+    UNKNOWN_ERROR("9000", "Oops-a-daisy! Something went wrong in our plant-tastic system");
 
 
     companion object {
