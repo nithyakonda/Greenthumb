@@ -135,7 +135,7 @@
                 app:layout_constraintVertical_chainStyle="packed"
                 app:strokeColor="@color/colorCareLevel"
                 tools:ignore="SpeakableTextPresentCheck"
-                tools:src="@drawable/ic_care_level_high"/>
+                tools:src="@drawable/ic_care_level_high" />
 
             <TextView
                 android:id="@+id/carelevelTv"
@@ -166,7 +166,8 @@
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/carelevelTv"
-                app:strokeColor="@color/colorSunlight" />
+                app:strokeColor="@color/colorSunlight"
+                tools:ignore="SpeakableTextPresentCheck" />
 
 
             <TextView
@@ -176,7 +177,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:paddingStart="8dp"
-                android:paddingRight="8dp"
+                android:paddingEnd="8dp"
                 android:text="@{plant.getSunlightText}"
                 app:layout_constraintBottom_toTopOf="@+id/divider"
                 app:layout_constraintEnd_toEndOf="@id/vGuide1"
@@ -185,13 +186,13 @@
                 app:layout_constraintTop_toBottomOf="@+id/sunlightBtn"
                 tools:text="Full Sun" />
 
-            <View
+            <com.google.android.material.divider.MaterialDivider
                 android:id="@+id/divider"
                 android:layout_width="0dp"
                 android:layout_height="1dp"
                 android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
                 android:layout_marginTop="16dp"
+                android:layout_marginEnd="8dp"
                 android:background="?android:attr/listDivider"
                 app:layout_constraintBottom_toTopOf="@+id/textView"
                 app:layout_constraintEnd_toStartOf="@+id/vGuide1"
@@ -231,7 +232,8 @@
                 app:layout_constraintEnd_toStartOf="@+id/vGuide1"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView" />
+                app:layout_constraintTop_toBottomOf="@+id/textView"
+                tools:ignore="SpeakableTextPresentCheck" />
 
             <TextView
                 android:id="@+id/wateringTv"
@@ -263,7 +265,8 @@
                 app:layout_constraintEnd_toStartOf="@+id/vGuide1"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/wateringTv" />
+                app:layout_constraintTop_toBottomOf="@+id/wateringTv"
+                tools:ignore="SpeakableTextPresentCheck" />
 
             <TextView
                 android:id="@+id/pruningTv"
@@ -350,26 +353,19 @@
                             tools:text="Pruning" />
 
                         <TextView
-                            android:id="@+id/reminderLabelTv"
-                            style="@style/GTLabelTextViewStyle"
-                            android:layout_width="wrap_content"
+                            android:id="@+id/expectedScheduleTv"
+                            style="@style/GTTextViewStyle"
+                            expectedScheduleText="@{task.schedule}"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8dp"
-                            android:text="@string/tv_label_task_reminders"
+                            android:layout_marginEnd="8dp"
                             app:layout_constraintEnd_toStartOf="@+id/reminderSwitch"
                             app:layout_constraintHorizontal_bias="0.0"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/reminderTitleTv" />
-
-                        <TextView
-                            android:id="@+id/expectedScheduleTv"
-                            style="@style/GTTextViewStyle"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="24dp"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/reminderLabelTv"
+                            app:layout_constraintTop_toBottomOf="@+id/reminderTitleTv"
                             tools:text="Prune every year in March, April" />
+
 
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:id="@+id/editTaskContainer"
@@ -384,13 +380,16 @@
                             <TextView
                                 android:id="@+id/actualScheduleTv"
                                 style="@style/GTTextViewStyle"
+                                actualScheduleText="@{task.schedule}"
                                 android:layout_width="0dp"
-                                android:layout_height="wrap_content"
+                                android:layout_height="0dp"
+                                android:layout_marginTop="24dp"
+                                android:layout_marginEnd="8dp"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toStartOf="@+id/editReminderBtn"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toTopOf="parent"
-                                tools:text="Task scheduled for Sat, Mar 4, 9 AM \n Repeats every year" />
+                                tools:text="Task scheduled for Sat, Mon every week at 9:00 AM" />
 
                             <Button
                                 android:id="@+id/editReminderBtn"
@@ -400,7 +399,7 @@
                                 android:contentDescription="@string/cd_edit_task_button"
                                 app:icon="@drawable/ic_edit_task"
                                 app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintTop_toTopOf="parent" />
+                                app:layout_constraintTop_toTopOf="@+id/actualScheduleTv" />
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
                         <com.google.android.material.materialswitch.MaterialSwitch
@@ -408,9 +407,9 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:contentDescription="@string/cd_reminder_switch"
-                            app:layout_constraintBottom_toBottomOf="@+id/reminderLabelTv"
+                            app:layout_constraintBottom_toBottomOf="@+id/expectedScheduleTv"
                             app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toTopOf="@+id/reminderLabelTv" />
+                            app:layout_constraintTop_toTopOf="@+id/expectedScheduleTv" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -423,7 +422,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="32dp"
-                android:enabled="false"
                 android:src="@drawable/ic_save"
                 app:elevation="16dp"
                 app:layout_constraintBottom_toTopOf="@+id/materialCardView"

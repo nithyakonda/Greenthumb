@@ -4,8 +4,9 @@
         <item name="background">@drawable/round_rect</item>
         <item name="android:textColorHint">@color/md_theme_onSurfaceVariant</item>
         <item name="android:textColor">@color/md_theme_onSurface</item>
+        <item name="android:fontFamily">@font/roboto_condensed_light</item>
         <item name="backgroundTint">@color/md_theme_surface</item>
-        <item name="queryBackground">"@android:color/transparent"</item>
+        <item name="queryBackground">@android:color/transparent</item>
         <item name="iconifiedByDefault">false</item>
     </style>
 

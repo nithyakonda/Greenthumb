@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
+import com.google.android.material.timepicker.TimeFormat
 import com.nkonda.greenthumb.util.*
 import java.util.*
 
@@ -12,7 +13,7 @@ data class Plant constructor(
     @PrimaryKey val id: Long,
     @ColumnInfo(name = "common_name") var commonName: String,
     @ColumnInfo(name = "scientific_name") val scientificName: String,
-    val cycle: String, // Enum perennial, annual, biennial, biannual
+    val cycle: String,
     @ColumnInfo(name = "care_level") val careLevel: CareLevel,
     @TypeConverters(SunlightListConverter::class)
     val sunlight: List<Sunlight>,
@@ -23,22 +24,23 @@ data class Plant constructor(
     val image: String,
     val description: String,
 ) {
-    fun getExpectedSchedule(taskType: TaskType):Schedule {
-        // todo implement
+    fun getDefaultSchedule(taskType: TaskType):Schedule {
         val cal = Calendar.getInstance()
-        val hour = cal.get(Calendar.HOUR)
+        val hour = cal.get(Calendar.HOUR_OF_DAY)
         val min = cal.get(Calendar.MINUTE)
         return when(taskType) {
-            TaskType.PRUNE -> Schedule(
-                null,
+            TaskType.PRUNE -> PruningSchedule(
                 pruning.months,
                 hour,
                 min,
-                getExpectedOccurrence(pruning.months)
+                false
             )
-            TaskType.WATER -> Schedule(
+            TaskType.WATER -> WateringSchedule(
                 convertIntListToDayList(listOf(cal.get(Calendar.DAY_OF_WEEK))),
-                null, hour, min, getExpectedOccurrence(watering)
+                hour,
+                min,
+                false,
+                watering
             )
             TaskType.CUSTOM -> TODO()
         }
@@ -53,16 +55,6 @@ data class Plant constructor(
                 }
             }
         }
-    }
-
-    private fun getExpectedOccurrence(pruningMonth: List<Month>): TaskOccurrence {
-        return TaskOccurrence.YEARLY
-        TODO("Not yet implemented")
-    }
-
-    private fun getExpectedOccurrence(watering: Watering): TaskOccurrence {
-        return TaskOccurrence.WEEKLY
-        TODO("Not yet implemented")
     }
 
     data class Pruning(

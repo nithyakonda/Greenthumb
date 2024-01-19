@@ -196,7 +196,7 @@ class PlantDetailsViewModelTest {
     fun saveTask_whenSuccess_showsSuccessMessage() = runBlocking{
         repository.savePlant(plantOne)
         val taskKey = TaskKey(plantOne.id, TaskType.WATER)
-        val schedule = plantOne.getExpectedSchedule(TaskType.WATER)
+        val schedule = plantOne.getDefaultSchedule(TaskType.WATER)
         plantDetailsViewModel.saveTask(taskKey, schedule)
 
         // Then assert that successMessage is set correctly
@@ -213,7 +213,7 @@ class PlantDetailsViewModelTest {
         repository.savePlant(plantOne)
         repository.setReturnError(true)
         val taskKey = TaskKey(plantOne.id, TaskType.WATER)
-        val schedule = plantOne.getExpectedSchedule(TaskType.WATER)
+        val schedule = plantOne.getDefaultSchedule(TaskType.WATER)
 
         plantDetailsViewModel.saveTask(taskKey, schedule)
 

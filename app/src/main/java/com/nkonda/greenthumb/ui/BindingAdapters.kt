@@ -12,27 +12,44 @@ import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.nkonda.greenthumb.R
-import com.nkonda.greenthumb.data.CareLevel
-import com.nkonda.greenthumb.data.Sunlight
-import com.nkonda.greenthumb.data.Watering
+import com.nkonda.greenthumb.data.*
 import timber.log.Timber
 
+// Shared
 @BindingAdapter("plantImage")
 fun bindPlantImage(imageView: ImageView, imageUrl: String?) {
     imageUrl?.let {
         val imgUri = imageUrl.toUri().buildUpon().scheme("https").build()
-        Timber.d("Image Uri ::" + imgUri)
+        Timber.d("Image Uri ::%s", imgUri)
         Glide.with(imageView.context)
             .load(imgUri)
             .diskCacheStrategy(DiskCacheStrategy.ALL)
             .apply(
                 RequestOptions()
                     .placeholder(R.drawable.loading_animation)
-                    .error(R.drawable.ic_broken_image))
+                    .error(R.drawable.default_image))
             .into(imageView)
     }
 }
 
+// Search Screen
+@BindingAdapter("searchResultPlantImage")
+fun bindSearchResultPlantImage(imageView: ImageView, imageUrl: String?) {
+    imageUrl?.let {
+        val imgUri = imageUrl.toUri().buildUpon().scheme("https").build()
+        Timber.d("Image Uri ::%s", imgUri)
+        Glide.with(imageView.context)
+            .load(imgUri)
+            .diskCacheStrategy(DiskCacheStrategy.NONE)
+            .apply(
+                RequestOptions()
+                    .placeholder(R.drawable.loading_animation)
+                    .error(R.drawable.default_image))
+            .into(imageView)
+    }
+}
+
+// Plant Details Screen
 @BindingAdapter("plantDetailsFabContentDescription")
 fun bindPlantDetailsFabContentDescription(view: FloatingActionButton, saved: Boolean) {
     view.contentDescription = view.context.getString(
@@ -133,4 +150,22 @@ fun bindReminderButtonState(view: Button, saved: Boolean) {
 @BindingAdapter("viewVisibility")
 fun bindViewVisibility(view: View, saved: Boolean) {
     view.visibility = if (saved) View.VISIBLE else View.GONE
+}
+
+@BindingAdapter("actualScheduleText")
+fun bindActualScheduleText(textView: TextView, schedule: Schedule?) {
+     schedule?.let {
+        if (it.toString().isEmpty()) {
+            textView.text = textView.context.getString(R.string.tv_error_actual_schedule)
+            textView.setTextAppearance(R.style.GTErrorTextViewStyle)
+        } else {
+            textView.text = String.format(textView.context.getString(R.string.tv_text_actual_schedule), it.toString())
+            textView.setTextAppearance(R.style.GTTextViewStyle)
+        }
+    }
+}
+
+@BindingAdapter("expectedScheduleText")
+fun bindExpectedScheduleText(textView: TextView, schedule: Schedule?) {
+    textView.text = schedule?.expectedScheduleString()
 }

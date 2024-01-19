@@ -87,6 +87,7 @@ class ScheduleConverter {
             Types.newParameterizedType(List::class.java, Month::class.java),
             Integer::class.java,
             Integer::class.java,
+            Boolean::class.java,
             TaskOccurrence::class.java)
         val adapter: JsonAdapter<Schedule> = moshi.adapter(type)
         return adapter.fromJson(value)
@@ -101,6 +102,7 @@ class ScheduleConverter {
             Types.newParameterizedType(List::class.java, Month::class.java),
             Integer::class.java,
             Integer::class.java,
+            Boolean::class.java,
             TaskOccurrence::class.java
         )
         val adapter: JsonAdapter<Schedule> = moshi.adapter(type)
@@ -111,18 +113,18 @@ class ScheduleConverter {
 fun convertStringListToMonthList(months: List<String>?): List<Month> {
     return months?.map { monthString ->
         when (monthString.toLowerCase()) {
-            "january" -> Month.JANUARY
-            "february" -> Month.FEBRUARY
-            "march" -> Month.MARCH
-            "april" -> Month.APRIL
-            "may" -> Month.MAY
-            "june" -> Month.JUNE
-            "july" -> Month.JULY
-            "august" -> Month.AUGUST
-            "september" -> Month.SEPTEMBER
-            "october" -> Month.OCTOBER
-            "november" -> Month.NOVEMBER
-            "december" -> Month.DECEMBER
+            "january" -> Month.January
+            "february" -> Month.February
+            "march" -> Month.March
+            "april" -> Month.April
+            "may" -> Month.May
+            "june" -> Month.June
+            "july" -> Month.July
+            "august" -> Month.August
+            "september" -> Month.September
+            "october" -> Month.October
+            "november" -> Month.November
+            "december" -> Month.December
             else -> throw IllegalArgumentException("Invalid month string: $monthString")
         }
     } ?: listOf()
@@ -191,3 +193,4 @@ fun convertIntListToDayList(days: List<Int>): List<Day> {
         }
     }
 }
+

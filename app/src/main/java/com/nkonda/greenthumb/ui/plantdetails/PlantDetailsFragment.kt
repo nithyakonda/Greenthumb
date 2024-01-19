@@ -5,12 +5,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Switch
-import android.widget.TimePicker
 import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import com.google.android.material.materialswitch.MaterialSwitch
+import com.google.android.material.timepicker.MaterialTimePicker
 import com.nkonda.greenthumb.data.*
 import com.nkonda.greenthumb.databinding.FragmentPlantDetailsBinding
 import com.nkonda.greenthumb.ui.LoadingUtils
@@ -18,7 +18,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 import java.util.*
 
-class PlantDetailsFragment : Fragment(), TimePickerDialog.OnTimeSetListener {
+class PlantDetailsFragment : Fragment() {
     private lateinit var binding: FragmentPlantDetailsBinding
     private val plantDetailsViewModel:PlantDetailsViewModel by viewModel()
 
@@ -110,15 +110,17 @@ class PlantDetailsFragment : Fragment(), TimePickerDialog.OnTimeSetListener {
 
             wateringTaskBtn.setOnClickListener{
                 showAddTaskView(TaskKey(binding.plant!!.id, TaskType.WATER),
-                    binding.plant?.watering.toString() ?: "")
+                    binding.plant?.getDefaultSchedule(TaskType.WATER)!!
+                )
             }
 
             pruningTaskBtn.setOnClickListener {
                 showAddTaskView(TaskKey(binding.plant!!.id, TaskType.PRUNE),
-                    binding.plant?.pruning?.months.toString())
+                    binding.plant?.getDefaultSchedule(TaskType.PRUNE)!!
+                )
             }
 
-            reminderSwitch.setOnClickListener { it as Switch
+            reminderSwitch.setOnClickListener { it as MaterialSwitch
                 if (it.isChecked) {
                     addTask()
                 } else {
@@ -136,20 +138,9 @@ class PlantDetailsFragment : Fragment(), TimePickerDialog.OnTimeSetListener {
         }
     }
 
-    override fun onTimeSet(view: TimePicker?, hourOfDay: Int, minute: Int) {
-        val schedule = Schedule(
-            listOf(Day.MONDAY, Day.WEDNESDAY),
-            null,
-            hourOfDay,
-            minute,
-            TaskOccurrence.WEEKLY
-        )
-        plantDetailsViewModel.updateSchedule(binding.task!!.key, schedule)
-    }
-
     private fun addTask() {
         binding.task!!.key.apply {
-            plantDetailsViewModel.saveTask(this, binding.plant!!.getExpectedSchedule(this.taskType))
+            plantDetailsViewModel.saveTask(this, binding.plant!!.getDefaultSchedule(this.taskType))
         }
         binding.editTaskContainer.visibility = View.VISIBLE
     }
@@ -167,15 +158,13 @@ class PlantDetailsFragment : Fragment(), TimePickerDialog.OnTimeSetListener {
         }
     }
 
-    private fun showAddTaskView(taskKey: TaskKey, expectedSchedule: String) {
+    private fun showAddTaskView(taskKey: TaskKey, expectedSchedule: Schedule) {
         binding.apply {
-            // intialize binding.task to default task so it is never null even if a db fetch fails.
+            // initialize binding.task to default task so it is never null even if a db fetch fails.
             // Worst case the existing task is replaced with new schedule following add task workflow
-            task = Task(taskKey)
+            task = Task(taskKey, expectedSchedule)
             plantDetailsViewModel.setCurrentTask(taskKey)
             addTaskContainer.visibility = View.VISIBLE
-            reminderTitleTv.text = taskKey.taskType.toString()
-            expectedScheduleTv.text = expectedSchedule
         }
 
     }
@@ -196,7 +185,32 @@ class PlantDetailsFragment : Fragment(), TimePickerDialog.OnTimeSetListener {
 
     private fun showSchedulingDialog() {
         val cal = Calendar.getInstance()
-        TimePickerDialog(requireActivity(), this, cal.get(Calendar.HOUR), cal.get(Calendar.MINUTE), true).show()
+//        val timePicker = MaterialTimePicker.Builder()
+//            .build()
+//        timePicker.addOnPositiveButtonClickListener {
+//            val schedule = Schedule(
+//                listOf(Day.MONDAY, Day.WEDNESDAY),
+//                null,
+//                hourOfDay,
+//                minute,
+//                TaskOccurrence.WEEKLY
+//            )
+//
+//            binding.task!!.apply {
+//                when(this.key.taskType) {
+//                    TaskType.PRUNE -> PruningSchedule()
+//                    TaskType.WATER -> WateringSchedule(
+//                        listOf(Day.MONDAY, Day.WEDNESDAY), // todo get for selected chips
+//                        hourOfDay,
+//                        minute,
+//                        view?.
+//                    )
+//                    TaskType.CUSTOM -> TODO()
+//                }
+//            }
+//            plantDetailsViewModel.updateSchedule(binding.task!!.key, schedule)
+//        }
+//        TimePickerDialog(requireActivity(), this, cal.get(Calendar.HOUR), cal.get(Calendar.MINUTE), true).show()
     }
 
     private fun showToast(message: String?) {

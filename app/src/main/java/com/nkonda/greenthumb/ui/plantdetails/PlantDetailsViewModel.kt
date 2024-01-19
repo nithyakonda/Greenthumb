@@ -96,9 +96,7 @@ class PlantDetailsViewModel(private val repository: IRepository) : ViewModel() {
     fun saveTask(taskKey: TaskKey, expectedSchedule: Schedule) {
         _progressIndicator.value = true
         viewModelScope.launch {
-            val task = Task(taskKey).also {
-                it.schedule = expectedSchedule
-            }
+            val task = Task(taskKey, expectedSchedule)
             val result = repository.saveTask(task)
             if (result.succeeded) {
                 _successMessage.value = "Task Created"
