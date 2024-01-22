@@ -32,14 +32,12 @@ data class Plant constructor(
             TaskType.PRUNE -> PruningSchedule(
                 pruning.months,
                 hour,
-                min,
-                false
+                min
             )
             TaskType.WATER -> WateringSchedule(
                 convertIntListToDayList(listOf(cal.get(Calendar.DAY_OF_WEEK))),
                 hour,
                 min,
-                false,
                 watering
             )
             TaskType.CUSTOM -> TODO()

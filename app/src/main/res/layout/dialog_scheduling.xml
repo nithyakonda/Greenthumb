@@ -2,6 +2,14 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="schedule"
+            type="com.nkonda.greenthumb.data.Schedule" />
+    </data>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -27,12 +35,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            tools:text="Repeats"
+            android:text="Repeats"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/divider" />
 
         <com.google.android.material.chip.ChipGroup
             android:id="@+id/dayChipGroup"
+            chipGroupVisibility="@{schedule}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
@@ -46,6 +55,7 @@
             <com.google.android.material.chip.Chip
                 android:id="@+id/sunChip"
                 style="@style/Widget.MaterialComponents.Chip.Choice"
+                chipChecked="@{schedule}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="S" />
@@ -53,6 +63,7 @@
             <com.google.android.material.chip.Chip
                 android:id="@+id/monChip"
                 style="@style/Widget.MaterialComponents.Chip.Choice"
+                chipChecked="@{schedule}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="M" />
@@ -60,6 +71,7 @@
             <com.google.android.material.chip.Chip
                 android:id="@+id/tueChip"
                 style="@style/Widget.MaterialComponents.Chip.Choice"
+                chipChecked="@{schedule}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="T" />
@@ -67,6 +79,7 @@
             <com.google.android.material.chip.Chip
                 android:id="@+id/wedChip"
                 style="@style/Widget.MaterialComponents.Chip.Choice"
+                chipChecked="@{schedule}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="W" />
@@ -74,6 +87,7 @@
             <com.google.android.material.chip.Chip
                 android:id="@+id/thuChip"
                 style="@style/Widget.MaterialComponents.Chip.Choice"
+                chipChecked="@{schedule}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="T" />
@@ -81,6 +95,7 @@
             <com.google.android.material.chip.Chip
                 android:id="@+id/friChip"
                 style="@style/Widget.MaterialComponents.Chip.Choice"
+                chipChecked="@{schedule}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="F" />
@@ -88,6 +103,7 @@
             <com.google.android.material.chip.Chip
                 android:id="@+id/satChip"
                 style="@style/Widget.MaterialComponents.Chip.Choice"
+                chipChecked="@{schedule}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="S" />
@@ -96,6 +112,7 @@
 
         <com.google.android.material.chip.ChipGroup
             android:id="@+id/monthChipGroup"
+            chipGroupVisibility="@{schedule}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
@@ -108,6 +125,7 @@
             <com.google.android.material.chip.Chip
                 android:id="@+id/janChip"
                 style="@style/Widget.MaterialComponents.Chip.Choice"
+                chipChecked="@{schedule}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Jan" />
@@ -115,6 +133,7 @@
             <com.google.android.material.chip.Chip
                 android:id="@+id/febChip"
                 style="@style/Widget.MaterialComponents.Chip.Choice"
+                chipChecked="@{schedule}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Feb" />
@@ -122,6 +141,7 @@
             <com.google.android.material.chip.Chip
                 android:id="@+id/marChip"
                 style="@style/Widget.MaterialComponents.Chip.Choice"
+                chipChecked="@{schedule}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Mar" />
@@ -129,6 +149,7 @@
             <com.google.android.material.chip.Chip
                 android:id="@+id/aprChip"
                 style="@style/Widget.MaterialComponents.Chip.Choice"
+                chipChecked="@{schedule}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Apr" />
@@ -136,6 +157,7 @@
             <com.google.android.material.chip.Chip
                 android:id="@+id/mayChip"
                 style="@style/Widget.MaterialComponents.Chip.Choice"
+                chipChecked="@{schedule}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="May" />
@@ -143,6 +165,7 @@
             <com.google.android.material.chip.Chip
                 android:id="@+id/junChip"
                 style="@style/Widget.MaterialComponents.Chip.Choice"
+                chipChecked="@{schedule}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Jun" />
@@ -150,6 +173,7 @@
             <com.google.android.material.chip.Chip
                 android:id="@+id/julChip"
                 style="@style/Widget.MaterialComponents.Chip.Choice"
+                chipChecked="@{schedule}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Jul" />
@@ -157,6 +181,7 @@
             <com.google.android.material.chip.Chip
                 android:id="@+id/augChip"
                 style="@style/Widget.MaterialComponents.Chip.Choice"
+                chipChecked="@{schedule}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Aug" />
@@ -164,6 +189,7 @@
             <com.google.android.material.chip.Chip
                 android:id="@+id/sepChip"
                 style="@style/Widget.MaterialComponents.Chip.Choice"
+                chipChecked="@{schedule}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Sep" />
@@ -171,6 +197,7 @@
             <com.google.android.material.chip.Chip
                 android:id="@+id/octChip"
                 style="@style/Widget.MaterialComponents.Chip.Choice"
+                chipChecked="@{schedule}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Oct" />
@@ -178,6 +205,7 @@
             <com.google.android.material.chip.Chip
                 android:id="@+id/novChip"
                 style="@style/Widget.MaterialComponents.Chip.Choice"
+                chipChecked="@{schedule}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Nov" />
@@ -185,10 +213,31 @@
             <com.google.android.material.chip.Chip
                 android:id="@+id/decChip"
                 style="@style/Widget.MaterialComponents.Chip.Choice"
+                chipChecked="@{schedule}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Dec" />
         </com.google.android.material.chip.ChipGroup>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/okBtn"
+            style="@style/Widget.Material3.Button.IconButton.Filled"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:text="OK"
+            android:layout_margin="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/cancelBtn"
+            style="@style/Widget.Material3.Button.IconButton.Outlined"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:text="Cancel"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/okBtn" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

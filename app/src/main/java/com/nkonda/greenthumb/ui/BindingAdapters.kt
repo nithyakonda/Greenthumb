@@ -10,6 +10,8 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.nkonda.greenthumb.R
 import com.nkonda.greenthumb.data.*
@@ -159,7 +161,7 @@ fun bindActualScheduleText(textView: TextView, schedule: Schedule?) {
             textView.text = textView.context.getString(R.string.tv_error_actual_schedule)
             textView.setTextAppearance(R.style.GTErrorTextViewStyle)
         } else {
-            textView.text = String.format(textView.context.getString(R.string.tv_text_actual_schedule), it.toString())
+            textView.text = String.format(textView.context.getString(R.string.tv_text_actual_schedule), it.actualScheduleString())
             textView.setTextAppearance(R.style.GTTextViewStyle)
         }
     }
@@ -168,4 +170,42 @@ fun bindActualScheduleText(textView: TextView, schedule: Schedule?) {
 @BindingAdapter("expectedScheduleText")
 fun bindExpectedScheduleText(textView: TextView, schedule: Schedule?) {
     textView.text = schedule?.expectedScheduleString()
+}
+
+// Scheduling Dialog
+
+@BindingAdapter("chipGroupVisibility")
+fun bindChipGroupVisibility(chipGroup: ChipGroup, schedule: Schedule?) {
+    schedule?.let {
+        chipGroup.visibility = if (chipGroup.id == R.id.dayChipGroup) {
+            if (schedule is WateringSchedule) View.VISIBLE else View.GONE
+        } else {
+            if (schedule is PruningSchedule) View.VISIBLE else View.GONE
+        }
+    }
+}
+@BindingAdapter("chipChecked")
+fun bindChipChecked(chip: Chip, schedule: Schedule?) {
+    chip.isChecked = when(chip.id) {
+        R.id.sunChip -> schedule?.days?.contains(Day.Sunday) == true
+        R.id.monChip -> schedule?.days?.contains(Day.Monday) == true
+        R.id.tueChip -> schedule?.days?.contains(Day.Tuesday) == true
+        R.id.wedChip -> schedule?.days?.contains(Day.Wednesday) == true
+        R.id.thuChip -> schedule?.days?.contains(Day.Thursday) == true
+        R.id.friChip -> schedule?.days?.contains(Day.Friday) == true
+        R.id.satChip -> schedule?.days?.contains(Day.Saturday) == true
+        R.id.janChip -> schedule?.months?.contains(Month.January) == true
+        R.id.febChip -> schedule?.months?.contains(Month.February) == true
+        R.id.marChip -> schedule?.months?.contains(Month.March) == true
+        R.id.aprChip -> schedule?.months?.contains(Month.April) == true
+        R.id.mayChip -> schedule?.months?.contains(Month.May) == true
+        R.id.junChip -> schedule?.months?.contains(Month.June) == true
+        R.id.julChip -> schedule?.months?.contains(Month.July) == true
+        R.id.augChip -> schedule?.months?.contains(Month.August) == true
+        R.id.sepChip -> schedule?.months?.contains(Month.September) == true
+        R.id.octChip -> schedule?.months?.contains(Month.October) == true
+        R.id.novChip -> schedule?.months?.contains(Month.November) == true
+        R.id.decChip -> schedule?.months?.contains(Month.December) == true
+        else -> {false}
+    }
 }

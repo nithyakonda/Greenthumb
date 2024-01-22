@@ -29,4 +29,4 @@ val plantOnePruningTaskDefaultSchedule = Task(TaskKey(1, TaskType.PRUNE))
 //val plantOneWateringTaskExpectedSchedule = plantOneWateringTaskDefaultSchedule.apply {  schedule = wateringOneExpectedSchedule }
 
 
-val wateringOneExpectedSchedule = Schedule(listOf(Day.MONDAY, Day.TUESDAY), null, 12, 0, TaskOccurrence.ONCE)
+val wateringOneExpectedSchedule = Schedule(listOf(Day.Monday, Day.Tuesday), null, 12, 0, TaskOccurrence.ONCE)

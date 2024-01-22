@@ -7,6 +7,7 @@ import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import com.squareup.moshi.adapters.PolymorphicJsonAdapterFactory
 import timber.log.Timber
 import java.io.IOException
 import java.lang.reflect.Type
@@ -75,6 +76,9 @@ class MonthListConverter {
 class ScheduleConverter {
 
     private val moshi: Moshi = Moshi.Builder()
+        .add(PolymorphicJsonAdapterFactory.of(Schedule::class.java, "taskType")
+            .withSubtype(PruningSchedule::class.java, TaskType.PRUNE.name)
+            .withSubtype(WateringSchedule::class.java, TaskType.WATER.name))
         .add(KotlinJsonAdapterFactory())
         .build()
 
@@ -86,9 +90,7 @@ class ScheduleConverter {
             Types.newParameterizedType(List::class.java, Day::class.java),
             Types.newParameterizedType(List::class.java, Month::class.java),
             Integer::class.java,
-            Integer::class.java,
-            Boolean::class.java,
-            TaskOccurrence::class.java)
+            Integer::class.java)
         val adapter: JsonAdapter<Schedule> = moshi.adapter(type)
         return adapter.fromJson(value)
     }
@@ -101,13 +103,12 @@ class ScheduleConverter {
             Types.newParameterizedType(List::class.java, Day::class.java),
             Types.newParameterizedType(List::class.java, Month::class.java),
             Integer::class.java,
-            Integer::class.java,
-            Boolean::class.java,
-            TaskOccurrence::class.java
-        )
+            Integer::class.java)
         val adapter: JsonAdapter<Schedule> = moshi.adapter(type)
         return adapter.toJson(schedule)
     }
+
+
 }
 
 fun convertStringListToMonthList(months: List<String>?): List<Month> {
@@ -182,13 +183,13 @@ fun getPruningFrom(pruningCount: List<PruningCount>?, pruningMonth: List<String>
 fun convertIntListToDayList(days: List<Int>): List<Day> {
     return days.map { dayInt ->
         when(dayInt) {
-            Calendar.SUNDAY -> Day.SUNDAY
-            Calendar.MONDAY -> Day.MONDAY
-            Calendar.TUESDAY -> Day.TUESDAY
-            Calendar.WEDNESDAY -> Day.WEDNESDAY
-            Calendar.THURSDAY -> Day.THURSDAY
-            Calendar.FRIDAY -> Day.FRIDAY
-            Calendar.SATURDAY -> Day.SATURDAY
+            Calendar.SUNDAY -> Day.Sunday
+            Calendar.MONDAY -> Day.Monday
+            Calendar.TUESDAY -> Day.Tuesday
+            Calendar.WEDNESDAY -> Day.Wednesday
+            Calendar.THURSDAY -> Day.Thursday
+            Calendar.FRIDAY -> Day.Friday
+            Calendar.SATURDAY -> Day.Saturday
             else -> Day.NOT_SET
         }
     }
