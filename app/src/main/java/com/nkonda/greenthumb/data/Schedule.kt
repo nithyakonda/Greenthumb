@@ -1,6 +1,8 @@
 package com.nkonda.greenthumb.data
 
 import com.squareup.moshi.JsonClass
+import java.text.SimpleDateFormat
+import java.util.*
 
 @JsonClass(generateAdapter = true)
 open abstract class Schedule(
@@ -11,13 +13,16 @@ open abstract class Schedule(
     var minute: Int = -1,
     var occurrence: TaskOccurrence = TaskOccurrence.ONCE,
 ) {
-
-    abstract fun expectedScheduleString():String
     abstract fun actualScheduleString():String
 
-    protected fun StringBuilder.getTimeString() {
-        append(hourOfDay)
-        append(":${minute}")
+    // todo handle both 12hr/24hr formats
+    protected fun getTimeString(): String {
+        val calendar = Calendar.getInstance()
+        calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
+        calendar.set(Calendar.MINUTE, minute)
+
+        val dateFormat = SimpleDateFormat("hh:mm a", Locale.getDefault())
+        return dateFormat.format(calendar.time)
     }
 }
 
@@ -26,23 +31,13 @@ class PruningSchedule(
     hourOfDay: Int = -1,
     minute: Int = -1,
     var notified: Boolean? = false): Schedule(TaskType.PRUNE, emptyList(), months, hourOfDay, minute, TaskOccurrence.YEARLY) {
-    override fun expectedScheduleString(): String {
-        return StringBuilder().apply {
-            if (months?.isNotEmpty() == true) {
-                append("Prune every year in ")
-                append(months?.joinToString(separator = "/"))
-            } else {
-                append("Turn on to set pruning reminders")
-            }
-        }.toString()
-    }
 
     override fun actualScheduleString(): String {
         return StringBuilder().apply {
             if (months?.isNotEmpty() == true) {
                 append(months?.joinToString())
                 append(" every year \n")
-                append(" You will be notified at ")
+                append("You will be notified at ")
                 append(getTimeString())
                 append(" on the first day of the month(s)")
             } else {
@@ -55,38 +50,15 @@ class PruningSchedule(
 class WateringSchedule(
     days: List<Day>,
     hourOfDay: Int = -1,
-    minute: Int = -1,
-    private val expected: Watering): Schedule(TaskType.WATER, days, emptyList(), hourOfDay, minute, TaskOccurrence.WEEKLY) {
-    override fun expectedScheduleString():String {
-        return when(expected) {
-            Watering.Frequent -> "Water every day"
-            Watering.Average -> "Water every other day"
-            Watering.Minimum -> "Water twice a week"
-            Watering.None -> "Water once a week"
-            Watering.Unknown -> "Turn on to set watering reminders"
-        }
-    }
+    minute: Int = -1): Schedule(TaskType.WATER, days, emptyList(), hourOfDay, minute, TaskOccurrence.WEEKLY) {
 
     override fun actualScheduleString(): String {
         return StringBuilder().apply {
             days?.let {
                 append(it?.joinToString())
                 append(" every week at ")
-                getTimeString()
+                append(getTimeString())
             } ?: ""
         }.toString()
-    }
-}
-
-open class MyBaseClass(val name: String) {
-    fun displayInfo() {
-        println("Name: $name")
-    }
-}
-
-class MyDerivedClass(name: String, val age: Int) : MyBaseClass(name) {
-    fun displayExtendedInfo() {
-        displayInfo()
-        println("Age: $age")
     }
 }

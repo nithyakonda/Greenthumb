@@ -1,29 +1,31 @@
 package com.nkonda.greenthumb.ui.plantdetails
 
-import android.app.AlertDialog
-import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
-import com.nkonda.greenthumb.R
-import com.nkonda.greenthumb.data.ErrorCode
-import com.nkonda.greenthumb.data.Result
+import com.nkonda.greenthumb.data.*
 import com.nkonda.greenthumb.databinding.DialogSchedulingBinding
-import com.nkonda.greenthumb.ui.LoadingUtils
+import com.nkonda.greenthumb.util.getDayFromDayChipId
+import com.nkonda.greenthumb.util.getMonthFromMonthChipId
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SchedulingDialogFragment: DialogFragment() {
     private lateinit var binding: DialogSchedulingBinding
     private val plantDetailsViewModel:PlantDetailsViewModel by activityViewModel()
+    private lateinit var taskKey: TaskKey
 
     companion object {
-        fun newInstance(isEdit: Boolean): SchedulingDialogFragment {
+        const val TAG = "SchedulingDialogFragment"
+        const val ARG_PLANT_ID = "plant_id"
+        const val ARG_TASK_TYPE = "task_type"
+
+        fun newInstance(taskKey: TaskKey): SchedulingDialogFragment {
             val fragment = SchedulingDialogFragment()
             val args = Bundle().apply {
-                putBoolean("IS_EDIT", isEdit)
+                putLong(ARG_PLANT_ID, taskKey.plantId)
+                putString(ARG_TASK_TYPE, taskKey.taskType.name)
             }
             fragment.arguments = args
             return fragment
@@ -36,35 +38,56 @@ class SchedulingDialogFragment: DialogFragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = DialogSchedulingBinding.inflate(inflater, container, false)
+        val width = ViewGroup.LayoutParams.MATCH_PARENT
+        val height = ViewGroup.LayoutParams.WRAP_CONTENT
+        dialog?.window?.setLayout(width, height)
+        dialog?.setCancelable(false)
+        arguments?.let {
+            taskKey = TaskKey(it.getLong(ARG_PLANT_ID),
+                                TaskType.valueOf(it.getString(ARG_TASK_TYPE, TaskType.WATER.name)))
+        } ?: throw (java.lang.IllegalStateException("Scheduling dialog args cannot be empty"))
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        plantDetailsViewModel.currentTask.observe(viewLifecycleOwner) { result ->
-            binding.schedule = when(result) {
-                is Result.Success -> result.data?.schedule
-                else -> plantDetailsViewModel.defaultTask?.schedule
-            }
-        }
+        binding.schedule = plantDetailsViewModel.getExistingSchedule(taskKey)
         setupClickHandlers()
     }
 
     private fun setupClickHandlers() {
         binding.okBtn.setOnClickListener {
+            val newSchedule = getSchedule()
+            plantDetailsViewModel.updateSchedule(taskKey, newSchedule)
+            dismiss()
+        }
 
+        binding.cancelBtn.setOnClickListener {
+            plantDetailsViewModel.cancelUpdate(taskKey)
+            dismiss()
         }
     }
 
-//    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-//        val builder = AlertDialog.Builder(requireActivity())
-//        builder.setTitle("Setup Reminder Schedule")
-//            .setPositiveButton("OK") { _, _ ->
-//
-//            }
-//            .setNegativeButton("Cancel") { _, _ ->
-//
-//            }
-//            .setCancelable(false)
-//        return builder.create()
-//    }
+    private fun getSchedule(): Schedule {
+        val hourOfDay = binding.timePicker.hour
+        val minute = binding.timePicker.minute
+
+        return binding.schedule?.apply {
+            this.hourOfDay = hourOfDay
+            this.minute = minute
+
+            if (this is WateringSchedule) {
+                val days = mutableListOf<Day>()
+                binding.dayChipGroup.checkedChipIds.forEach { id ->
+                    days.add(getDayFromDayChipId(id))
+                }
+                this.days = days
+            } else {
+                val months = mutableListOf<Month>()
+                binding.monthChipGroup.checkedChipIds.forEach { id ->
+                    months.add(getMonthFromMonthChipId(id))
+                }
+                this.months = months
+            }
+        } ?: throw java.lang.IllegalStateException("Schedule cannot be null")
+    }
 }

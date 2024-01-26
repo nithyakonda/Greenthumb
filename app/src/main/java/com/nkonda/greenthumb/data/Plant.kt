@@ -37,11 +37,35 @@ data class Plant constructor(
             TaskType.WATER -> WateringSchedule(
                 convertIntListToDayList(listOf(cal.get(Calendar.DAY_OF_WEEK))),
                 hour,
-                min,
-                watering
+                min
             )
             TaskType.CUSTOM -> TODO()
         }
+    }
+
+    fun getExpectedScheduleString(taskType: TaskType): String {
+         return when(taskType) {
+             TaskType.PRUNE -> {
+                 StringBuilder().apply {
+                     if (pruning.months?.isNotEmpty() == true) {
+                         append("Prune every year in ")
+                         append(pruning.months?.joinToString(separator = "/"))
+                     } else {
+                         append("Turn on to set pruning reminders")
+                     }
+                 }.toString()
+             }
+             TaskType.WATER -> {
+                 when(watering) {
+                     Watering.Frequent -> "Water every day"
+                     Watering.Average -> "Water every other day"
+                     Watering.Minimum -> "Water twice a week"
+                     Watering.None -> "Water once a week"
+                     Watering.Unknown -> "Turn on to set watering reminders"
+                 }
+             }
+             TaskType.CUSTOM -> TODO()
+         }
     }
 
     fun getSunlightText(): String {

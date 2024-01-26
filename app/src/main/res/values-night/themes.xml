@@ -1,5 +1,6 @@
 <resources>
     <style name="Theme.Greenthumb" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="android:statusBarColor">@color/md_theme_surface</item>
         <item name="colorPrimary">@color/md_theme_primary</item>
         <item name="colorOnPrimary">@color/md_theme_onPrimary</item>
         <item name="colorPrimaryContainer">@color/md_theme_primaryContainer</item>

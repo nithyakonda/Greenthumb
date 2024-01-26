@@ -42,15 +42,18 @@
         <com.google.android.material.chip.ChipGroup
             android:id="@+id/dayChipGroup"
             chipGroupVisibility="@{schedule}"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_margin="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/repeatsTv"
+            app:layout_constrainedWidth="true"
             app:singleSelection="false"
-            tools:visibility="gone">
+            tools:visibility="gone"
+            app:layout_constraintWidth_default="spread"
+            app:layout_constraintWidth_percent="1">
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/sunChip"
@@ -58,7 +61,7 @@
                 chipChecked="@{schedule}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="S" />
+                android:text="Sun" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/monChip"
@@ -66,7 +69,7 @@
                 chipChecked="@{schedule}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="M" />
+                android:text="Mon" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/tueChip"
@@ -74,7 +77,7 @@
                 chipChecked="@{schedule}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="T" />
+                android:text="Tue" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/wedChip"
@@ -82,7 +85,7 @@
                 chipChecked="@{schedule}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="W" />
+                android:text="Wed" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/thuChip"
@@ -90,7 +93,7 @@
                 chipChecked="@{schedule}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="T" />
+                android:text="Thu" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/friChip"
@@ -98,7 +101,7 @@
                 chipChecked="@{schedule}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="F" />
+                android:text="Fri" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/satChip"
@@ -106,21 +109,24 @@
                 chipChecked="@{schedule}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="S" />
+                android:text="Sat" />
 
         </com.google.android.material.chip.ChipGroup>
 
         <com.google.android.material.chip.ChipGroup
             android:id="@+id/monthChipGroup"
             chipGroupVisibility="@{schedule}"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_margin="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/repeatsTv"
-            app:singleSelection="false">
+            app:layout_constraintTop_toBottomOf="@id/dayChipGroup"
+            app:layout_constrainedWidth="true"
+            app:singleSelection="false"
+            app:layout_constraintWidth_default="spread"
+            app:layout_constraintWidth_percent="1">
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/janChip"
@@ -224,10 +230,14 @@
             style="@style/Widget.Material3.Button.IconButton.Filled"
             android:layout_width="80dp"
             android:layout_height="wrap_content"
-            android:text="OK"
             android:layout_margin="16dp"
+            android:text="OK"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/cancelBtn"
+            app:layout_constraintTop_toBottomOf="@+id/monthChipGroup"
+            app:layout_constraintVertical_bias="1.0" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/cancelBtn"
@@ -236,8 +246,12 @@
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             android:text="Cancel"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/okBtn" />
+            app:layout_constraintBottom_toBottomOf="@+id/okBtn"
+            app:layout_constraintEnd_toStartOf="@+id/okBtn"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/okBtn" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

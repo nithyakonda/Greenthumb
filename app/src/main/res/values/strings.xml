@@ -31,6 +31,7 @@
     <string name="tv_label_about">About</string>
     <string name="tv_label_task_reminders">Task Reminders</string>
     <string name="tv_label_care_level">%s \n Maintenance</string>
+    <string name="tv_label_reminders">Reminders</string>
 
     <string name="tv_error_actual_schedule">Please select at least one day/month</string>
 

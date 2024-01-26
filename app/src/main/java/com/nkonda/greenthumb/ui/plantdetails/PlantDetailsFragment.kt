@@ -1,6 +1,5 @@
 package com.nkonda.greenthumb.ui.plantdetails
 
-import android.app.TimePickerDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,17 +9,15 @@ import android.widget.Toast.LENGTH_SHORT
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import com.google.android.material.materialswitch.MaterialSwitch
-import com.google.android.material.timepicker.MaterialTimePicker
 import com.nkonda.greenthumb.data.*
 import com.nkonda.greenthumb.databinding.FragmentPlantDetailsBinding
 import com.nkonda.greenthumb.ui.LoadingUtils
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import timber.log.Timber
-import java.util.*
 
 class PlantDetailsFragment : Fragment() {
     private lateinit var binding: FragmentPlantDetailsBinding
-    private val plantDetailsViewModel:PlantDetailsViewModel by viewModel()
+    private val plantDetailsViewModel:PlantDetailsViewModel by activityViewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -67,20 +64,22 @@ class PlantDetailsFragment : Fragment() {
             }
 
             currentTask.observe(viewLifecycleOwner) { result ->
-                when (result) {
-                    is Result.Success -> {
-                        binding.apply {
+                binding.apply {
+                    when (result) {
+                        is Result.Success -> {
                             result.data?.let {
                                 task = it
-                                reminderSwitch.isChecked = it.schedule.isSet()
-                                actualScheduleTv.text =
-                                    if (it.schedule.isSet()) it.schedule.toString() else ""
-                            } ?: run { reminderSwitch.isChecked = false }
+                            }
                         }
+                        is Result.Error -> { // no need to reset because task is set to tempTask
+                             }
+                        is Result.Loading -> {}
                     }
-                    is Result.Error -> {}
-                    is Result.Loading -> {}
                 }
+            }
+
+            taskSwitchState.observe(viewLifecycleOwner) {
+                binding.reminderSwitch.isChecked = it
             }
 
             successMessage.observe(viewLifecycleOwner) { message ->
@@ -104,7 +103,6 @@ class PlantDetailsFragment : Fragment() {
     private fun setupClickHandlers() {
         binding.apply {
             addOrDeleteFab.setOnClickListener {
-                // 3. move to vew model
                 saveOrDeletePlant()
             }
 
@@ -129,7 +127,7 @@ class PlantDetailsFragment : Fragment() {
             }
 
             editReminderBtn.setOnClickListener {
-                showSchedulingDialog()
+                editTask()
             }
 
             reminderSwitch.setOnCheckedChangeListener { _, checked ->
@@ -139,14 +137,25 @@ class PlantDetailsFragment : Fragment() {
     }
 
     private fun addTask() {
-        binding.task!!.key.apply {
-            plantDetailsViewModel.saveTask(this, binding.plant!!.getDefaultSchedule(this.taskType))
+        binding.task?.let {
+            plantDetailsViewModel.createTask(it)
+            binding.editTaskContainer.visibility = View.VISIBLE
+            showSchedulingDialog(it.key)
         }
-        binding.editTaskContainer.visibility = View.VISIBLE
+    }
+
+    private fun editTask() {
+        binding.task?.let {
+            plantDetailsViewModel.updateTask(it)
+            showSchedulingDialog(it.key)
+        }
     }
 
     private fun deleteTask() {
-        plantDetailsViewModel.deleteTask(binding.task!!.key)
+        binding.task.let {
+            plantDetailsViewModel.deleteTask(it.key)
+        }
+
         // todo delete scheduled jobs
     }
 
@@ -158,13 +167,15 @@ class PlantDetailsFragment : Fragment() {
         }
     }
 
-    private fun showAddTaskView(taskKey: TaskKey, expectedSchedule: Schedule) {
+    private fun showAddTaskView(taskKey: TaskKey, defaultSchedule: Schedule) {
         binding.apply {
             // initialize binding.task to default task so it is never null even if a db fetch fails.
             // Worst case the existing task is replaced with new schedule following add task workflow
-            task = Task(taskKey, expectedSchedule)
-            plantDetailsViewModel.setCurrentTask(taskKey)
+            val tempTask = Task(taskKey, defaultSchedule)
+            task = tempTask
+            plantDetailsViewModel.viewTask(tempTask)
             addTaskContainer.visibility = View.VISIBLE
+            expectedScheduleTv.text = plant?.getExpectedScheduleString(taskKey.taskType)
         }
 
     }
@@ -183,34 +194,9 @@ class PlantDetailsFragment : Fragment() {
             .show()
     }
 
-    private fun showSchedulingDialog() {
-        val cal = Calendar.getInstance()
-//        val timePicker = MaterialTimePicker.Builder()
-//            .build()
-//        timePicker.addOnPositiveButtonClickListener {
-//            val schedule = Schedule(
-//                listOf(Day.MONDAY, Day.WEDNESDAY),
-//                null,
-//                hourOfDay,
-//                minute,
-//                TaskOccurrence.WEEKLY
-//            )
-//
-//            binding.task!!.apply {
-//                when(this.key.taskType) {
-//                    TaskType.PRUNE -> PruningSchedule()
-//                    TaskType.WATER -> WateringSchedule(
-//                        listOf(Day.MONDAY, Day.WEDNESDAY), // todo get for selected chips
-//                        hourOfDay,
-//                        minute,
-//                        view?.
-//                    )
-//                    TaskType.CUSTOM -> TODO()
-//                }
-//            }
-//            plantDetailsViewModel.updateSchedule(binding.task!!.key, schedule)
-//        }
-//        TimePickerDialog(requireActivity(), this, cal.get(Calendar.HOUR), cal.get(Calendar.MINUTE), true).show()
+    private fun showSchedulingDialog(taskKey: TaskKey) {
+        val dialogFragment = SchedulingDialogFragment.newInstance(taskKey)
+        dialogFragment.show(requireActivity().supportFragmentManager, SchedulingDialogFragment.TAG)
     }
 
     private fun showToast(message: String?) {

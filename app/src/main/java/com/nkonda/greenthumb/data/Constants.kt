@@ -11,6 +11,10 @@ enum class TaskOccurrence {
     ONCE; // DEFAULT
 }
 
+enum class TaskWorkflow {
+    View, Create, Update
+}
+
 enum class Day {
     Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday,
     NOT_SET; // DEFAULT

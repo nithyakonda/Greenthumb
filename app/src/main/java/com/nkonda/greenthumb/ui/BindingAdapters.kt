@@ -167,11 +167,6 @@ fun bindActualScheduleText(textView: TextView, schedule: Schedule?) {
     }
 }
 
-@BindingAdapter("expectedScheduleText")
-fun bindExpectedScheduleText(textView: TextView, schedule: Schedule?) {
-    textView.text = schedule?.expectedScheduleString()
-}
-
 // Scheduling Dialog
 
 @BindingAdapter("chipGroupVisibility")

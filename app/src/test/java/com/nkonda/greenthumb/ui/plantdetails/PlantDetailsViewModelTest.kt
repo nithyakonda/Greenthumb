@@ -165,7 +165,7 @@ class PlantDetailsViewModelTest {
     @Test
     fun setCurrentTask_givenValidTaskKey_switchesToRequestedTask() {
         val validTaskKey = TaskKey(51L, TaskType.WATER)
-        plantDetailsViewModel.setCurrentTask(validTaskKey)
+        plantDetailsViewModel.viewTask(validTaskKey)
 
         val result = plantDetailsViewModel.currentTask.getOrAwaitValue() as Result.Success
         assertThat(result.data, `is`(tasks[validTaskKey]))
@@ -174,7 +174,7 @@ class PlantDetailsViewModelTest {
     @Test
     fun setCurrentTask_givenInvalidTaskKey_switchesToNullTask() {
         val invalidTaskKey = TaskKey(61L, TaskType.WATER)
-        plantDetailsViewModel.setCurrentTask(invalidTaskKey)
+        plantDetailsViewModel.viewTask(invalidTaskKey)
 
         val result = plantDetailsViewModel.currentTask.getOrAwaitValue() as Result.Success
         assertThat(result.data, `is`(nullValue()))
@@ -184,7 +184,7 @@ class PlantDetailsViewModelTest {
     fun setCurrentTask_givenValidTaskKey_whenDbError_returnsError() {
         repository.setReturnError(true)
         val validTaskKey = TaskKey(51L, TaskType.WATER)
-        plantDetailsViewModel.setCurrentTask(validTaskKey)
+        plantDetailsViewModel.viewTask(validTaskKey)
 
         val result = plantDetailsViewModel.currentTask.getOrAwaitValue() as Result.Error
         assertThat(result.exception.message, `is`("DB error"))
@@ -197,7 +197,7 @@ class PlantDetailsViewModelTest {
         repository.savePlant(plantOne)
         val taskKey = TaskKey(plantOne.id, TaskType.WATER)
         val schedule = plantOne.getDefaultSchedule(TaskType.WATER)
-        plantDetailsViewModel.saveTask(taskKey, schedule)
+        plantDetailsViewModel.createTask(taskKey, schedule)
 
         // Then assert that successMessage is set correctly
         assertThat(plantDetailsViewModel.successMessage.getOrAwaitValue(), `is`("Task Created"))
@@ -215,7 +215,7 @@ class PlantDetailsViewModelTest {
         val taskKey = TaskKey(plantOne.id, TaskType.WATER)
         val schedule = plantOne.getDefaultSchedule(TaskType.WATER)
 
-        plantDetailsViewModel.saveTask(taskKey, schedule)
+        plantDetailsViewModel.createTask(taskKey, schedule)
 
         assertThat(plantDetailsViewModel.errorMessage.getOrAwaitValue(), `is`("DB error"))
 

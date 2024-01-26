@@ -1,6 +1,7 @@
 package com.nkonda.greenthumb.util
 
 import androidx.room.TypeConverter
+import com.nkonda.greenthumb.R
 import com.nkonda.greenthumb.data.*
 import com.nkonda.greenthumb.data.source.remote.PruningCount
 import com.squareup.moshi.JsonAdapter
@@ -192,6 +193,37 @@ fun convertIntListToDayList(days: List<Int>): List<Day> {
             Calendar.SATURDAY -> Day.Saturday
             else -> Day.NOT_SET
         }
+    }
+}
+
+fun getDayFromDayChipId(id: Int): Day {
+    return when(id) {
+        R.id.sunChip -> Day.Sunday
+        R.id.monChip -> Day.Monday
+        R.id.tueChip -> Day.Tuesday
+        R.id.wedChip -> Day.Wednesday
+        R.id.thuChip -> Day.Thursday
+        R.id.friChip -> Day.Friday
+        R.id.satChip -> Day.Saturday
+        else -> Day.NOT_SET
+    }
+}
+
+fun getMonthFromMonthChipId(id: Int): Month {
+    return when(id) {
+        R.id.janChip -> Month.January
+        R.id.febChip -> Month.February
+        R.id.marChip -> Month.March
+        R.id.aprChip -> Month.April
+        R.id.mayChip -> Month.May
+        R.id.junChip -> Month.June
+        R.id.julChip -> Month.July
+        R.id.augChip -> Month.August
+        R.id.sepChip -> Month.September
+        R.id.octChip -> Month.October
+        R.id.novChip -> Month.November
+        R.id.decChip -> Month.December
+        else -> Month.NOT_SET
     }
 }
 
