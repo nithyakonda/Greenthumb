@@ -4,6 +4,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.net.toUri
 import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
@@ -202,5 +203,27 @@ fun bindChipChecked(chip: Chip, schedule: Schedule?) {
         R.id.novChip -> schedule?.months?.contains(Month.November) == true
         R.id.decChip -> schedule?.months?.contains(Month.December) == true
         else -> {false}
+    }
+}
+
+// Home fragment
+@BindingAdapter("taskType")
+fun bindTaskType(materialButton: MaterialButton, taskType: TaskType?) {
+    materialButton.apply {
+        taskType?.let {
+            when (it) {
+                TaskType.PRUNE -> {
+                    setIconResource(R.drawable.ic_prune)
+                    setIconTintResource(R.color.colorOnPruneContainer)
+                    setBackgroundColor(context.getColor(R.color.colorPruneContainer))
+                }
+                TaskType.WATER -> {
+                    setIconResource(R.drawable.ic_water_frequent)
+                    setIconTintResource(R.color.colorOnWaterContainer)
+                    setBackgroundColor(context.getColor(R.color.colorWaterContainer))
+                }
+                TaskType.CUSTOM -> TODO()
+            }
+        }
     }
 }

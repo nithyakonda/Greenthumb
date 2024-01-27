@@ -25,7 +25,7 @@ class TasksListAdapter(private val viewModel: HomeViewModel): ListAdapter<TaskWi
                 task = taskWithPlant
                 completedCb.setOnCheckedChangeListener { _, checked ->
                     viewModel.markCompleted(taskWithPlant.task.key, checked)
-                    taskTitleTv.paintFlags = taskTitleTv.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+                    plantNameTv.paintFlags = plantNameTv.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
                 }
                 executePendingBindings()
             }

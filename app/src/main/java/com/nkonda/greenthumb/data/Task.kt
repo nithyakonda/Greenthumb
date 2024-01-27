@@ -30,5 +30,6 @@ data class TaskKey(
 
 data class TaskWithPlant(
     @Embedded val task: Task,
-    @ColumnInfo(name = "common_name") val plantName: String
+    @ColumnInfo(name = "common_name") val plantName: String,
+    @ColumnInfo(name = "image") val plantImage: String
 )

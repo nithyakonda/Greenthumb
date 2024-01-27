@@ -24,7 +24,7 @@ interface TasksDao {
     @Query("DELETE FROM tasks WHERE plant_id = :plantId AND task_type = :taskType")
     suspend fun deleteTask(plantId: Long, taskType: TaskType): Int
 
-    @Query("SELECT tasks.*, plants.common_name FROM tasks INNER JOIN plants ON tasks.plant_id = plants.id")
+    @Query("SELECT tasks.*, plants.common_name, plants.image FROM tasks INNER JOIN plants ON tasks.plant_id = plants.id")
     fun observeTasks(): LiveData<List<TaskWithPlant>>
 
     @Query("SELECT * FROM tasks")

@@ -32,8 +32,8 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         adapter = TasksListAdapter(homeViewModel)
         binding.apply {
-            tasksListRv.layoutManager = LinearLayoutManager(requireActivity())
-            tasksListRv.adapter = adapter
+            dailyTasksRv.layoutManager = LinearLayoutManager(requireActivity())
+            dailyTasksRv.adapter = adapter
         }
         setupObservers()
     }
