@@ -6,15 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-
-import com.nkonda.greenthumb.data.Result.Success
-import com.nkonda.greenthumb.data.Result.Error
-import com.nkonda.greenthumb.data.Result.Loading
-import androidx.recyclerview.widget.LinearLayoutManager
+import com.nkonda.greenthumb.R
+import com.nkonda.greenthumb.data.ErrorCode
+import com.nkonda.greenthumb.data.Result.*
 import com.nkonda.greenthumb.data.source.remote.Images
 import com.nkonda.greenthumb.data.source.remote.PlantSummary
 import com.nkonda.greenthumb.databinding.FragmentMyplantsBinding
-import com.nkonda.greenthumb.ui.search.SearchResultsListAdapter
+import com.nkonda.greenthumb.ui.LoadingUtils
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
@@ -35,45 +33,44 @@ class MyPlantsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val adapter = SearchResultsListAdapter(SearchResultsListAdapter.OnClickListener{
+        val adapter = MyPlantsListAdapter(MyPlantsListAdapter.OnClickListener{
             Timber.d(" ${it.commonName} is clicked")
             myPlantsViewModel.displayPlantDetails(it.id)
         })
         binding.apply {
-            myPlantsRv.layoutManager = LinearLayoutManager(requireActivity())
             myPlantsRv.adapter = adapter
         }
 
         myPlantsViewModel.getPlantsResult.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
-                    // Handle the list of plants in result.data
+                    LoadingUtils.hideDialog()
+                    binding.myPlantsRv.visibility = View.VISIBLE
+                    binding.statusView.root.visibility = View.GONE
                     val myPlants = result.data
-                    if (myPlants.isEmpty()) {
-                        // todo handle no data
-                        Timber.e("No saved plants found")
-                    } else {
-                        Timber.i("Found ${myPlants!!.size} saved plants")
-                        // Todo Temporary - change adapter after UI updates
-                        val plantSummaries = myPlants!!.map {
-                            PlantSummary(
-                                it.id,
-                                it.commonName,
-                                listOf(it.scientificName),
-                                it.cycle,
-                                Images(thumbnail = it.thumbnail)
-                            )
-                        }
-                        adapter.submitList(plantSummaries)
+                    Timber.i("Found ${myPlants!!.size} saved plants")
+                    val plantSummaries = myPlants!!.map {
+                        PlantSummary(
+                            it.id,
+                            it.commonName,
+                            listOf(it.scientificName),
+                            it.cycle,
+                            Images(thumbnail = it.thumbnail)
+                        )
                     }
+                    adapter.submitList(plantSummaries)
                 }
                 is Error -> {
-                    // todo Handle the error case
-                    val exception = result.exception
-                    Timber.e(exception.message)
+                    LoadingUtils.hideDialog()
+                    binding.myPlantsRv.visibility = View.GONE
+                    binding.statusView.root.visibility = View.VISIBLE
+                    binding.statusView.statusTv.text = ErrorCode.fromCode(result.exception.message ?: ErrorCode.UNKNOWN_ERROR.code).message
+                    if (result.exception.message.equals(ErrorCode.NO_SAVED_PLANTS.code)) {
+                        binding.statusView.image.setImageResource(R.drawable.no_saved_plants)
+                    }
                 }
                 Loading -> {
-                    // todo Show loading indicator or perform loading UI updates
+                    LoadingUtils.showDialog(requireContext())
                 }
             }
         }

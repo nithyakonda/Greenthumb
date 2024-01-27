@@ -24,7 +24,7 @@
 
         <include
             android:id="@+id/errorView"
-            layout="@layout/view_error"
+            layout="@layout/view_status"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:src="@drawable/search_state_error"

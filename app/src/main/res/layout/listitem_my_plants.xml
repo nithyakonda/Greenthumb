@@ -16,13 +16,13 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingRight="@dimen/container_listitem_veritcal_padding">
+            android:paddingBottom="@dimen/container_listitem_veritcal_padding">
 
             <ImageView
                 android:id="@+id/ivPlantImage"
-                searchResultPlantImage="@{plantSummary.defaultImage.thumbnail}"
-                android:layout_width="90dp"
-                android:layout_height="90dp"
+                plantImage="@{plantSummary.defaultImage.thumbnail}"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
                 android:contentDescription="@string/cd_listitem_plant_image"
                 android:scaleType="centerCrop"
                 android:src="@drawable/default_image"
@@ -35,14 +35,16 @@
                 android:id="@+id/tvCommonName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/container_listitem_vertical_margin"
+                android:layout_marginTop="24dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
                 android:layout_marginBottom="4dp"
                 android:fontFamily="@font/roboto_condensed_light"
                 android:text="@{plantSummary.commonName}"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 app:layout_constraintBottom_toTopOf="@+id/tvCycle"
-                app:layout_constraintStart_toEndOf="@+id/ivPlantImage"
-                app:layout_constraintTop_toTopOf="@+id/ivPlantImage"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/ivPlantImage"
                 app:layout_constraintVertical_chainStyle="packed"
                 tools:text="Common Name" />
 
@@ -51,12 +53,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/roboto_condensed_light"
-                android:text="@{plantSummary.scientificName}"
+                android:text="@{plantSummary.cycle}"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                app:layout_constraintBottom_toBottomOf="@+id/ivPlantImage"
+                android:layout_marginBottom="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/tvCommonName"
                 app:layout_constraintTop_toBottomOf="@+id/tvCommonName"
-                tools:text="Scientific Name" />
+                tools:text="Annual" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
 </layout>

@@ -8,10 +8,19 @@
         android:padding="@dimen/padding_default"
         tools:context=".ui.myplants.MyPlantsFragment">
 
+        <include
+            android:id="@+id/statusView"
+            layout="@layout/view_status"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/myPlantsRv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:listitem="@layout/listitem_plant_summary"/>
+            tools:listitem="@layout/listitem_my_plants"
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            app:spanCount="2"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

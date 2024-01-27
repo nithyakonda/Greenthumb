@@ -44,6 +44,8 @@ class PlantDetailsFragment : Fragment() {
                 when(result) {
                     is Result.Success -> {
                         LoadingUtils.hideDialog()
+                        binding.mainContainer.visibility = View.VISIBLE
+                        binding.errorView.root.visibility = View.GONE
                         binding.plant = result.data
                         binding.addOrDeleteFab.isEnabled = true
                     }
@@ -51,7 +53,7 @@ class PlantDetailsFragment : Fragment() {
                         LoadingUtils.hideDialog()
                         binding.mainContainer.visibility = View.GONE
                         binding.errorView.root.visibility = View.VISIBLE
-                        binding.errorView.errorText.text = ErrorCode.fromCode(result.exception.message ?: ErrorCode.UNKNOWN_ERROR.code).message
+                        binding.errorView.statusTv.text = ErrorCode.fromCode(result.exception.message ?: ErrorCode.UNKNOWN_ERROR.code).message
                     }
                     Result.Loading -> {
                         LoadingUtils.showDialog(requireContext())
@@ -152,8 +154,8 @@ class PlantDetailsFragment : Fragment() {
     }
 
     private fun deleteTask() {
-        binding.task.let {
-            plantDetailsViewModel.deleteTask(it.key)
+        binding.task?.key?.let {
+            plantDetailsViewModel.deleteTask(it)
         }
 
         // todo delete scheduled jobs

@@ -1,17 +1,28 @@
 package com.nkonda.greenthumb.ui.myplants
 
 import androidx.lifecycle.*
-import com.nkonda.greenthumb.data.Plant
-import com.nkonda.greenthumb.data.Result
+import com.nkonda.greenthumb.data.*
 import com.nkonda.greenthumb.data.source.IRepository
+import java.lang.Exception
 
 class MyPlantsViewModel(private val repository: IRepository) : ViewModel() {
 
     /**
      * Results
      */
-    private val _getPlantsResult = repository.observePlants()
-    val getPlantsResult:LiveData<Result<List<Plant>>> = _getPlantsResult
+    val getPlantsResult: LiveData<Result<List<Plant>>> = repository.observePlants().map { result ->
+        if (result.succeeded) {
+            result as Result.Success
+            if (result.data.isEmpty()) {
+                Result.Error(Exception(ErrorCode.NO_SAVED_PLANTS.code))
+            } else {
+                result
+            }
+        } else {
+            result
+        }
+    }
+
 
     /**
      * Navigation
