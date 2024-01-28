@@ -1,12 +1,10 @@
 package com.nkonda.greenthumb.ui.home
 
 import androidx.lifecycle.*
-import com.nkonda.greenthumb.data.Result
-import com.nkonda.greenthumb.data.TaskKey
-import com.nkonda.greenthumb.data.TaskWithPlant
+import com.nkonda.greenthumb.data.*
 import com.nkonda.greenthumb.data.source.IRepository
-import com.nkonda.greenthumb.data.succeeded
 import kotlinx.coroutines.launch
+import java.lang.Exception
 
 class HomeViewModel(private val repository: IRepository) : ViewModel() {
     /**
@@ -18,8 +16,18 @@ class HomeViewModel(private val repository: IRepository) : ViewModel() {
     /**
      * Observed Data
      */
-    private val _tasks = repository.observeTasks()
-    val tasks: LiveData<Result<List<TaskWithPlant>>> = _tasks
+    val tasks: LiveData<Result<List<TaskWithPlant>>> = repository.observeTasks().map { result ->
+        if (result.succeeded)  {
+            result as Result.Success
+            if (result.data.isEmpty()) {
+                Result.Error(Exception(ErrorCode.NO_ACTIVE_TASKS.code))
+            } else {
+                result
+            }
+        } else {
+            result
+        }
+    }
 
     fun markCompleted(taskKey: TaskKey, isCompleted: Boolean) {
         viewModelScope.launch {

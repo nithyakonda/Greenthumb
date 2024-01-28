@@ -56,6 +56,10 @@ enum class ErrorCode(val code: String, val message: String) {
         "1100",
         "Hold the watering can – your garden is thirsty for some green companions!"
     ),
+    NO_ACTIVE_TASKS(
+        "1101",
+        "Leaf it to your plants to take a day off! No tasks today, just pure botanical relaxation."
+    ),
 
     // Errors from remote api
     NOT_FOUND("2000", "Well, this is awkward... \\n Plant not found in the digital garden!"),

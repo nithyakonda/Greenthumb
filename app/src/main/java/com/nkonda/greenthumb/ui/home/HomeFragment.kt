@@ -6,15 +6,20 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
+import com.nkonda.greenthumb.R
+import com.nkonda.greenthumb.data.ErrorCode
 import com.nkonda.greenthumb.data.Result
+import com.nkonda.greenthumb.data.TaskType
 import com.nkonda.greenthumb.databinding.FragmentHomeBinding
+import com.nkonda.greenthumb.ui.LoadingUtils
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
+import java.util.*
 
 class HomeFragment : Fragment() {
 
-    private lateinit var adapter: TasksListAdapter
+    private lateinit var monthlyTasksAdapter: TasksListAdapter
+    private lateinit var dailyTasksAdapter: TasksListAdapter
     private lateinit var binding: FragmentHomeBinding
     private val homeViewModel:HomeViewModel by viewModel()
 
@@ -30,10 +35,11 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        adapter = TasksListAdapter(homeViewModel)
+        monthlyTasksAdapter = TasksListAdapter(homeViewModel)
+        dailyTasksAdapter = TasksListAdapter(homeViewModel)
         binding.apply {
-            dailyTasksRv.layoutManager = LinearLayoutManager(requireActivity())
-            dailyTasksRv.adapter = adapter
+            monthlyTasks.tasksRv.adapter = monthlyTasksAdapter
+            dailyTasks.tasksRv.adapter = dailyTasksAdapter
         }
         setupObservers()
     }
@@ -43,28 +49,66 @@ class HomeFragment : Fragment() {
             tasks.observe(viewLifecycleOwner) { result ->
                 when(result) {
                     is Result.Success -> {
-                        val presentTasks = result.data
-                        if (presentTasks.isEmpty()) {
-                            // todo handle no tasks
-                            Timber.e("No tasks for today")
-                        } else {
-                            Timber.i("Found ${presentTasks!!.size} tasks")
-                            adapter.submitList(presentTasks)
+                        LoadingUtils.hideDialog()
+                        binding.mainContainer.visibility = View.VISIBLE
+                        binding.statusView.root.visibility = View.GONE
+                        result.data?.let { activeTasks ->
+                            Timber.i("Found ${activeTasks!!.size} tasks")
+                            val (dailyTasks, monthlyTasks) = activeTasks.partition {
+                                it.task.key.taskType == TaskType.WATER
+                            }
+                            binding.monthlyTasks.root.visibility = if (monthlyTasks.isEmpty()) View.GONE else View.VISIBLE
+                            binding.monthlyTasks.taskTitleTv.text = "This month (${monthlyTasks.size})"
+                            monthlyTasksAdapter.submitList(monthlyTasks)
+                            binding.dailyTasks.taskTitleTv.text = "Today (${dailyTasks.size})"
+                            dailyTasksAdapter.submitList(dailyTasks)
                         }
                     }
                     is Result.Error -> {
-                        // todo Handle the error case
-                        val exception = result.exception
-                        Timber.e(exception.message)
+                        LoadingUtils.hideDialog()
+                        binding.mainContainer.visibility = View.GONE
+                        binding.statusView.root.visibility = View.VISIBLE
+                        if (result.exception.message.equals(ErrorCode.NO_ACTIVE_TASKS.code)) {
+                            updateStatusView()
+                        } else {
+                            binding.statusView.statusTv.text = ErrorCode.fromCode(result.exception.message ?: ErrorCode.UNKNOWN_ERROR.code).message
+                        }
                     }
                     Result.Loading -> {
-                        // todo Show loading indicator or perform loading UI updates
+                        LoadingUtils.showDialog(requireContext())
                     }
                 }
             }
 
             errorMessage.observe(viewLifecycleOwner) { message ->
                 Toast.makeText(requireActivity(), message, Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
+    private fun updateStatusView() {
+        binding.statusView.apply {
+            when (Calendar.getInstance().get(Calendar.MONTH) + 1) {
+                in 3..5 -> {
+                    // "Spring"
+                    image.setImageResource(R.drawable.img_spring)
+                    statusTv.text = "No tasks for today. \nSpring into relaxation mode!"
+                }
+                in 6..8 -> {
+                    // "Summer"
+                    image.setImageResource(R.drawable.img_summer)
+                    statusTv.text = "No tasks on this sunny day. \nLet the plants soak up the summer vibes."
+                }
+                in 9..11 -> {
+//                    "Autumn"
+                    image.setImageResource(R.drawable.img_autumn)
+                    statusTv.text = "Fall vibes in the air, and guess what? \nNo tasks tumbling down today! "
+                }
+                else -> {
+//                    "Winter"
+                    image.setImageResource(R.drawable.img_winter)
+                    statusTv.text = "It's a frosty 'no tasks for today' kind of day!"
+                }
             }
         }
     }
