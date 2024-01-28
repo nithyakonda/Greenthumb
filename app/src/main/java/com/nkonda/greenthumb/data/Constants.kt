@@ -52,6 +52,8 @@ enum class ErrorCode(val code: String, val message: String) {
         "1000",
         "Looks like your internet connection is taking a nap in the shade!"
     ),
+
+    // Errors about data
     NO_SAVED_PLANTS(
         "1100",
         "Hold the watering can – your garden is thirsty for some green companions!"

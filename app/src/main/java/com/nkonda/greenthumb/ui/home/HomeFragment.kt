@@ -10,6 +10,7 @@ import com.nkonda.greenthumb.R
 import com.nkonda.greenthumb.data.ErrorCode
 import com.nkonda.greenthumb.data.Result
 import com.nkonda.greenthumb.data.TaskType
+import com.nkonda.greenthumb.data.TaskWithPlant
 import com.nkonda.greenthumb.databinding.FragmentHomeBinding
 import com.nkonda.greenthumb.ui.LoadingUtils
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -49,33 +50,12 @@ class HomeFragment : Fragment() {
             tasks.observe(viewLifecycleOwner) { result ->
                 when(result) {
                     is Result.Success -> {
-                        LoadingUtils.hideDialog()
-                        binding.mainContainer.visibility = View.VISIBLE
-                        binding.statusView.root.visibility = View.GONE
-                        result.data?.let { activeTasks ->
-                            Timber.i("Found ${activeTasks!!.size} tasks")
-                            val (dailyTasks, monthlyTasks) = activeTasks.partition {
-                                it.task.key.taskType == TaskType.WATER
-                            }
-                            binding.monthlyTasks.root.visibility = if (monthlyTasks.isEmpty()) View.GONE else View.VISIBLE
-                            binding.monthlyTasks.taskTitleTv.text = "This month (${monthlyTasks.size})"
-                            monthlyTasksAdapter.submitList(monthlyTasks)
-                            binding.dailyTasks.taskTitleTv.text = "Today (${dailyTasks.size})"
-                            dailyTasksAdapter.submitList(dailyTasks)
-                        }
+                        showData(result)
                     }
                     is Result.Error -> {
-                        LoadingUtils.hideDialog()
-                        binding.mainContainer.visibility = View.GONE
-                        binding.statusView.root.visibility = View.VISIBLE
-                        if (result.exception.message.equals(ErrorCode.NO_ACTIVE_TASKS.code)) {
-                            updateStatusView()
-                        } else {
-                            binding.statusView.statusTv.text = ErrorCode.fromCode(result.exception.message ?: ErrorCode.UNKNOWN_ERROR.code).message
-                        }
+                        showError(result)
                     }
                     Result.Loading -> {
-                        LoadingUtils.showDialog(requireContext())
                     }
                 }
             }
@@ -83,6 +63,36 @@ class HomeFragment : Fragment() {
             errorMessage.observe(viewLifecycleOwner) { message ->
                 Toast.makeText(requireActivity(), message, Toast.LENGTH_LONG).show()
             }
+        }
+    }
+
+    private fun showData(result: Result.Success<List<TaskWithPlant>>) {
+        binding.mainContainer.visibility = View.VISIBLE
+        binding.statusView.root.visibility = View.GONE
+        result.data?.let { activeTasks ->
+            Timber.i("Found ${activeTasks!!.size} tasks")
+            val (dailyTasks, monthlyTasks) = activeTasks.partition {
+                it.task.key.taskType == TaskType.WATER
+            }
+            binding.monthlyTasks.root.visibility =
+                if (monthlyTasks.isEmpty()) View.GONE else View.VISIBLE
+            val incompleteMonthlyTaskCount = monthlyTasks.count { !it.task.completed }
+            binding.monthlyTasks.taskTitleTv.text = "This month (${incompleteMonthlyTaskCount})"
+            monthlyTasksAdapter.submitList(monthlyTasks)
+            val incompleteDailyTaskCount = dailyTasks.count { !it.task.completed }
+            binding.dailyTasks.taskTitleTv.text = "Today (${incompleteDailyTaskCount})"
+            dailyTasksAdapter.submitList(dailyTasks)
+        }
+    }
+
+    private fun showError(result: Result.Error) {
+        binding.mainContainer.visibility = View.GONE
+        binding.statusView.root.visibility = View.VISIBLE
+        if (result.exception.message.equals(ErrorCode.NO_ACTIVE_TASKS.code)) {
+            updateStatusView()
+        } else {
+            binding.statusView.statusTv.text =
+                ErrorCode.fromCode(result.exception.message ?: ErrorCode.UNKNOWN_ERROR.code).message
         }
     }
 

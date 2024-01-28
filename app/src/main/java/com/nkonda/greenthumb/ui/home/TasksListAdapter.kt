@@ -16,16 +16,19 @@ class TasksListAdapter(private val viewModel: HomeViewModel): ListAdapter<TaskWi
 
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
         val task = getItem(position)
-        holder.bind(viewModel, task)
+        holder.bind(viewModel, task, this)
     }
 
     class TaskViewHolder(private val binding:ListitemTaskBinding) : ViewHolder(binding.root) {
-        fun bind(viewModel: HomeViewModel, taskWithPlant: TaskWithPlant) {
+        fun bind(viewModel: HomeViewModel, taskWithPlant: TaskWithPlant, adapter: TasksListAdapter) {
             binding.apply {
                 task = taskWithPlant
                 completedCb.setOnCheckedChangeListener { _, checked ->
                     viewModel.markCompleted(taskWithPlant.task.key, checked)
-                    plantNameTv.paintFlags = plantNameTv.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+//                    adapter.moveItem(taskWithPlant, checked)
+                    plantNameTv.paintFlags =
+                        if (checked) plantNameTv.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+                        else plantNameTv.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
                 }
                 executePendingBindings()
             }
@@ -41,5 +44,18 @@ class TasksListAdapter(private val viewModel: HomeViewModel): ListAdapter<TaskWi
             return oldItem.task.key == newItem.task.key
         }
 
+    }
+    fun moveItem(item: TaskWithPlant, isChecked: Boolean) {
+        val tempList = currentList.toMutableList()
+        tempList.remove(item)
+        if (isChecked) {
+            // Move the item to the bottom of the list
+            tempList.add(item)
+        } else {
+            // Move the item to top of the list
+            tempList.add(0, item)
+        }
+
+        submitList(tempList)
     }
 }

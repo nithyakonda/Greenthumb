@@ -6,10 +6,13 @@ import androidx.lifecycle.map
 import com.nkonda.greenthumb.data.*
 import com.nkonda.greenthumb.data.Result.Success
 import com.nkonda.greenthumb.data.Result.Error
+import com.nkonda.greenthumb.util.getCurrentDay
+import com.nkonda.greenthumb.util.getCurrentMonth
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
+import java.util.*
 
 class LocalDataSource constructor(
     private val plantsDao: PlantsDao,
@@ -140,8 +143,13 @@ class LocalDataSource constructor(
 
     override fun observeTasks(): LiveData<Result<List<TaskWithPlant>>> {
         return try {
-            tasksDao.observeTasks().map {
-                Success(it)
+            tasksDao.observeTasks().map { allTasks ->
+                val currTasks = allTasks.filter {
+                    val schedule = it.task.schedule
+                    schedule.days.contains(getCurrentDay()) ||
+                            schedule.months.contains(getCurrentMonth())
+                }
+                Success(currTasks)
             }
         } catch (e: Exception) {
             Timber.e(e.stackTraceToString())
