@@ -18,6 +18,9 @@ class MainActivity : AppCompatActivity(), ConnectivityChangeListener {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
+    private var _isInternetAvailable = false
+    val isInternetAvailable
+        get() = _isInternetAvailable
     private val connectivityManager by lazy {
         getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
     }
@@ -70,6 +73,7 @@ class MainActivity : AppCompatActivity(), ConnectivityChangeListener {
     }
 
     override fun onConnectivityChanged(isConnected: Boolean) {
+        _isInternetAvailable = isConnected
         for (listener in connectivityListeners) {
             listener.onConnectivityChanged(isConnected)
         }
@@ -77,6 +81,7 @@ class MainActivity : AppCompatActivity(), ConnectivityChangeListener {
 
     fun registerForConnectivityUpdates(listener: ConnectivityChangeListener) {
         connectivityListeners.add(listener)
+        listener.onConnectivityChanged(isInternetAvailable)
     }
 
     fun unregisterFromConnectivityUpdates(listener: ConnectivityChangeListener) {

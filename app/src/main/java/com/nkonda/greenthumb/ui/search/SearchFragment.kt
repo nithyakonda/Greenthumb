@@ -24,13 +24,15 @@ class SearchFragment : Fragment(), ConnectivityChangeListener {
 
     private lateinit var binding: FragmentSearchBinding
     private lateinit var adapter: SearchResultsListAdapter
-    private val searchViewModel:SearchViewModel by viewModel()
+    private val searchViewModel: SearchViewModel by viewModel()
 
-    private enum class SearchState{NOT_RUN, NO_INTERNET, SUCCESS, NOT_FOUND, ERROR}
+    private enum class SearchState { NOT_RUN, NO_INTERNET, SUCCESS, ERROR }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?): View {
+        savedInstanceState: Bundle?
+    ): View {
         binding = FragmentSearchBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
         return binding.root
@@ -86,12 +88,12 @@ class SearchFragment : Fragment(), ConnectivityChangeListener {
 
     private fun setupObservers() {
         searchViewModel.searchResult.observe(viewLifecycleOwner) { result ->
-            when(result) {
+            when (result) {
                 is Result.Success -> {
-                    showResults(result.data)
+                    showResult(result.data)
                 }
                 is Result.Error -> {
-                    showError(result.exception.message)
+                    updateStatus(result)
                 }
                 Result.Loading -> {
                     LoadingUtils.showDialog(requireContext())
@@ -109,7 +111,7 @@ class SearchFragment : Fragment(), ConnectivityChangeListener {
         }
     }
 
-    private fun showResults(
+    private fun showResult(
         result: List<PlantSummary>?
     ) {
         LoadingUtils.hideDialog()
@@ -117,45 +119,42 @@ class SearchFragment : Fragment(), ConnectivityChangeListener {
         adapter.submitList(result)
     }
 
-    private fun showError(codeStr: String?) {
+    private fun updateStatus(result: Result.Error) {
         LoadingUtils.hideDialog()
-        binding.apply {
-            if (codeStr == ErrorCode.NOT_FOUND.code) {
-                updateSearchState(SearchState.NOT_FOUND, codeStr)
-            } else {
-                updateSearchState(SearchState.ERROR, codeStr ?: "")
-            }
-        }
+        updateSearchState(
+            SearchState.ERROR,
+            result.exception.message ?: ErrorCode.UNKNOWN_ERROR.message
+        )
     }
 
-    private fun updateSearchState(state: SearchState, codeStr: String = ErrorCode.UNKNOWN_ERROR.code) {
+    private fun updateSearchState(
+        state: SearchState,
+        codeStr: String = ErrorCode.UNKNOWN_ERROR.message
+    ) {
         activity?.runOnUiThread {
             binding.apply {
                 plantSearchResultsRv.visibility =
                     if (state == SearchState.SUCCESS) View.VISIBLE else View.GONE
-                searchStateIv.visibility =
+                statusView.root.visibility =
                     if (state == SearchState.SUCCESS) View.GONE else View.VISIBLE
-                errorTv.visibility =
-                    if (state == SearchState.SUCCESS || state == SearchState.NOT_RUN) View.GONE else View.VISIBLE
 
-                when (state) {
-                    SearchState.NOT_RUN -> {
-                        searchStateIv.setImageResource(R.drawable.search_state_not_run)
-                    }
-                    SearchState.NO_INTERNET -> {
-                        searchStateIv.setImageResource(R.drawable.search_state_error)
-                        errorTv.text = ErrorCode.fromCode(codeStr).message
-                    }
-                    SearchState.SUCCESS -> {
-                        // nothing
-                    }
-                    SearchState.NOT_FOUND -> {
-                        searchStateIv.setImageResource(R.drawable.search_state_not_found)
-                        errorTv.text = ErrorCode.fromCode(codeStr).message
-                    }
-                    SearchState.ERROR -> {
-                        searchStateIv.setImageResource(R.drawable.search_state_error)
-                        errorTv.text = ErrorCode.fromCode(codeStr).message
+                statusView.apply {
+                    when (state) {
+                        SearchState.NOT_RUN -> {
+                            image.setImageResource(R.drawable.img_default_search_fragment)
+                            statusTv.text = "Let the search for the leafy wonders commence!!"
+                        }
+                        SearchState.NO_INTERNET -> {
+                            image.setImageResource(R.drawable.img_error_no_internet)
+                            statusTv.text = ErrorCode.fromCode(codeStr).message
+                        }
+                        SearchState.SUCCESS -> {
+                            // nothing
+                        }
+                        SearchState.ERROR -> {
+                            image.setImageResource(R.drawable.img_error_default)
+                            statusTv.text = ErrorCode.fromCode(codeStr).message
+                        }
                     }
                 }
             }

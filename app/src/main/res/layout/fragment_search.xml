@@ -23,34 +23,15 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:queryHint="@string/et_hint_plant_search"/>
+            app:queryHint="@string/hint_plant_search"/>
 
-
-        <ImageView
-            android:id="@+id/searchStateIv"
-            android:layout_width="300dp"
-            android:layout_height="300dp"
-            android:src="@drawable/search_state_not_run"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/searchView"
-            tools:visibility="gone" />
-
-        <TextView
-            android:id="@+id/errorTv"
-            style="@style/GTErrorTextViewStyle"
+        <include
+            android:id="@+id/status_view"
+            layout="@layout/view_status"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/searchStateIv"
-            app:layout_constraintVertical_bias="0.0"
-            tools:text="Error"
-            tools:visibility="gone" />
+            android:layout_height="match_parent"
+            android:src="@drawable/img_error_no_internet"
+            android:visibility="gone" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/plantSearchResultsRv"

@@ -12,7 +12,6 @@ import com.nkonda.greenthumb.data.Result
 import com.nkonda.greenthumb.data.TaskType
 import com.nkonda.greenthumb.data.TaskWithPlant
 import com.nkonda.greenthumb.databinding.FragmentHomeBinding
-import com.nkonda.greenthumb.ui.LoadingUtils
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 import java.util.*
@@ -22,7 +21,7 @@ class HomeFragment : Fragment() {
     private lateinit var monthlyTasksAdapter: TasksListAdapter
     private lateinit var dailyTasksAdapter: TasksListAdapter
     private lateinit var binding: FragmentHomeBinding
-    private val homeViewModel:HomeViewModel by viewModel()
+    private val homeViewModel: HomeViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -48,15 +47,14 @@ class HomeFragment : Fragment() {
     private fun setupObservers() {
         homeViewModel.apply {
             tasks.observe(viewLifecycleOwner) { result ->
-                when(result) {
+                when (result) {
                     is Result.Success -> {
                         showData(result)
                     }
                     is Result.Error -> {
-                        showError(result)
+                        updateStatus(result)
                     }
-                    Result.Loading -> {
-                    }
+                    Result.Loading -> {}
                 }
             }
 
@@ -79,47 +77,46 @@ class HomeFragment : Fragment() {
             val incompleteMonthlyTaskCount = monthlyTasks.count { !it.task.completed }
             binding.monthlyTasks.taskTitleTv.text = "This month (${incompleteMonthlyTaskCount})"
             monthlyTasksAdapter.submitList(monthlyTasks)
+
             val incompleteDailyTaskCount = dailyTasks.count { !it.task.completed }
             binding.dailyTasks.taskTitleTv.text = "Today (${incompleteDailyTaskCount})"
             dailyTasksAdapter.submitList(dailyTasks)
         }
     }
 
-    private fun showError(result: Result.Error) {
+    private fun updateStatus(result: Result.Error) {
         binding.mainContainer.visibility = View.GONE
         binding.statusView.root.visibility = View.VISIBLE
         if (result.exception.message.equals(ErrorCode.NO_ACTIVE_TASKS.code)) {
-            updateStatusView()
+            binding.statusView.apply {
+                when (Calendar.getInstance().get(Calendar.MONTH) + 1) {
+                    in 3..5 -> {
+//                      Spring
+                        image.setImageResource(R.drawable.img_season_spring)
+                        statusTv.text = "No tasks for today. \nSpring into relaxation mode!"
+                    }
+                    in 6..8 -> {
+//                      Summer
+                        image.setImageResource(R.drawable.img_season_summer)
+                        statusTv.text =
+                            "No tasks on this sunny day. \nLet the plants soak up the summer vibes."
+                    }
+                    in 9..11 -> {
+//                      Autumn
+                        image.setImageResource(R.drawable.img_season_autumn)
+                        statusTv.text =
+                            "Fall vibes in the air, and guess what? \nNo tasks tumbling down today! "
+                    }
+                    else -> {
+//                      Winter
+                        image.setImageResource(R.drawable.img_season_winter)
+                        statusTv.text = "It's a frosty 'no tasks for today' kind of day!"
+                    }
+                }
+            }
         } else {
             binding.statusView.statusTv.text =
                 ErrorCode.fromCode(result.exception.message ?: ErrorCode.UNKNOWN_ERROR.code).message
-        }
-    }
-
-    private fun updateStatusView() {
-        binding.statusView.apply {
-            when (Calendar.getInstance().get(Calendar.MONTH) + 1) {
-                in 3..5 -> {
-                    // "Spring"
-                    image.setImageResource(R.drawable.img_spring)
-                    statusTv.text = "No tasks for today. \nSpring into relaxation mode!"
-                }
-                in 6..8 -> {
-                    // "Summer"
-                    image.setImageResource(R.drawable.img_summer)
-                    statusTv.text = "No tasks on this sunny day. \nLet the plants soak up the summer vibes."
-                }
-                in 9..11 -> {
-//                    "Autumn"
-                    image.setImageResource(R.drawable.img_autumn)
-                    statusTv.text = "Fall vibes in the air, and guess what? \nNo tasks tumbling down today! "
-                }
-                else -> {
-//                    "Winter"
-                    image.setImageResource(R.drawable.img_winter)
-                    statusTv.text = "It's a frosty 'no tasks for today' kind of day!"
-                }
-            }
         }
     }
 }

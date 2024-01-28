@@ -6,7 +6,7 @@
     <string name="title_search">Search</string>
     <string name="title_plant_details">Plant Details</string>
 
-    <string name="et_hint_plant_search">Enter plant name to search</string>
+    <string name="hint_plant_search">Rose, lily, grooty patootie ...</string>
 
     <string name="cd_listitem_plant_image">plant image from search result</string>
     <string name="cd_search_button">Search</string>

@@ -23,11 +23,11 @@
         android:layout_height="match_parent">
 
         <include
-            android:id="@+id/errorView"
+            android:id="@+id/status_view"
             layout="@layout/view_status"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@drawable/search_state_error"
+            android:src="@drawable/img_error_no_internet"
             android:visibility="gone" />
 
         <androidx.constraintlayout.widget.ConstraintLayout

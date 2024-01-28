@@ -4,7 +4,6 @@ import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.net.toUri
 import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
@@ -30,7 +29,7 @@ fun bindPlantImage(imageView: ImageView, imageUrl: String?) {
             .apply(
                 RequestOptions()
                     .placeholder(R.drawable.loading_animation)
-                    .error(R.drawable.default_image))
+                    .error(R.drawable.img_default_plant))
             .into(imageView)
     }
 }
@@ -47,7 +46,7 @@ fun bindSearchResultPlantImage(imageView: ImageView, imageUrl: String?) {
             .apply(
                 RequestOptions()
                     .placeholder(R.drawable.loading_animation)
-                    .error(R.drawable.default_image))
+                    .error(R.drawable.img_default_plant))
             .into(imageView)
     }
 }

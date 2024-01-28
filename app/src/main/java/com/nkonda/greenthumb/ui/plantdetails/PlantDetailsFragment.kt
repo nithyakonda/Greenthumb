@@ -9,6 +9,8 @@ import android.widget.Toast.LENGTH_SHORT
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import com.google.android.material.materialswitch.MaterialSwitch
+import com.nkonda.greenthumb.MainActivity
+import com.nkonda.greenthumb.R
 import com.nkonda.greenthumb.data.*
 import com.nkonda.greenthumb.databinding.FragmentPlantDetailsBinding
 import com.nkonda.greenthumb.ui.LoadingUtils
@@ -34,8 +36,10 @@ class PlantDetailsFragment : Fragment() {
         setupObservers()
         setupClickHandlers()
         val args = PlantDetailsFragmentArgs.fromBundle(requireArguments())
-        Timber.d("Fetching details for plant id ${args.plantId}")
-        plantDetailsViewModel.getPlant(args.plantId)
+        if (hasConnectivity()) {
+            Timber.d("Fetching details for plant id ${args.plantId}")
+            plantDetailsViewModel.getPlant(args.plantId)
+        }
     }
 
     private fun setupObservers() {
@@ -43,17 +47,10 @@ class PlantDetailsFragment : Fragment() {
             getPlantResult.observe(viewLifecycleOwner) { result ->
                 when(result) {
                     is Result.Success -> {
-                        LoadingUtils.hideDialog()
-                        binding.mainContainer.visibility = View.VISIBLE
-                        binding.errorView.root.visibility = View.GONE
-                        binding.plant = result.data
-                        binding.addOrDeleteFab.isEnabled = true
+                        showResult(result)
                     }
                     is Result.Error -> {
-                        LoadingUtils.hideDialog()
-                        binding.mainContainer.visibility = View.GONE
-                        binding.errorView.root.visibility = View.VISIBLE
-                        binding.errorView.statusTv.text = ErrorCode.fromCode(result.exception.message ?: ErrorCode.UNKNOWN_ERROR.code).message
+                        updateStatus(result)
                     }
                     Result.Loading -> {
                         LoadingUtils.showDialog(requireContext())
@@ -169,6 +166,22 @@ class PlantDetailsFragment : Fragment() {
         }
     }
 
+    private fun showResult(result: Result.Success<Plant?>) {
+        LoadingUtils.hideDialog()
+        binding.mainContainer.visibility = View.VISIBLE
+        binding.statusView.root.visibility = View.GONE
+        binding.plant = result.data
+        binding.addOrDeleteFab.isEnabled = true
+    }
+
+    private fun updateStatus(result: Result.Error) {
+        LoadingUtils.hideDialog()
+        binding.mainContainer.visibility = View.GONE
+        binding.statusView.root.visibility = View.VISIBLE
+        binding.statusView.statusTv.text =
+            ErrorCode.fromCode(result.exception.message ?: ErrorCode.UNKNOWN_ERROR.code).message
+    }
+
     private fun showAddTaskView(taskKey: TaskKey, defaultSchedule: Schedule) {
         binding.apply {
             // initialize binding.task to default task so it is never null even if a db fetch fails.
@@ -203,5 +216,22 @@ class PlantDetailsFragment : Fragment() {
 
     private fun showToast(message: String?) {
         Toast.makeText(requireActivity(), message, LENGTH_SHORT).show()
+    }
+
+    private fun hasConnectivity(): Boolean {
+        val mainActivity = activity as? MainActivity
+        // default true since failing later is better than not allowing to make a call without a known reason
+        val isInternetAvailable = mainActivity?.isInternetAvailable ?: true
+
+        if (isInternetAvailable) {
+            binding.statusView.root.visibility = View.GONE
+            binding.mainContainer.visibility = View.VISIBLE
+        } else {
+            binding.mainContainer.visibility = View.GONE
+            binding.statusView.root.visibility = View.VISIBLE
+            binding.statusView.image.setImageResource(R.drawable.img_error_no_internet)
+            binding.statusView.statusTv.text = ErrorCode.NO_INTERNET.message
+        }
+        return isInternetAvailable
     }
 }
