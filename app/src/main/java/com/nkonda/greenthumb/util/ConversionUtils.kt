@@ -227,3 +227,34 @@ fun getMonthFromMonthChipId(id: Int): Month {
     }
 }
 
+fun convertIntToMonth(intMonth: Int): Month {
+    return when(intMonth) {
+        Calendar.JANUARY -> Month.January
+        Calendar.FEBRUARY -> Month.February
+        Calendar.MARCH -> Month.March
+        Calendar.APRIL -> Month.April
+        Calendar.MAY -> Month.May
+        Calendar.JUNE -> Month.June
+        Calendar.JULY -> Month.July
+        Calendar.AUGUST -> Month.August
+        Calendar.SEPTEMBER -> Month.September
+        Calendar.OCTOBER -> Month.October
+        Calendar.NOVEMBER -> Month.November
+        Calendar.DECEMBER -> Month.December
+        else -> Month.NOT_SET
+    }
+}
+
+fun convertIntToDay(intDay: Int): Day {
+    return when(intDay) {
+        Calendar.SUNDAY -> Day.Sunday
+        Calendar.MONDAY -> Day.Monday
+        Calendar.TUESDAY -> Day.Tuesday
+        Calendar.WEDNESDAY -> Day.Wednesday
+        Calendar.THURSDAY -> Day.Thursday
+        Calendar.FRIDAY -> Day.Friday
+        Calendar.SATURDAY -> Day.Saturday
+        else -> Day.NOT_SET
+    }
+}
+

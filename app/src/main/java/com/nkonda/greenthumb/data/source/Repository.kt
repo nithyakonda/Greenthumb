@@ -98,9 +98,15 @@ class Repository constructor(
         }
     }
 
-    override fun observeTasks(): LiveData<Result<List<TaskWithPlant>>> {
+    override fun observeActiveTasks(): LiveData<Result<List<TaskWithPlant>>> {
         wrapEspressoIdlingResource {
-            return localDataSource.observeTasks()
+            return localDataSource.observeActiveTasks()
+        }
+    }
+
+    override suspend fun getTasks(): Result<List<TaskWithPlant>> {
+        wrapEspressoIdlingResource {
+            return localDataSource.getTasks()
         }
     }
 }

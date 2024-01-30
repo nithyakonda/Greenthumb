@@ -16,7 +16,7 @@ class HomeViewModel(private val repository: IRepository) : ViewModel() {
     /**
      * Observed Data
      */
-    val tasks: LiveData<Result<List<TaskWithPlant>>> = repository.observeTasks().map { result ->
+    val tasks: LiveData<Result<List<TaskWithPlant>>> = repository.observeActiveTasks().map { result ->
         if (result.succeeded)  {
             result as Result.Success
             if (result.data.isEmpty()) {

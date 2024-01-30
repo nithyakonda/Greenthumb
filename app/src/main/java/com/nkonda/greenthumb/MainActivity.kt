@@ -1,11 +1,20 @@
 package com.nkonda.greenthumb
 
+import android.Manifest
+import android.app.AlertDialog
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.Context
+import android.content.pm.PackageManager
+import android.graphics.Color
 import android.net.ConnectivityManager
 import android.net.Network
+import android.os.Build
 import android.os.Bundle
 import android.view.View
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -14,6 +23,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.nkonda.greenthumb.databinding.ActivityMainBinding
 
+private const val PERMISSION_REQUEST_CODE = 10
 class MainActivity : AppCompatActivity(), ConnectivityChangeListener {
 
     private lateinit var binding: ActivityMainBinding
@@ -35,7 +45,11 @@ class MainActivity : AppCompatActivity(), ConnectivityChangeListener {
     }
 
     private val connectivityListeners = mutableSetOf<ConnectivityChangeListener>()
-
+    private val requestNotificationPermission =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted->
+            if (isGranted) {createChannel()}
+            else showPermissionRationaleDialog()
+        }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -43,8 +57,7 @@ class MainActivity : AppCompatActivity(), ConnectivityChangeListener {
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
         connectivityManager.registerDefaultNetworkCallback(networkCallback)
-
-
+        checkPermissionAndCreateChannel()
         val navView: BottomNavigationView = binding.navView
 
         navController = findNavController(R.id.nav_host_fragment_activity_main)
@@ -88,6 +101,53 @@ class MainActivity : AppCompatActivity(), ConnectivityChangeListener {
         connectivityListeners.remove(listener)
     }
 
+    private fun checkPermissionAndCreateChannel() {
+        val permission = Manifest.permission.POST_NOTIFICATIONS
+
+        when {
+            ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED -> {
+                createChannel()
+            }
+            shouldShowRequestPermissionRationale(permission) -> {
+                showPermissionRationaleDialog()
+                }
+            else -> {
+                requestNotificationPermission.launch(Manifest.permission.POST_NOTIFICATIONS)
+            }
+        }
+    }
+
+    private fun createChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val notificationChannel = NotificationChannel(
+                getString(R.string.notification_channel_id),
+                getString(R.string.notification_channel_name),
+                NotificationManager.IMPORTANCE_HIGH
+            )
+
+            notificationChannel.enableLights(true)
+            notificationChannel.lightColor = Color.RED
+            notificationChannel.enableVibration(true)
+            notificationChannel.description = "Task reminders"
+
+            val notificationManager = ContextCompat.getSystemService(
+                this,
+                NotificationManager::class.java
+            ) as NotificationManager
+            notificationManager.createNotificationChannel(notificationChannel)
+        }
+    }
+
+    private fun showPermissionRationaleDialog() {
+        AlertDialog.Builder(this)
+            .setTitle("Are you sure?")
+            .setMessage("Looks like you're missing out on task reminders. Wanna stay in the loop? Give us a quick nod in your settings to allow notifications. Thanks a bunch!")
+            .setPositiveButton("OK") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .create()
+            .show()
+    }
 }
 
 interface ConnectivityChangeListener {

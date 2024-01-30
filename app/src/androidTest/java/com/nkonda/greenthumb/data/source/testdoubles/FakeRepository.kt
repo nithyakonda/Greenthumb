@@ -101,7 +101,7 @@ class FakeRepository: IRepository {
         TODO("Not yet implemented")
     }
 
-    override fun observeTasks(): LiveData<Result<List<TaskWithPlant>>> {
+    override fun observeActiveTasks(): LiveData<Result<List<TaskWithPlant>>> {
         TODO("Not yet implemented")
     }
 

@@ -118,7 +118,7 @@ class FakeLocalDataSource : ILocalDataSource{
         return database.tasksDao().observeTask(taskKey.plantId, taskKey.taskType).map { Result.Success(it) }
     }
 
-    override fun observeTasks(): LiveData<Result<List<TaskWithPlant>>> {
+    override fun observeActiveTasks(): LiveData<Result<List<TaskWithPlant>>> {
         if (shouldReturnError) {
             return MutableLiveData<Result<List<TaskWithPlant>>>().apply {
                 value = Result.Error(Exception(context.getString(R.string.test_error_db_error)))
@@ -127,7 +127,7 @@ class FakeLocalDataSource : ILocalDataSource{
         return database.tasksDao().observeTasks().map { Result.Success(it) }
     }
 
-    override suspend fun getTasks(): Result<List<Task>> {
+    override suspend fun getTasks(): Result<List<TaskWithPlant>> {
         if (shouldReturnError) {
             return Result.Error(Exception(context.getString(R.string.test_error_db_error)))
         }

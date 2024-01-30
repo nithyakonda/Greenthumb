@@ -378,7 +378,7 @@ class LocalDataSourceTest {
 
     @Test
     fun observeTasks_givenEmptyTable_returnsEmptyList() = runBlocking {
-        val result = localDataSource.observeTasks()
+        val result = localDataSource.observeActiveTasks()
 
         assertThat(result.getOrAwaitValue().succeeded, `is`(true))
         val tasks = (result.value as Result.Success).data
@@ -391,7 +391,7 @@ class LocalDataSourceTest {
         localDataSource.saveTask(plantOneWateringTaskDefaultSchedule)
         localDataSource.saveTask(plantOnePruningTaskDefaultSchedule)
 
-        val result = localDataSource.observeTasks()
+        val result = localDataSource.observeActiveTasks()
 
         assertThat(result.getOrAwaitValue().succeeded, `is`(true))
         val tasks = (result.value as Result.Success).data

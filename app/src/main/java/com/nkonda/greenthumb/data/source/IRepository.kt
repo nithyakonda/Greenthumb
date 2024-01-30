@@ -38,5 +38,6 @@ interface IRepository {
 
     fun observeTask(taskKey: TaskKey): LiveData<Result<Task?>>
 
-    fun observeTasks(): LiveData<Result<List<TaskWithPlant>>>
+    fun observeActiveTasks(): LiveData<Result<List<TaskWithPlant>>>
+    suspend fun getTasks(): Result<List<TaskWithPlant>>
 }

@@ -29,8 +29,7 @@ open abstract class Schedule(
 class PruningSchedule(
     months: List<Month>,
     hourOfDay: Int = -1,
-    minute: Int = -1,
-    var notified: Boolean? = false): Schedule(TaskType.PRUNE, emptyList(), months, hourOfDay, minute, TaskOccurrence.YEARLY) {
+    minute: Int = -1): Schedule(TaskType.PRUNE, emptyList(), months, hourOfDay, minute, TaskOccurrence.YEARLY) {
 
     override fun actualScheduleString(): String {
         return StringBuilder().apply {

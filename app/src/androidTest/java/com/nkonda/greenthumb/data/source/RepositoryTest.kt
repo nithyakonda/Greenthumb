@@ -250,7 +250,7 @@ class RepositoryTest {
     @Test
     fun observeTasks_whenDBError_returnsError() = runBlocking {
         localDataSource.setReturnError(true)
-        val result = repository.observeTasks().getOrAwaitValue()
+        val result = repository.observeActiveTasks().getOrAwaitValue()
         assertDbError(result)
     }
 /*-------------------------------------------------------------------------------------------*/

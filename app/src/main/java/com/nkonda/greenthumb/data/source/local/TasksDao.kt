@@ -27,8 +27,8 @@ interface TasksDao {
     @Query("SELECT tasks.*, plants.common_name, plants.image FROM tasks INNER JOIN plants ON tasks.plant_id = plants.id")
     fun observeTasks(): LiveData<List<TaskWithPlant>>
 
-    @Query("SELECT * FROM tasks")
-    suspend fun getTasks(): List<Task>
+    @Query("SELECT tasks.*, plants.common_name, plants.image FROM tasks INNER JOIN plants ON tasks.plant_id = plants.id")
+    suspend fun getTasks(): List<TaskWithPlant>
 
     @Query("SELECT * FROM tasks WHERE plant_id = :plantId AND task_type = :taskType")
     suspend fun getTask(plantId: Long, taskType: TaskType): Task?

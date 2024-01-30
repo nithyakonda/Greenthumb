@@ -2,37 +2,28 @@ package com.nkonda.greenthumb.util
 
 import com.nkonda.greenthumb.data.Day
 import com.nkonda.greenthumb.data.Month
+import java.time.LocalDate
 import java.util.Calendar
 
 private val cal = Calendar.getInstance()
 
-fun getCurrentDay(): Day {
-    return when(cal.get(Calendar.DAY_OF_WEEK)) {
-        Calendar.SUNDAY -> Day.Sunday
-        Calendar.MONDAY -> Day.Monday
-        Calendar.TUESDAY -> Day.Tuesday
-        Calendar.WEDNESDAY -> Day.Wednesday
-        Calendar.THURSDAY -> Day.Thursday
-        Calendar.FRIDAY -> Day.Friday
-        Calendar.SATURDAY -> Day.Saturday
-        else -> Day.NOT_SET
-    }
+fun getYesterday(): Pair<Day, Month> {
+    val yesterday = cal
+    yesterday.add(Calendar.DAY_OF_MONTH, -1)
+
+    val day = yesterday.get(Calendar.DAY_OF_WEEK)
+    val month = yesterday.get(Calendar.MONTH) + 1
+
+    return Pair(convertIntToDay(day), convertIntToMonth(month))
 }
 
-fun getCurrentMonth(): Month {
-    return when(cal.get(Calendar.MONTH)) {
-        Calendar.JANUARY -> Month.January
-        Calendar.FEBRUARY -> Month.February
-        Calendar.MARCH -> Month.March
-        Calendar.APRIL -> Month.April
-        Calendar.MAY -> Month.May
-        Calendar.JUNE -> Month.June
-        Calendar.JULY -> Month.July
-        Calendar.AUGUST -> Month.August
-        Calendar.SEPTEMBER -> Month.September
-        Calendar.OCTOBER -> Month.October
-        Calendar.NOVEMBER -> Month.November
-        Calendar.DECEMBER -> Month.December
-        else -> Month.NOT_SET
-    }
+fun getToday(): Pair<Day, Month> {
+    val day = cal.get(Calendar.DAY_OF_WEEK)
+    val month = cal.get(Calendar.MONTH) + 1
+
+    return Pair(convertIntToDay(day), convertIntToMonth(month))
+}
+
+fun getTimeInMillis(hourOfDay: Int, minute: Int): Long {
+    return ((hourOfDay * 60 + minute) * 60 * 1000).toLong()
 }

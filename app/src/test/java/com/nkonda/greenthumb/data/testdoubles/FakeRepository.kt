@@ -149,7 +149,7 @@ class FakeRepository: IRepository {
     }
 
 
-    override fun observeTasks(): LiveData<Result<List<TaskWithPlant>>> = liveData {
+    override fun observeActiveTasks(): LiveData<Result<List<TaskWithPlant>>> = liveData {
         emit(
             if (!shouldReturnError) {
                 Result.Success(tasksWithPlant.values.toList())
