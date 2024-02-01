@@ -1,8 +1,7 @@
 package com.nkonda.greenthumb.data
 
+import com.nkonda.greenthumb.util.getFormattedTimeString
 import com.squareup.moshi.JsonClass
-import java.text.SimpleDateFormat
-import java.util.*
 
 @JsonClass(generateAdapter = true)
 open abstract class Schedule(
@@ -17,12 +16,7 @@ open abstract class Schedule(
 
     // todo handle both 12hr/24hr formats
     protected fun getTimeString(): String {
-        val calendar = Calendar.getInstance()
-        calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
-        calendar.set(Calendar.MINUTE, minute)
-
-        val dateFormat = SimpleDateFormat("hh:mm a", Locale.getDefault())
-        return dateFormat.format(calendar.time)
+        return getFormattedTimeString(hourOfDay, minute)
     }
 }
 

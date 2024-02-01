@@ -4,113 +4,77 @@ import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
 import androidx.core.content.ContextCompat
-import androidx.work.*
-import com.nkonda.greenthumb.R
+import androidx.work.CoroutineWorker
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import androidx.work.WorkerParameters
 import com.nkonda.greenthumb.data.TaskType
 import com.nkonda.greenthumb.data.TaskWithPlant
-import com.nkonda.greenthumb.data.source.Repository
+import com.nkonda.greenthumb.data.source.IRepository
 import com.nkonda.greenthumb.data.succeeded
-import com.nkonda.greenthumb.util.getTimeInMillis
-import com.nkonda.greenthumb.util.getToday
-import com.nkonda.greenthumb.util.getYesterday
+import com.nkonda.greenthumb.util.*
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.get
+import org.koin.core.component.inject
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
 class TaskNotificationScheduler(context: Context, params: WorkerParameters) :
     CoroutineWorker(context, params), KoinComponent {
-    private lateinit var repository: Repository
+    val repository: IRepository by inject()
 
     companion object {
         const val WORK_NAME = "TaskNotificationScheduler"
+        const val MIN_BACKOFF_MILLIS = 300000L
     }
 
     override suspend fun doWork(): Result {
         return try {
-            repository = get()
             val result = repository.getTasks()
             if (result.succeeded) {
                 result as com.nkonda.greenthumb.data.Result.Success
-                val oldTasks = result.data.filter {
-                    val schedule = it.task.schedule
-                    val (day, month) = getYesterday()
-                    schedule.days.contains(day) ||
-                            schedule.months.contains(month)
-                }
-                val newTasks = result.data.filter {
-                    val schedule = it.task.schedule
-                    val (day, month) = getToday()
-                    schedule.days.contains(day) ||
-                            schedule.months.contains(month)
-                }
-                resetOldTasks(oldTasks)
+
+                resetOldTasks(result.data)
                 if (ContextCompat.checkSelfPermission(
                         applicationContext,
                         Manifest.permission.POST_NOTIFICATIONS
                     ) == PackageManager.PERMISSION_GRANTED
                 ) {
-                    scheduleNotificationsForCurrentTasks(newTasks)
+                    scheduleNotificationsForCurrentTasks(result.data)
+                } else {
+                    Timber.w("Post Notifications permission not granted. Couldn't schedule notifications")
                 }
                 Result.success()
             } else {
-                Result.failure()
+                Timber.e("getTasks failed. Couldn't reset tasks or schedule notifications. Attempting retry")
+                Result.retry()
             }
         } catch (e: java.lang.Exception) {
+            Timber.e("Exception occurred. Couldn't reset tasks or schedule notifications. Attempting retry")
+            Timber.e(e.stackTraceToString())
             Result.retry()
         }
     }
 
-    private fun scheduleNotificationsForCurrentTasks(newTasks: List<TaskWithPlant>) {
-        Timber.d("Scheduling notifications for ${newTasks.size} task(s)")
-        newTasks.forEach {
-            if (!it.task.completed) {
+    private fun scheduleNotificationsForCurrentTasks(tasks: List<TaskWithPlant>) {
+        val newTasks = tasks.filter {
+            val schedule = it.task.schedule
+            val (day, month) = getToday()
+            schedule.days.contains(day) ||
+                    schedule.months.contains(month)
+        }
+        Timber.i("Scheduling notifications for ${newTasks.size} task(s)")
+        newTasks.forEach { taskWithPlant ->
+            if (!taskWithPlant.task.completed) {
+                val hour = taskWithPlant.task.schedule.hourOfDay
+                val min = taskWithPlant.task.schedule.minute
+                Timber.d("${taskWithPlant.plantName}: ${taskWithPlant.task.key.taskType} @ ${getFormattedTimeString(hour, min)}")
                 var inputData =
-                    when (it.task.key.taskType) {
-                        TaskType.PRUNE -> {
-                            Data.Builder()
-                                .putString(
-                                    NotificationWorker.ARG_NOTIFICATION_TITLE,
-                                    applicationContext.getString(
-                                        R.string.notification_title_prune
-                                    )
-                                )
-                                .putString(
-                                    NotificationWorker.ARG_NOTIFICATION_TEXT,
-                                    String.format(
-                                        applicationContext.getString(R.string.notification_description_prune),
-                                        it.plantName
-                                    )
-                                )
-                                .build()
-                        }
-                        TaskType.WATER -> {
-                            Data.Builder()
-                                .putString(
-                                    NotificationWorker.ARG_NOTIFICATION_TITLE,
-                                    applicationContext.getString(
-                                        R.string.notification_title_water
-                                    )
-                                )
-                                .putString(
-                                    NotificationWorker.ARG_NOTIFICATION_TEXT,
-                                    String.format(
-                                        applicationContext.getString(R.string.notification_description_water),
-                                        it.plantName
-                                    )
-                                )
-                                .build()
-                        }
-                        TaskType.CUSTOM -> TODO()
-                    }
+                    getNotificationContent(applicationContext, taskWithPlant)
 
                 val workRequest = OneTimeWorkRequestBuilder<NotificationWorker>()
                     .setInputData(inputData)
                     .setInitialDelay(
-                        getTimeInMillis(
-                            it.task.schedule.hourOfDay,
-                            it.task.schedule.minute
-                        ), TimeUnit.MILLISECONDS
+                        getDelayUntil(hour, min), TimeUnit.MILLISECONDS
                     )
                     .build()
 
@@ -119,8 +83,16 @@ class TaskNotificationScheduler(context: Context, params: WorkerParameters) :
         }
     }
 
-    private suspend fun resetOldTasks(oldTasks: List<TaskWithPlant>) {
+    private suspend fun resetOldTasks(tasks: List<TaskWithPlant>) {
+        val oldTasks = tasks.filter {
+            val schedule = it.task.schedule
+            val (day, month) = getYesterday()
+            schedule.days.contains(day) ||
+                    schedule.months.contains(month)
+        }
+        Timber.i("Resetting ${oldTasks.size} old tasks")
         oldTasks.forEach {
+            Timber.d("${it.plantName}: ${it.task.key.taskType}")
             when (it.task.key.taskType) {
                 TaskType.PRUNE -> {
                     // if yesterday is a different month

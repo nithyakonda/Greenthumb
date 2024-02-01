@@ -5,6 +5,9 @@ import android.content.Context
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.nkonda.greenthumb.util.sendNotification
+import timber.log.Timber
+import java.text.SimpleDateFormat
+import java.util.*
 
 class NotificationWorker(
     appContext: Context,
@@ -21,12 +24,17 @@ class NotificationWorker(
 
         val notificationManager =
             applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        title?.let {_title ->
-            text?.let { _text ->
-                notificationManager.sendNotification(_title,
-                _text, applicationContext)
-            }
+        if (title != null && text != null) {
+            val currentTime = System.currentTimeMillis()
+            val dateFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
+
+            val formattedTime = dateFormat.format(currentTime)
+            Timber.i("Sending notification @ $formattedTime}")
+            notificationManager.sendNotification(title, text, applicationContext)
+        } else {
+            Timber.w("Null input data. Couldn't send notification")
         }
+
         return Result.success()
     }
 }
