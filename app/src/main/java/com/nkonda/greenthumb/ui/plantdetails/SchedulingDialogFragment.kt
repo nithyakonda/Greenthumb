@@ -5,10 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
+import androidx.work.WorkManager
 import com.nkonda.greenthumb.data.*
 import com.nkonda.greenthumb.databinding.DialogSchedulingBinding
 import com.nkonda.greenthumb.util.getDayFromDayChipId
 import com.nkonda.greenthumb.util.getMonthFromMonthChipId
+import com.nkonda.greenthumb.util.getNotificationWorkRequest
+import com.nkonda.greenthumb.util.isLaterToday
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
 class SchedulingDialogFragment: DialogFragment() {
@@ -58,12 +61,20 @@ class SchedulingDialogFragment: DialogFragment() {
         binding.okBtn.setOnClickListener {
             val newSchedule = getSchedule()
             plantDetailsViewModel.updateSchedule(taskKey, newSchedule)
+            scheduleNotificationIfNeeded(newSchedule)
             dismiss()
         }
 
         binding.cancelBtn.setOnClickListener {
             plantDetailsViewModel.cancelUpdate(taskKey)
             dismiss()
+        }
+    }
+
+    private fun scheduleNotificationIfNeeded(schedule: Schedule) {
+        if (schedule.shouldScheduleNotification()) {
+            val workRequest = getNotificationWorkRequest(taskKey, schedule, plantDetailsViewModel.getPlantName())
+            WorkManager.getInstance(requireContext()).enqueue(workRequest)
         }
     }
 

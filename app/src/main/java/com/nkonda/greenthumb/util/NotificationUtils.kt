@@ -6,11 +6,17 @@ import android.content.Context
 import android.content.Intent
 import androidx.core.app.NotificationCompat
 import androidx.work.Data
+import androidx.work.OneTimeWorkRequest
+import androidx.work.OneTimeWorkRequestBuilder
 import com.nkonda.greenthumb.MainActivity
 import com.nkonda.greenthumb.R
+import com.nkonda.greenthumb.data.Schedule
+import com.nkonda.greenthumb.data.TaskKey
 import com.nkonda.greenthumb.data.TaskType
 import com.nkonda.greenthumb.data.TaskWithPlant
 import com.nkonda.greenthumb.notification.NotificationWorker
+import timber.log.Timber
+import java.util.concurrent.TimeUnit
 
 private const val NOTIFICATION_ID = 10
 
@@ -35,41 +41,52 @@ fun NotificationManager.sendNotification(title: String, message: String, context
     notify(NOTIFICATION_ID, builder.build())
 }
 
-fun getNotificationContent(applicationContext: Context, taskWithPlant: TaskWithPlant) =
-    when (taskWithPlant.task.key.taskType) {
+
+fun getNotificationWorkRequest(taskKey: TaskKey, schedule: Schedule, plantName: String): OneTimeWorkRequest {
+    val hour = schedule.hourOfDay
+    val min = schedule.minute
+    Timber.d(
+        "Scheduling notification for ${plantName}: ${taskKey.taskType} @ ${
+            getFormattedTimeString(
+                hour,
+                min
+            )
+        }"
+    )
+    var inputData = Data.Builder()
+        .putLong(NotificationWorker.ARG_PLANT_ID, taskKey.plantId)
+        .putString(NotificationWorker.ARG_TASK_TYPE, taskKey.taskType.name)
+        .putString(NotificationWorker.ARG_PLANT_NAME, plantName)
+        .build()
+
+    return OneTimeWorkRequestBuilder<NotificationWorker>()
+        .setInputData(inputData)
+        .setInitialDelay(
+            getDelayUntil(hour, min), TimeUnit.MILLISECONDS
+        )
+        .build()
+}
+
+fun getNotificationContent(applicationContext: Context, taskType: TaskType, plantName: String): Pair<String, String> {
+    var title: String
+    var message: String
+
+    when(taskType) {
         TaskType.PRUNE -> {
-            Data.Builder()
-                .putString(
-                    NotificationWorker.ARG_NOTIFICATION_TITLE,
-                    applicationContext.getString(
-                        R.string.notification_title_prune
-                    )
-                )
-                .putString(
-                    NotificationWorker.ARG_NOTIFICATION_TEXT,
-                    String.format(
-                        applicationContext.getString(R.string.notification_description_prune),
-                        taskWithPlant.plantName
-                    )
-                )
-                .build()
+            title = applicationContext.getString(R.string.notification_title_prune)
+            message = String.format(
+                applicationContext.getString(R.string.notification_description_prune),
+                plantName
+            )
         }
         TaskType.WATER -> {
-            Data.Builder()
-                .putString(
-                    NotificationWorker.ARG_NOTIFICATION_TITLE,
-                    applicationContext.getString(
-                        R.string.notification_title_water
-                    )
-                )
-                .putString(
-                    NotificationWorker.ARG_NOTIFICATION_TEXT,
-                    String.format(
-                        applicationContext.getString(R.string.notification_description_water),
-                        taskWithPlant.plantName
-                    )
-                )
-                .build()
+            title = applicationContext.getString(R.string.notification_title_water)
+            message = String.format(
+                applicationContext.getString(R.string.notification_description_water),
+                plantName
+            )
         }
         TaskType.CUSTOM -> TODO()
     }
+    return Pair(title, message)
+}

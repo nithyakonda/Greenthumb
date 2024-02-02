@@ -31,4 +31,5 @@ interface ILocalDataSource {
     fun observeActiveTasks(): LiveData<Result<List<TaskWithPlant>>>
 
     suspend fun getTasks(): Result<List<TaskWithPlant>>
+    suspend fun hasTask(taskKey: TaskKey): Boolean
 }

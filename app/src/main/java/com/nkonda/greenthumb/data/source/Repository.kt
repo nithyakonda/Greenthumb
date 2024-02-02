@@ -109,4 +109,10 @@ class Repository constructor(
             return localDataSource.getTasks()
         }
     }
+
+    override suspend fun hasTask(taskKey: TaskKey): Boolean {
+        wrapEspressoIdlingResource {
+            return localDataSource.hasTask(taskKey)
+        }
+    }
 }

@@ -4,10 +4,7 @@ import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
 import androidx.core.content.ContextCompat
-import androidx.work.CoroutineWorker
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.WorkManager
-import androidx.work.WorkerParameters
+import androidx.work.*
 import com.nkonda.greenthumb.data.TaskType
 import com.nkonda.greenthumb.data.TaskWithPlant
 import com.nkonda.greenthumb.data.source.IRepository
@@ -20,7 +17,7 @@ import java.util.concurrent.TimeUnit
 
 class TaskNotificationScheduler(context: Context, params: WorkerParameters) :
     CoroutineWorker(context, params), KoinComponent {
-    val repository: IRepository by inject()
+    private val repository: IRepository by inject()
 
     companion object {
         const val WORK_NAME = "TaskNotificationScheduler"
@@ -65,18 +62,7 @@ class TaskNotificationScheduler(context: Context, params: WorkerParameters) :
         Timber.i("Scheduling notifications for ${newTasks.size} task(s)")
         newTasks.forEach { taskWithPlant ->
             if (!taskWithPlant.task.completed) {
-                val hour = taskWithPlant.task.schedule.hourOfDay
-                val min = taskWithPlant.task.schedule.minute
-                Timber.d("${taskWithPlant.plantName}: ${taskWithPlant.task.key.taskType} @ ${getFormattedTimeString(hour, min)}")
-                var inputData =
-                    getNotificationContent(applicationContext, taskWithPlant)
-
-                val workRequest = OneTimeWorkRequestBuilder<NotificationWorker>()
-                    .setInputData(inputData)
-                    .setInitialDelay(
-                        getDelayUntil(hour, min), TimeUnit.MILLISECONDS
-                    )
-                    .build()
+                val workRequest = getNotificationWorkRequest(taskWithPlant.task.key, taskWithPlant.task.schedule, taskWithPlant.plantName)
 
                 WorkManager.getInstance(applicationContext).enqueue(workRequest)
             }

@@ -166,4 +166,13 @@ class LocalDataSource constructor(
             Error(e)
         }
     }
+
+    override suspend fun hasTask(taskKey: TaskKey): Boolean {
+        return try {
+            tasksDao.hasTask(taskKey.plantId, taskKey.taskType) == 1
+        } catch (e: Exception) {
+            Timber.e(e.stackTraceToString())
+            false
+        }
+    }
 }

@@ -1,6 +1,9 @@
 package com.nkonda.greenthumb.data
 
 import com.nkonda.greenthumb.util.getFormattedTimeString
+import com.nkonda.greenthumb.util.hasThisDay
+import com.nkonda.greenthumb.util.hasThisMonth
+import com.nkonda.greenthumb.util.isLaterToday
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
@@ -13,6 +16,8 @@ open abstract class Schedule(
     var occurrence: TaskOccurrence = TaskOccurrence.ONCE,
 ) {
     abstract fun actualScheduleString():String
+
+    abstract fun shouldScheduleNotification(): Boolean
 
     // todo handle both 12hr/24hr formats
     protected fun getTimeString(): String {
@@ -38,6 +43,10 @@ class PruningSchedule(
             }
         }.toString()
     }
+
+    override fun shouldScheduleNotification(): Boolean {
+        return hasThisMonth(months) && isLaterToday(hourOfDay, minute)
+    }
 }
 
 class WateringSchedule(
@@ -53,5 +62,9 @@ class WateringSchedule(
                 append(getTimeString())
             } ?: ""
         }.toString()
+    }
+
+    override fun shouldScheduleNotification(): Boolean {
+        return hasThisDay(days) && isLaterToday(hourOfDay, minute)
     }
 }

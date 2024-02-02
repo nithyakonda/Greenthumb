@@ -102,6 +102,14 @@ class PlantDetailsViewModel(private val repository: IRepository) : ViewModel() {
         }
     }
 
+    fun getPlantName(): String {
+        return if (_getPlantResult.value?.succeeded == true) {
+            (_getPlantResult.value as Result.Success).data?.commonName ?: "One of your plants"
+        } else {
+            "One of your plants"
+        }
+    }
+
     /*----------------------------------------------------------------------------------------*/
 
     fun viewTask(task: Task) {

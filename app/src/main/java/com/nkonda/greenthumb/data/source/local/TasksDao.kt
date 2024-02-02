@@ -35,4 +35,6 @@ interface TasksDao {
 
     @Query("SELECT * FROM tasks WHERE plant_id = :plantId AND task_type = :taskType")
     fun observeTask(plantId: Long, taskType: TaskType): LiveData<Task?>
+    @Query("SELECT COUNT(*) FROM tasks WHERE plant_id = :plantId AND task_type = :taskType")
+    fun hasTask(plantId: Long, taskType: TaskType): Int
 }
