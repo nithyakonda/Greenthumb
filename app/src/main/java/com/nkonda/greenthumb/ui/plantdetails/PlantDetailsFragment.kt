@@ -89,13 +89,13 @@ class PlantDetailsFragment : Fragment() {
                 showToast(message)
             }
 
-            progressIndicator.observe(viewLifecycleOwner) { isLoading ->
-                if (isLoading) {
-                    LoadingUtils.showDialog(requireContext())
-                } else {
-                    LoadingUtils.hideDialog()
-                }
-            }
+//            progressIndicator.observe(viewLifecycleOwner) { isLoading ->
+//                if (isLoading) {
+//                    LoadingUtils.showDialog(requireContext())
+//                } else {
+//                    LoadingUtils.hideDialog()
+//                }
+//            }
         }
     }
 
@@ -163,6 +163,7 @@ class PlantDetailsFragment : Fragment() {
             showConfirmDeleteDialog()
         } else {
             plantDetailsViewModel.savePlant(binding.plant!!)
+            binding.mainContainer.transitionToEnd()
         }
     }
 
@@ -172,6 +173,12 @@ class PlantDetailsFragment : Fragment() {
         binding.statusView.root.visibility = View.GONE
         binding.plant = result.data
         binding.addOrDeleteFab.isEnabled = true
+        if (binding?.saved == true) {
+            // since we are using motion scene to control the visibility of addTasksTv
+            // we need to set the progress to 1.0f so the layout starts with the end state
+            // i.e where addTasksTv is visibile
+            binding.mainContainer.progress = 1.0f
+        }
     }
 
     private fun updateStatus(result: Result.Error) {
@@ -200,6 +207,7 @@ class PlantDetailsFragment : Fragment() {
             .setMessage("Are you sure you want to delete this plant?")
             .setPositiveButton("Yes") { dialogInterface,_ ->
                 plantDetailsViewModel.deletePlant(binding.plant!!)
+                binding.mainContainer.transitionToStart()
                 dialogInterface.dismiss()
             }
             .setNegativeButton("No") { dialogInterface,_ ->

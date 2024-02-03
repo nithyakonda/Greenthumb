@@ -64,7 +64,7 @@ enum class ErrorCode(val code: String, val message: String) {
     ),
 
     // Errors from remote api
-    NOT_FOUND("2000", "Well, this is awkward... \\n Plant not found in the digital garden!"),
+    NOT_FOUND("2000", "Well, this is awkward... \n Plant not found in the digital garden!"),
     TIMEOUT("2001", ""),
     FAILED("2002", ""),
 

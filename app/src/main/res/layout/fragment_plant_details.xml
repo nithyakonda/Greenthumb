@@ -30,12 +30,13 @@
             android:src="@drawable/img_error_no_internet"
             android:visibility="gone" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <androidx.constraintlayout.motion.widget.MotionLayout
             android:id="@+id/mainContainer"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="16dp"
-            tools:context=".ui.plantdetails.PlantDetailsFragment">
+            tools:context=".ui.plantdetails.PlantDetailsFragment"
+            app:layoutDescription="@xml/motion_scene">
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/vGuide1"
@@ -194,26 +195,19 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="8dp"
                 android:background="?android:attr/listDivider"
-                app:layout_constraintBottom_toTopOf="@+id/textView"
+                app:layout_constraintBottom_toTopOf="@+id/addTasksTv"
                 app:layout_constraintEnd_toStartOf="@+id/vGuide1"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/sunlightTv" />
 
             <TextView
-                android:id="@+id/textView"
+                android:id="@+id/addTasksTv"
                 style="@style/GTLabelTextViewStyle"
-                viewVisibility="@{saved}"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_margin="8dp"
                 android:text="@string/tv_label_tasks"
-                android:textAlignment="center"
-                app:layout_constraintBottom_toTopOf="@+id/wateringTaskBtn"
-                app:layout_constraintEnd_toEndOf="@id/vGuide1"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="@id/carelevelTv"
-                app:layout_constraintTop_toBottomOf="@+id/divider" />
+                android:textAlignment="center" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/wateringTaskBtn"
@@ -232,7 +226,7 @@
                 app:layout_constraintEnd_toStartOf="@+id/vGuide1"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView"
+                app:layout_constraintTop_toBottomOf="@+id/addTasksTv"
                 tools:ignore="SpeakableTextPresentCheck" />
 
             <TextView
@@ -436,6 +430,6 @@
                 tools:ignore="ContentDescription,SpeakableTextPresentCheck" />
 
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.motion.widget.MotionLayout>
     </FrameLayout>
 </layout>
