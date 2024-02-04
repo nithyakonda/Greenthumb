@@ -1,35 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<MotionScene xmlns:motion="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<MotionScene xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:motion="http://schemas.android.com/apk/res-auto">
     <Transition
-        motion:constraintSetStart="@id/start"
-        motion:constraintSetEnd="@id/end"
-        motion:duration="1000">
-    </Transition>
-    <ConstraintSet android:id="@+id/start">
+        motion:constraintSetEnd="@id/addDelPlantEnd"
+        motion:constraintSetStart="@id/addDelPlantStart"
+        motion:duration="1000" />
+
+
+    <ConstraintSet android:id="@+id/addDelPlantStart">
         <Constraint
             android:id="@id/addTasksTv"
-            android:visibility="invisible"
             android:layout_width="1dp"
             android:layout_height="1dp"
-            app:layout_constraintEnd_toEndOf="@id/vGuide1"
+            android:visibility="invisible"
             app:layout_constraintBottom_toTopOf="@+id/wateringTaskBtn"
+            app:layout_constraintEnd_toEndOf="@id/vGuide1"
             app:layout_constraintStart_toStartOf="@id/carelevelTv"
-            app:layout_constraintTop_toBottomOf="@+id/divider"
-            />
+            app:layout_constraintTop_toBottomOf="@+id/divider" />
     </ConstraintSet>
-    <ConstraintSet android:id="@+id/end">
+    <ConstraintSet android:id="@+id/addDelPlantEnd">
         <Constraint
             android:id="@id/addTasksTv"
-            android:visibility="visible"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:visibility="visible"
             app:layout_constraintBottom_toTopOf="@+id/wateringTaskBtn"
             app:layout_constraintEnd_toEndOf="@id/vGuide1"
             app:layout_constraintStart_toStartOf="@id/carelevelTv"
-            app:layout_constraintTop_toBottomOf="@+id/divider"
-            />
+            app:layout_constraintTop_toBottomOf="@+id/divider" />
     </ConstraintSet>
+
 </MotionScene>

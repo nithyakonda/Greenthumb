@@ -1,12 +1,16 @@
 package com.nkonda.greenthumb.ui.plantdetails
 
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.google.android.material.materialswitch.MaterialSwitch
 import com.nkonda.greenthumb.MainActivity
@@ -60,6 +64,7 @@ class PlantDetailsFragment : Fragment() {
 
             isPlantSaved.observe(viewLifecycleOwner) { saved ->
                 binding.saved = saved
+                animatePlantSavedStatusChange(saved)
             }
 
             currentTask.observe(viewLifecycleOwner) { result ->
@@ -106,12 +111,14 @@ class PlantDetailsFragment : Fragment() {
             }
 
             wateringTaskBtn.setOnClickListener{
+                cardContainer?.transitionToEnd()
                 showAddTaskView(TaskKey(binding.plant!!.id, TaskType.WATER),
                     binding.plant?.getDefaultSchedule(TaskType.WATER)!!
                 )
             }
 
             pruningTaskBtn.setOnClickListener {
+                cardContainer?.transitionToEnd()
                 showAddTaskView(TaskKey(binding.plant!!.id, TaskType.PRUNE),
                     binding.plant?.getDefaultSchedule(TaskType.PRUNE)!!
                 )
@@ -154,8 +161,6 @@ class PlantDetailsFragment : Fragment() {
         binding.task?.key?.let {
             plantDetailsViewModel.deleteTask(it)
         }
-
-        // todo delete scheduled jobs
     }
 
     private fun saveOrDeletePlant() {
@@ -163,7 +168,6 @@ class PlantDetailsFragment : Fragment() {
             showConfirmDeleteDialog()
         } else {
             plantDetailsViewModel.savePlant(binding.plant!!)
-            binding.mainContainer.transitionToEnd()
         }
     }
 
@@ -173,12 +177,6 @@ class PlantDetailsFragment : Fragment() {
         binding.statusView.root.visibility = View.GONE
         binding.plant = result.data
         binding.addOrDeleteFab.isEnabled = true
-        if (binding?.saved == true) {
-            // since we are using motion scene to control the visibility of addTasksTv
-            // we need to set the progress to 1.0f so the layout starts with the end state
-            // i.e where addTasksTv is visibile
-            binding.mainContainer.progress = 1.0f
-        }
     }
 
     private fun updateStatus(result: Result.Error) {
@@ -207,7 +205,6 @@ class PlantDetailsFragment : Fragment() {
             .setMessage("Are you sure you want to delete this plant?")
             .setPositiveButton("Yes") { dialogInterface,_ ->
                 plantDetailsViewModel.deletePlant(binding.plant!!)
-                binding.mainContainer.transitionToStart()
                 dialogInterface.dismiss()
             }
             .setNegativeButton("No") { dialogInterface,_ ->
@@ -241,5 +238,41 @@ class PlantDetailsFragment : Fragment() {
             binding.statusView.statusTv.text = ErrorCode.NO_INTERNET.message
         }
         return isInternetAvailable
+    }
+
+    private fun animatePlantSavedStatusChange(saved: Boolean) {
+        if (saved) {
+            // show add tasks text view
+            binding.mainContainer.transitionToEnd()
+        } else {
+            // hide add tasks text view
+            binding.mainContainer.progress = 1.0f
+            binding.mainContainer.transitionToStart()
+            // hide add tasks container
+            if (binding.addTaskContainer.isVisible) {
+                if (isPortrait()) {
+                    binding.addTaskContainer.visibility = View.GONE
+                } else {
+                    // animate visibility change
+                    binding.cardContainer?.progress = 1.0f
+                    binding.cardContainer?.transitionToStart()
+                }
+            }
+        }
+    }
+
+    private fun isPortrait(): Boolean {
+        val windowManager = ContextCompat.getSystemService(requireContext(), WindowManager::class.java)
+
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            val windowMetrics = windowManager?.currentWindowMetrics
+            val bounds = windowMetrics?.bounds
+            bounds?.width() ?: 0 < bounds?.height() ?: 0
+        } else {
+            val display = windowManager?.defaultDisplay
+            val size = android.graphics.Point()
+            display?.getSize(size)
+            size.x < size.y
+        }
     }
 }
