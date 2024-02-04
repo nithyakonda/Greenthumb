@@ -70,7 +70,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                app:layout_constraintGuide_percent="0.4" />
+                app:layout_constraintGuide_percent="0.55" />
 
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/plantIv"
@@ -127,14 +127,13 @@
                 android:layout_width="70dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
-                android:layout_marginTop="132dp"
                 app:icon="@drawable/ic_unknown"
                 app:iconGravity="textTop"
                 app:iconTint="@color/colorCareLevel"
                 app:layout_constraintEnd_toStartOf="@+id/sunlightBtn"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@id/plantIv"
+                app:layout_constraintTop_toTopOf="@id/materialCardView"
                 app:strokeColor="@color/colorCareLevel"
                 tools:ignore="SpeakableTextPresentCheck" />
 
@@ -185,7 +184,9 @@
                 android:id="@+id/divider"
                 android:layout_width="0dp"
                 android:layout_height="1dp"
-                android:layout_margin="4dp"
+                android:layout_marginBottom="4dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
                 android:background="?android:attr/listDivider"
                 app:layout_constraintBottom_toTopOf="@id/addTasksTv"
                 app:layout_constraintEnd_toEndOf="@id/vGuide1"
@@ -292,7 +293,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        app:layout_constraintGuide_begin="0dp" />
+                        app:layout_constraintGuide_percent="0.02" />
 
 
                     <androidx.constraintlayout.widget.Guideline

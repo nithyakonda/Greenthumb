@@ -6,6 +6,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.content.pm.PackageManager
+import android.content.res.Configuration
 import android.graphics.Color
 import android.net.ConnectivityManager
 import android.net.Network
@@ -56,16 +57,21 @@ class MainActivity : AppCompatActivity(), ConnectivityChangeListener {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
+        supportActionBar?.title = ""
         connectivityManager.registerDefaultNetworkCallback(networkCallback)
         checkPermissionAndCreateChannel()
-        val navView: BottomNavigationView = binding.navView
+        val navView = if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            binding.navRailView
+        } else {
+            binding.navView
+        }
 
         navController = findNavController(R.id.nav_host_fragment_activity_main)
         navController.addOnDestinationChangedListener { _, destination, _ ->
             if (destination.id == R.id.navigation_plant_details) {
-                navView.visibility = View.GONE
+                navView?.visibility = View.GONE
             } else {
-                navView.visibility = View.VISIBLE
+                navView?.visibility = View.VISIBLE
             }
         }
         // Passing each menu ID as a set of Ids because each
@@ -73,7 +79,7 @@ class MainActivity : AppCompatActivity(), ConnectivityChangeListener {
         val appBarConfiguration = AppBarConfiguration(setOf(
             R.id.navigation_home, R.id.navigation_myplants, R.id.navigation_search))
         setupActionBarWithNavController(navController, appBarConfiguration)
-        navView.setupWithNavController(navController)
+        navView?.setupWithNavController(navController)
     }
 
     override fun onDestroy() {
