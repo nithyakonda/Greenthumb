@@ -78,8 +78,8 @@ class ScheduleConverter {
 
     private val moshi: Moshi = Moshi.Builder()
         .add(PolymorphicJsonAdapterFactory.of(Schedule::class.java, "taskType")
-            .withSubtype(PruningSchedule::class.java, TaskType.PRUNE.name)
-            .withSubtype(WateringSchedule::class.java, TaskType.WATER.name))
+            .withSubtype(PruningSchedule::class.java, TaskType.Prune.name)
+            .withSubtype(WateringSchedule::class.java, TaskType.Water.name))
         .add(KotlinJsonAdapterFactory())
         .build()
 

@@ -46,7 +46,7 @@ class SchedulingDialogFragment: DialogFragment() {
         dialog?.setCancelable(false)
         arguments?.let {
             taskKey = TaskKey(it.getLong(ARG_PLANT_ID),
-                                TaskType.valueOf(it.getString(ARG_TASK_TYPE, TaskType.WATER.name)))
+                                TaskType.valueOf(it.getString(ARG_TASK_TYPE, TaskType.Water.name)))
         } ?: throw (java.lang.IllegalStateException("Scheduling dialog args cannot be empty"))
         return binding.root
     }

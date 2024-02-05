@@ -164,7 +164,7 @@ class PlantDetailsViewModelTest {
 
     @Test
     fun setCurrentTask_givenValidTaskKey_switchesToRequestedTask() {
-        val validTaskKey = TaskKey(51L, TaskType.WATER)
+        val validTaskKey = TaskKey(51L, TaskType.Water)
         plantDetailsViewModel.viewTask(validTaskKey)
 
         val result = plantDetailsViewModel.currentTask.getOrAwaitValue() as Result.Success
@@ -173,7 +173,7 @@ class PlantDetailsViewModelTest {
 
     @Test
     fun setCurrentTask_givenInvalidTaskKey_switchesToNullTask() {
-        val invalidTaskKey = TaskKey(61L, TaskType.WATER)
+        val invalidTaskKey = TaskKey(61L, TaskType.Water)
         plantDetailsViewModel.viewTask(invalidTaskKey)
 
         val result = plantDetailsViewModel.currentTask.getOrAwaitValue() as Result.Success
@@ -183,7 +183,7 @@ class PlantDetailsViewModelTest {
     @Test
     fun setCurrentTask_givenValidTaskKey_whenDbError_returnsError() {
         repository.setReturnError(true)
-        val validTaskKey = TaskKey(51L, TaskType.WATER)
+        val validTaskKey = TaskKey(51L, TaskType.Water)
         plantDetailsViewModel.viewTask(validTaskKey)
 
         val result = plantDetailsViewModel.currentTask.getOrAwaitValue() as Result.Error
@@ -195,8 +195,8 @@ class PlantDetailsViewModelTest {
     @Test
     fun saveTask_whenSuccess_showsSuccessMessage() = runBlocking{
         repository.savePlant(plantOne)
-        val taskKey = TaskKey(plantOne.id, TaskType.WATER)
-        val schedule = plantOne.getDefaultSchedule(TaskType.WATER)
+        val taskKey = TaskKey(plantOne.id, TaskType.Water)
+        val schedule = plantOne.getDefaultSchedule(TaskType.Water)
         plantDetailsViewModel.createTask(taskKey, schedule)
 
         // Then assert that successMessage is set correctly
@@ -212,8 +212,8 @@ class PlantDetailsViewModelTest {
     fun saveTask_whenDBError_showsErrorMessage() = runBlocking {
         repository.savePlant(plantOne)
         repository.setReturnError(true)
-        val taskKey = TaskKey(plantOne.id, TaskType.WATER)
-        val schedule = plantOne.getDefaultSchedule(TaskType.WATER)
+        val taskKey = TaskKey(plantOne.id, TaskType.Water)
+        val schedule = plantOne.getDefaultSchedule(TaskType.Water)
 
         plantDetailsViewModel.createTask(taskKey, schedule)
 
@@ -225,7 +225,7 @@ class PlantDetailsViewModelTest {
     fun deleteTask_givenValidTask_returnsSuccess() = runBlocking {
         repository.savePlant(plantOne)
         repository.saveTask(plantOneWateringTaskDefaultSchedule)
-        val validTaskKey = TaskKey(plantOne.id, TaskType.WATER)
+        val validTaskKey = TaskKey(plantOne.id, TaskType.Water)
 
         plantDetailsViewModel.deleteTask(validTaskKey)
 
@@ -236,7 +236,7 @@ class PlantDetailsViewModelTest {
     fun deleteTask_givenInvalidTask_returnsError() = runBlocking {repository.savePlant(plantOne)
         repository.savePlant(plantOne)
         repository.saveTask(plantOneWateringTaskDefaultSchedule)
-        val invalidTaskKey = TaskKey(plantOne.id, TaskType.PRUNE)
+        val invalidTaskKey = TaskKey(plantOne.id, TaskType.Prune)
 
         plantDetailsViewModel.deleteTask(invalidTaskKey)
 
@@ -248,7 +248,7 @@ class PlantDetailsViewModelTest {
         repository.saveTask(plantOneWateringTaskDefaultSchedule)
         repository.setReturnError(true)
 
-        plantDetailsViewModel.deleteTask(TaskKey(plantOne.id, TaskType.WATER))
+        plantDetailsViewModel.deleteTask(TaskKey(plantOne.id, TaskType.Water))
 
         assertThat(plantDetailsViewModel.errorMessage.getOrAwaitValue(), `is`("DB error"))
     }
@@ -258,7 +258,7 @@ class PlantDetailsViewModelTest {
     fun updateSchedule_givenValidTaskKey_returnsSuccess() = runBlocking {
         repository.savePlant(plantOne)
         repository.saveTask(plantOneWateringTaskDefaultSchedule)
-        val validTaskKey = TaskKey(plantOne.id, TaskType.WATER)
+        val validTaskKey = TaskKey(plantOne.id, TaskType.Water)
 
         plantDetailsViewModel.updateSchedule(validTaskKey, wateringOneExpectedSchedule)
 
@@ -270,7 +270,7 @@ class PlantDetailsViewModelTest {
     fun updateSchedule_givenInvalidTaskKey_returnsError() = runBlocking {
         repository.savePlant(plantOne)
         repository.saveTask(plantOneWateringTaskDefaultSchedule)
-        val invalidTaskKey = TaskKey(plantOne.id, TaskType.PRUNE)
+        val invalidTaskKey = TaskKey(plantOne.id, TaskType.Prune)
 
         plantDetailsViewModel.updateSchedule(invalidTaskKey, wateringOneExpectedSchedule)
 
@@ -282,7 +282,7 @@ class PlantDetailsViewModelTest {
     fun updateSchedule_givenValidTaskKey_whenDbError_returnsError() = runBlocking {
         repository.saveTask(plantOneWateringTaskDefaultSchedule)
         repository.saveTask(plantOneWateringTaskDefaultSchedule)
-        val validTaskKey = TaskKey(plantOne.id, TaskType.WATER)
+        val validTaskKey = TaskKey(plantOne.id, TaskType.Water)
         repository.setReturnError(true)
 
         plantDetailsViewModel.updateSchedule(validTaskKey, wateringOneExpectedSchedule)

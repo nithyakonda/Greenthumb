@@ -70,7 +70,7 @@ class HomeFragment : Fragment() {
         result.data?.let { activeTasks ->
             Timber.i("Found ${activeTasks!!.size} tasks")
             val (dailyTasks, monthlyTasks) = activeTasks.partition {
-                it.task.key.taskType == TaskType.WATER
+                it.task.key.taskType == TaskType.Water
             }
             binding.monthlyTasks.root.visibility =
                 if (monthlyTasks.isEmpty()) View.GONE else View.VISIBLE

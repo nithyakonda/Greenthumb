@@ -211,17 +211,17 @@ fun bindTaskType(materialButton: MaterialButton, taskType: TaskType?) {
     materialButton.apply {
         taskType?.let {
             when (it) {
-                TaskType.PRUNE -> {
+                TaskType.Prune -> {
                     setIconResource(R.drawable.ic_prune)
                     setIconTintResource(R.color.colorOnPruneContainer)
                     setBackgroundColor(context.getColor(R.color.colorPruneContainer))
                 }
-                TaskType.WATER -> {
+                TaskType.Water -> {
                     setIconResource(R.drawable.ic_water_frequent)
                     setIconTintResource(R.color.colorOnWaterContainer)
                     setBackgroundColor(context.getColor(R.color.colorWaterContainer))
                 }
-                TaskType.CUSTOM -> TODO()
+                TaskType.Custom -> TODO()
             }
         }
     }

@@ -4,7 +4,6 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
-import com.google.android.material.timepicker.TimeFormat
 import com.nkonda.greenthumb.util.*
 import java.util.*
 
@@ -29,23 +28,23 @@ data class Plant constructor(
         val hour = cal.get(Calendar.HOUR_OF_DAY)
         val min = cal.get(Calendar.MINUTE)
         return when(taskType) {
-            TaskType.PRUNE -> PruningSchedule(
+            TaskType.Prune -> PruningSchedule(
                 pruning.months,
                 hour,
                 min
             )
-            TaskType.WATER -> WateringSchedule(
+            TaskType.Water -> WateringSchedule(
                 convertIntListToDayList(listOf(cal.get(Calendar.DAY_OF_WEEK))),
                 hour,
                 min
             )
-            TaskType.CUSTOM -> TODO()
+            TaskType.Custom -> TODO()
         }
     }
 
     fun getExpectedScheduleString(taskType: TaskType): String {
          return when(taskType) {
-             TaskType.PRUNE -> {
+             TaskType.Prune -> {
                  StringBuilder().apply {
                      if (pruning.months?.isNotEmpty() == true) {
                          append("Prune every year in ")
@@ -55,7 +54,7 @@ data class Plant constructor(
                      }
                  }.toString()
              }
-             TaskType.WATER -> {
+             TaskType.Water -> {
                  when(watering) {
                      Watering.Frequent -> "Water every day"
                      Watering.Average -> "Water every other day"
@@ -64,7 +63,7 @@ data class Plant constructor(
                      Watering.Unknown -> "Turn on to set watering reminders"
                  }
              }
-             TaskType.CUSTOM -> TODO()
+             TaskType.Custom -> TODO()
          }
     }
 

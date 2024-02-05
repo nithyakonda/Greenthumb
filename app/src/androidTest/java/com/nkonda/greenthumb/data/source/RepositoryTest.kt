@@ -214,7 +214,7 @@ class RepositoryTest {
         repository.savePlant(plantOne)
         repository.saveTask(plantOneWateringTaskDefaultSchedule)
         localDataSource.setReturnError(true)
-        val result = repository.updateSchedule(TaskKey(plantOne.id, TaskType.WATER), wateringOneExpectedSchedule)
+        val result = repository.updateSchedule(TaskKey(plantOne.id, TaskType.Water), wateringOneExpectedSchedule)
         assertDbError(result)
     }
 
@@ -224,7 +224,7 @@ class RepositoryTest {
         repository.savePlant(plantOne)
         repository.saveTask(plantOneWateringTaskDefaultSchedule)
         localDataSource.setReturnError(true)
-        val result = repository.completeTask(TaskKey(plantOne.id, TaskType.WATER), true)
+        val result = repository.completeTask(TaskKey(plantOne.id, TaskType.Water), true)
         assertDbError(result)
     }
 /*-------------------------------------------------------------------------------------------*/
@@ -234,7 +234,7 @@ class RepositoryTest {
         repository.savePlant(plantOne)
         repository.saveTask(plantOneWateringTaskDefaultSchedule)
         localDataSource.setReturnError(true)
-        val result = repository.deleteTask(TaskKey(plantOne.id, TaskType.WATER))
+        val result = repository.deleteTask(TaskKey(plantOne.id, TaskType.Water))
         assertDbError(result)
     }
 /*-------------------------------------------------------------------------------------------*/
@@ -242,7 +242,7 @@ class RepositoryTest {
     @Test
     fun observeTask_whenDBError_returnsError() = runBlocking {
         localDataSource.setReturnError(true)
-        val result = repository.observeTask(TaskKey(plantOne.id, TaskType.WATER)).getOrAwaitValue()
+        val result = repository.observeTask(TaskKey(plantOne.id, TaskType.Water)).getOrAwaitValue()
         assertDbError(result)
     }
 /*-------------------------------------------------------------------------------------------*/

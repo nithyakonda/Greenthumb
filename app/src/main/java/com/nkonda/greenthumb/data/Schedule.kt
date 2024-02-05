@@ -28,7 +28,7 @@ open abstract class Schedule(
 class PruningSchedule(
     months: List<Month>,
     hourOfDay: Int = -1,
-    minute: Int = -1): Schedule(TaskType.PRUNE, emptyList(), months, hourOfDay, minute, TaskOccurrence.YEARLY) {
+    minute: Int = -1): Schedule(TaskType.Prune, emptyList(), months, hourOfDay, minute, TaskOccurrence.YEARLY) {
 
     override fun actualScheduleString(): String {
         return StringBuilder().apply {
@@ -52,7 +52,7 @@ class PruningSchedule(
 class WateringSchedule(
     days: List<Day>,
     hourOfDay: Int = -1,
-    minute: Int = -1): Schedule(TaskType.WATER, days, emptyList(), hourOfDay, minute, TaskOccurrence.WEEKLY) {
+    minute: Int = -1): Schedule(TaskType.Water, days, emptyList(), hourOfDay, minute, TaskOccurrence.WEEKLY) {
 
     override fun actualScheduleString(): String {
         return StringBuilder().apply {

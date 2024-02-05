@@ -13,7 +13,6 @@ import com.nkonda.greenthumb.R
 import com.nkonda.greenthumb.data.Schedule
 import com.nkonda.greenthumb.data.TaskKey
 import com.nkonda.greenthumb.data.TaskType
-import com.nkonda.greenthumb.data.TaskWithPlant
 import com.nkonda.greenthumb.notification.NotificationWorker
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
@@ -72,21 +71,21 @@ fun getNotificationContent(applicationContext: Context, taskType: TaskType, plan
     var message: String
 
     when(taskType) {
-        TaskType.PRUNE -> {
+        TaskType.Prune -> {
             title = applicationContext.getString(R.string.notification_title_prune)
             message = String.format(
                 applicationContext.getString(R.string.notification_description_prune),
                 plantName
             )
         }
-        TaskType.WATER -> {
+        TaskType.Water -> {
             title = applicationContext.getString(R.string.notification_title_water)
             message = String.format(
                 applicationContext.getString(R.string.notification_description_water),
                 plantName
             )
         }
-        TaskType.CUSTOM -> TODO()
+        TaskType.Custom -> TODO()
     }
     return Pair(title, message)
 }

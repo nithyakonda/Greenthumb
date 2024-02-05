@@ -20,12 +20,12 @@ val plantOne = Plant(1, "cName1", "sName1", "annual", "high", listOf("full_sun")
 val plantTwo = Plant(2, "cName2", "sName2", "perennial", "high", listOf("full_sun"), "high", listOf("April", "May"), "thumbnail2", "imageUrl2", "description2")
 
 val tasks:HashMap<TaskKey, Task> = hashMapOf(
-    TaskKey(51L, TaskType.WATER) to Task(TaskKey(51L, TaskType.WATER)),
-    TaskKey(51L, TaskType.PRUNE) to Task(TaskKey(51L, TaskType.PRUNE))
+    TaskKey(51L, TaskType.Water) to Task(TaskKey(51L, TaskType.Water)),
+    TaskKey(51L, TaskType.Prune) to Task(TaskKey(51L, TaskType.Prune))
 )
 
-val plantOneWateringTaskDefaultSchedule = Task(TaskKey(1, TaskType.WATER))
-val plantOnePruningTaskDefaultSchedule = Task(TaskKey(1, TaskType.PRUNE))
+val plantOneWateringTaskDefaultSchedule = Task(TaskKey(1, TaskType.Water))
+val plantOnePruningTaskDefaultSchedule = Task(TaskKey(1, TaskType.Prune))
 //val plantOneWateringTaskExpectedSchedule = plantOneWateringTaskDefaultSchedule.apply {  schedule = wateringOneExpectedSchedule }
 
 

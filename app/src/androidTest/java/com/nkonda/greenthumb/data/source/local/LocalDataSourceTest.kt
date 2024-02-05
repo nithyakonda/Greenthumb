@@ -256,7 +256,7 @@ class LocalDataSourceTest {
         assertThat(tasks[0].key.plantId, `is`(1))
         assertThat(tasks[0].schedule.isSet(), `is`(false))
 
-        val validTaskKey = TaskKey(plantOne.id, TaskType.WATER)
+        val validTaskKey = TaskKey(plantOne.id, TaskType.Water)
         val result = localDataSource.updateSchedule(validTaskKey, wateringOneExpectedSchedule)
         assertThat(result.succeeded, `is`(true))
         tasks = (localDataSource.getTasks() as Result.Success).data
@@ -272,7 +272,7 @@ class LocalDataSourceTest {
         assertThat(tasks[0].key.plantId, `is`(1))
         assertThat(tasks[0].schedule.isSet(), `is`(false))
 
-        val invalidTaskKey = TaskKey(plantOne.id, TaskType.PRUNE)
+        val invalidTaskKey = TaskKey(plantOne.id, TaskType.Prune)
         val result = localDataSource.updateSchedule(invalidTaskKey, wateringOneExpectedSchedule)
         assertThat(result.succeeded, `is`(false))
         assertThat((result as Result.Error).exception.message, `is`(context.getString(R.string.test_error_nothing_to_update)))
@@ -291,7 +291,7 @@ class LocalDataSourceTest {
         assertThat(tasks[0].key.plantId, `is`(1))
         assertThat(tasks[0].completed, `is`(false))
 
-        val validTaskKey = TaskKey(plantOne.id, TaskType.WATER)
+        val validTaskKey = TaskKey(plantOne.id, TaskType.Water)
         val result = localDataSource.updateCompleted(validTaskKey, true)
         assertThat(result.succeeded, `is`(true))
         tasks = (localDataSource.getTasks() as Result.Success).data
@@ -307,7 +307,7 @@ class LocalDataSourceTest {
         assertThat(tasks[0].key.plantId, `is`(1))
         assertThat(tasks[0].completed, `is`(false))
 
-        val invalidTaskKey = TaskKey(plantOne.id, TaskType.PRUNE)
+        val invalidTaskKey = TaskKey(plantOne.id, TaskType.Prune)
         val result = localDataSource.updateCompleted(invalidTaskKey, true)
         assertThat(result.succeeded, `is`(false))
         assertThat((result as Result.Error).exception.message, `is`(context.getString(R.string.test_error_nothing_to_update)))
@@ -325,7 +325,7 @@ class LocalDataSourceTest {
         var tasks = (localDataSource.getTasks() as Result.Success).data
         assertThat(tasks[0].key.plantId, `is`(1))
 
-        val validTaskKey = TaskKey(plantOne.id, TaskType.WATER)
+        val validTaskKey = TaskKey(plantOne.id, TaskType.Water)
         val result = localDataSource.deleteTask(validTaskKey)
         assertThat(result.succeeded, `is`(true))
         tasks = (localDataSource.getTasks() as Result.Success).data
@@ -339,7 +339,7 @@ class LocalDataSourceTest {
         var tasks = (localDataSource.getTasks() as Result.Success).data
         assertThat(tasks[0].key.plantId, `is`(1))
 
-        val invalidTaskKey = TaskKey(plantOne.id, TaskType.PRUNE)
+        val invalidTaskKey = TaskKey(plantOne.id, TaskType.Prune)
         val result = localDataSource.deleteTask(invalidTaskKey)
         assertThat(result.succeeded, `is`(false))
         assertThat((result as Result.Error).exception.message, `is`(context.getString(R.string.test_error_nothing_to_delete)))
@@ -355,7 +355,7 @@ class LocalDataSourceTest {
         val tasks = (localDataSource.getTasks() as Result.Success).data
         assertThat(tasks[0].key.plantId, `is`(1))
 
-        val validTaskKey = TaskKey(plantOne.id, TaskType.WATER)
+        val validTaskKey = TaskKey(plantOne.id, TaskType.Water)
         val result = localDataSource.observeTask(validTaskKey)
         assertThat(result.getOrAwaitValue().succeeded, `is`(true))
         assertThat((result.value as Result.Success).data, `is`(plantOneWateringTaskDefaultSchedule))
@@ -368,7 +368,7 @@ class LocalDataSourceTest {
         val tasks = (localDataSource.getTasks() as Result.Success).data
         assertThat(tasks[0].key.plantId, `is`(1))
 
-        val invalidTaskKey = TaskKey(plantOne.id, TaskType.PRUNE)
+        val invalidTaskKey = TaskKey(plantOne.id, TaskType.Prune)
         val result = localDataSource.observeTask(invalidTaskKey)
         assertThat(result.getOrAwaitValue().succeeded, `is`(false))
         assertThat((result.value as Result.Error).exception.message, `is`(context.getString(R.string.test_error_not_found)))

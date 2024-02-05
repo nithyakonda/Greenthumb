@@ -13,7 +13,6 @@ import com.nkonda.greenthumb.util.*
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import timber.log.Timber
-import java.util.concurrent.TimeUnit
 
 class TaskNotificationScheduler(context: Context, params: WorkerParameters) :
     CoroutineWorker(context, params), KoinComponent {
@@ -80,19 +79,19 @@ class TaskNotificationScheduler(context: Context, params: WorkerParameters) :
         oldTasks.forEach {
             Timber.d("${it.plantName}: ${it.task.key.taskType}")
             when (it.task.key.taskType) {
-                TaskType.PRUNE -> {
+                TaskType.Prune -> {
                     // if yesterday is a different month
                     if (getYesterday().second != getToday().second && it.task.completed) {
                         // mark task as incomplete
                         repository.completeTask(it.task.key, false)
                     }
                 }
-                TaskType.WATER -> {
+                TaskType.Water -> {
                     if (it.task.completed) {
                         repository.completeTask(it.task.key, false)
                     }
                 }
-                TaskType.CUSTOM -> TODO()
+                TaskType.Custom -> TODO()
             }
         }
     }

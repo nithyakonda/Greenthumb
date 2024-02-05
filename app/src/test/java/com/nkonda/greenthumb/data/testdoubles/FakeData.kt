@@ -29,16 +29,16 @@ val remotePlants: Map<Long, Plant> = mutableMapOf(21L to plant21)
 
 
 val tasks:HashMap<TaskKey, Task> = hashMapOf(
-    TaskKey(51L, TaskType.WATER) to Task(TaskKey(51L, TaskType.WATER)),
-    TaskKey(51L, TaskType.PRUNE) to Task(TaskKey(51L, TaskType.PRUNE))
+    TaskKey(51L, TaskType.Water) to Task(TaskKey(51L, TaskType.Water)),
+    TaskKey(51L, TaskType.Prune) to Task(TaskKey(51L, TaskType.Prune))
 )
 
 val tasksWithPlant:HashMap<TaskKey, TaskWithPlant> = tasks.map {
     it.key to TaskWithPlant(it.value, plants[it.key.plantId]!!.commonName)
 }.toMap(HashMap())
 
-val plantOneWateringTaskDefaultSchedule = Task(TaskKey(1, TaskType.WATER))
-val plantOnePruningTaskDefaultSchedule = Task(TaskKey(1, TaskType.PRUNE))
+val plantOneWateringTaskDefaultSchedule = Task(TaskKey(1, TaskType.Water))
+val plantOnePruningTaskDefaultSchedule = Task(TaskKey(1, TaskType.Prune))
 //val plantOneWateringTaskExpectedSchedule = plantOneWateringTaskDefaultSchedule.apply {  schedule = wateringOneExpectedSchedule }
 
 

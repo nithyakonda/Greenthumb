@@ -1,9 +1,9 @@
 package com.nkonda.greenthumb.data
 
 enum class TaskType {
-    PRUNE,
-    WATER,
-    CUSTOM
+    Prune,
+    Water,
+    Custom
 }
 
 enum class TaskOccurrence {
