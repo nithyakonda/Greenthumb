@@ -43,16 +43,24 @@ class PlantDetailsViewModel(private val repository: IRepository) : ViewModel() {
     private val _progressIndicator = MutableLiveData<Boolean>()
     val progressIndicator: LiveData<Boolean> = _progressIndicator
 
-    private val _errorMessage = MutableLiveData<String>()
+    private val _errorMessage = MutableLiveData<String?>()
     val errorMessage = _errorMessage
 
-    private val _successMessage = MutableLiveData<String>()
+    private val _successMessage = MutableLiveData<String?>()
     val successMessage = _successMessage
 
     /**
      * Local state
      */
     private val taskStateMap = mutableMapOf<TaskKey, TaskState>()
+
+    override fun onCleared() {
+        taskStateMap.clear()
+        _errorMessage.value = null
+        _successMessage.value = null
+        _progressIndicator.value = false
+        super.onCleared()
+    }
 
     fun getPlant(plantId: Long) {
         _getPlantResult.value = Result.Loading
@@ -123,9 +131,7 @@ class PlantDetailsViewModel(private val repository: IRepository) : ViewModel() {
 
         viewModelScope.launch {
             val result = repository.saveTask(task)
-            if (result.succeeded) {
-                _successMessage.value = "Task Created"
-            } else {
+            if (!result.succeeded) {
                 _errorMessage.value = (result as Result.Error).exception.message
             }
             _progressIndicator.value = false
@@ -166,7 +172,7 @@ class PlantDetailsViewModel(private val repository: IRepository) : ViewModel() {
         viewModelScope.launch {
             val result = repository.updateSchedule(taskKey, newSchedule)
             if (result.succeeded) {
-                _successMessage.value = "Task Schedule Updated"
+                _successMessage.value = "${taskKey.taskType} Schedule Updated"
             } else {
                 _errorMessage.value = (result as Result.Error).exception.message
             }
@@ -176,6 +182,11 @@ class PlantDetailsViewModel(private val repository: IRepository) : ViewModel() {
 
     fun getExistingSchedule(taskKey: TaskKey): Schedule? {
         return taskStateMap[taskKey]?.task?.schedule
+    }
+
+    fun clearMessages() {
+        _errorMessage.value = null
+        _successMessage.value = null
     }
 
     private data class TaskState(var task: Task,

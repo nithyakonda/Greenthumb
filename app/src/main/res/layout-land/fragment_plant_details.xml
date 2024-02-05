@@ -436,6 +436,17 @@
                 app:layout_constraintTop_toTopOf="@+id/materialCardView"
                 tools:ignore="ContentDescription,SpeakableTextPresentCheck" />
 
+            <com.google.android.material.progressindicator.LinearProgressIndicator
+                android:id="@+id/progressBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:showDelay="1000"
+                android:indeterminate="true"
+                android:elevation="8dp"
+                android:visibility="invisible"/>
 
         </androidx.constraintlayout.motion.widget.MotionLayout>
     </FrameLayout>

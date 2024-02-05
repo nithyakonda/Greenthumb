@@ -94,13 +94,9 @@ class PlantDetailsFragment : Fragment() {
                 showToast(message)
             }
 
-//            progressIndicator.observe(viewLifecycleOwner) { isLoading ->
-//                if (isLoading) {
-//                    LoadingUtils.showDialog(requireContext())
-//                } else {
-//                    LoadingUtils.hideDialog()
-//                }
-//            }
+            progressIndicator.observe(viewLifecycleOwner) { isLoading ->
+                showProgress(isLoading)
+            }
         }
     }
 
@@ -112,15 +108,15 @@ class PlantDetailsFragment : Fragment() {
 
             wateringTaskBtn.setOnClickListener{
                 cardContainer?.transitionToEnd()
-                showAddTaskView(TaskKey(binding.plant!!.id, TaskType.WATER),
-                    binding.plant?.getDefaultSchedule(TaskType.WATER)!!
+                showAddTaskView(TaskKey(binding.plant!!.id, TaskType.Water),
+                    binding.plant?.getDefaultSchedule(TaskType.Water)!!
                 )
             }
 
             pruningTaskBtn.setOnClickListener {
                 cardContainer?.transitionToEnd()
-                showAddTaskView(TaskKey(binding.plant!!.id, TaskType.PRUNE),
-                    binding.plant?.getDefaultSchedule(TaskType.PRUNE)!!
+                showAddTaskView(TaskKey(binding.plant!!.id, TaskType.Prune),
+                    binding.plant?.getDefaultSchedule(TaskType.Prune)!!
                 )
             }
 
@@ -173,6 +169,7 @@ class PlantDetailsFragment : Fragment() {
 
     private fun showResult(result: Result.Success<Plant?>) {
         LoadingUtils.hideDialog()
+        showProgress(false)
         binding.mainContainer.visibility = View.VISIBLE
         binding.statusView.root.visibility = View.GONE
         binding.plant = result.data
@@ -181,6 +178,7 @@ class PlantDetailsFragment : Fragment() {
 
     private fun updateStatus(result: Result.Error) {
         LoadingUtils.hideDialog()
+        showProgress(false)
         binding.mainContainer.visibility = View.GONE
         binding.statusView.root.visibility = View.VISIBLE
         binding.statusView.statusTv.text =
@@ -220,7 +218,18 @@ class PlantDetailsFragment : Fragment() {
     }
 
     private fun showToast(message: String?) {
-        Toast.makeText(requireActivity(), message, LENGTH_SHORT).show()
+        message?.let {
+            Toast.makeText(requireActivity(), it, LENGTH_SHORT).show()
+            plantDetailsViewModel.clearMessages()
+        }
+    }
+
+    private fun showProgress(show: Boolean) {
+        if (show) {
+            binding.progressBar.show()
+        } else {
+            binding.progressBar.hide()
+        }
     }
 
     private fun hasConnectivity(): Boolean {
