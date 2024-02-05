@@ -33,8 +33,23 @@
             layout="@layout/view_status"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginTop="32dp"
             android:src="@drawable/img_error_no_internet"
             android:visibility="gone" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/start"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.2" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/end"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.8" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/plantSearchResultsRv"
@@ -43,8 +58,8 @@
             android:layout_marginTop="24dp"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/end"
+            app:layout_constraintStart_toStartOf="@id/start"
             app:layout_constraintTop_toBottomOf="@+id/searchView"
             tools:listitem="@layout/listitem_plant_summary"
             tools:visibility="visible" />

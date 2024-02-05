@@ -14,44 +14,55 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guide"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.6" />
+
         <TimePicker
             android:id="@+id/timePicker"
             style="@style/Widget.Material3.MaterialTimePicker"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/guide"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.google.android.material.divider.MaterialDivider
             android:id="@+id/divider"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/timePicker" />
+            android:layout_width="1dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/guide"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/repeatsTv"
             style="@style/GTLabelTextViewStyle"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:text="Repeats"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/divider" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/divider"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <com.google.android.material.chip.ChipGroup
             android:id="@+id/dayChipGroup"
             chipGroupVisibility="@{schedule}"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_gravity="center_horizontal"
             android:layout_margin="8dp"
-            app:layout_constrainedWidth="true"
+            android:layout_marginTop="4dp"
+            app:layout_constraintBottom_toTopOf="@id/okBtn"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="@id/divider"
             app:layout_constraintTop_toBottomOf="@id/repeatsTv"
             app:layout_constraintWidth_default="spread"
-            app:layout_constraintWidth_percent="1"
             app:singleSelection="false"
             tools:visibility="gone">
 
@@ -117,15 +128,15 @@
             android:id="@+id/monthChipGroup"
             chipGroupVisibility="@{schedule}"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_gravity="center_horizontal"
             android:layout_margin="8dp"
-            app:layout_constrainedWidth="true"
+            android:layout_marginTop="4dp"
+            app:layout_constraintBottom_toTopOf="@id/okBtn"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/dayChipGroup"
+            app:layout_constraintStart_toStartOf="@id/divider"
+            app:layout_constraintTop_toBottomOf="@id/repeatsTv"
             app:layout_constraintWidth_default="spread"
-            app:layout_constraintWidth_percent="1"
             app:singleSelection="false">
 
             <com.google.android.material.chip.Chip
@@ -235,9 +246,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/cancelBtn"
-            app:layout_constraintTop_toBottomOf="@+id/monthChipGroup"
-            app:layout_constraintVertical_bias="1.0" />
+            app:layout_constraintStart_toEndOf="@+id/cancelBtn" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/cancelBtn"
@@ -246,12 +255,11 @@
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             android:text="Cancel"
-            app:layout_constraintBottom_toBottomOf="@+id/okBtn"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/okBtn"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintHorizontal_chainStyle="packed"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/okBtn" />
+            app:layout_constraintStart_toStartOf="@id/divider" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

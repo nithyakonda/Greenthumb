@@ -11,7 +11,6 @@ import com.nkonda.greenthumb.databinding.DialogSchedulingBinding
 import com.nkonda.greenthumb.util.getDayFromDayChipId
 import com.nkonda.greenthumb.util.getMonthFromMonthChipId
 import com.nkonda.greenthumb.util.getNotificationWorkRequest
-import com.nkonda.greenthumb.util.isLaterToday
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
 class SchedulingDialogFragment: DialogFragment() {
@@ -42,7 +41,7 @@ class SchedulingDialogFragment: DialogFragment() {
     ): View? {
         binding = DialogSchedulingBinding.inflate(inflater, container, false)
         val width = ViewGroup.LayoutParams.MATCH_PARENT
-        val height = ViewGroup.LayoutParams.WRAP_CONTENT
+        val height = ViewGroup.LayoutParams.MATCH_PARENT
         dialog?.window?.setLayout(width, height)
         dialog?.setCancelable(false)
         arguments?.let {
