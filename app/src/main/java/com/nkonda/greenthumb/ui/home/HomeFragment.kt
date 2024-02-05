@@ -42,6 +42,7 @@ class HomeFragment : Fragment() {
             dailyTasks.tasksRv.adapter = dailyTasksAdapter
         }
         setupObservers()
+        homeViewModel.refresh()
     }
 
     private fun setupObservers() {

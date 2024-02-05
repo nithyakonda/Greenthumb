@@ -336,6 +336,7 @@
                         android:id="@+id/addTaskContainer"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
+                        android:visibility="invisible"
                         tools:visibility="visible">
 
                         <com.google.android.material.divider.MaterialDivider

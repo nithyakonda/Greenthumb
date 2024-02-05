@@ -10,7 +10,7 @@ fun getYesterday(): Pair<Day, Month> {
     yesterday.add(Calendar.DAY_OF_MONTH, -1)
 
     val day = yesterday.get(Calendar.DAY_OF_WEEK)
-    val month = yesterday.get(Calendar.MONTH) + 1
+    val month = yesterday.get(Calendar.MONTH)
 
     return Pair(convertIntToDay(day), convertIntToMonth(month))
 }
@@ -19,7 +19,7 @@ fun getToday(): Pair<Day, Month> {
     val today = Calendar.getInstance(TimeZone.getDefault())
 
     val day = today.get(Calendar.DAY_OF_WEEK)
-    val month = today.get(Calendar.MONTH) + 1
+    val month = today.get(Calendar.MONTH)
 
     return Pair(convertIntToDay(day), convertIntToMonth(month))
 }

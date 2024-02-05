@@ -24,7 +24,7 @@ import timber.log.Timber
 class PlantDetailsFragment : Fragment() {
     private lateinit var binding: FragmentPlantDetailsBinding
     private val plantDetailsViewModel:PlantDetailsViewModel by activityViewModel()
-
+    private var shouldAnimate = false
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -103,6 +103,7 @@ class PlantDetailsFragment : Fragment() {
     private fun setupClickHandlers() {
         binding.apply {
             addOrDeleteFab.setOnClickListener {
+                shouldAnimate = true
                 saveOrDeletePlant()
             }
 
@@ -251,12 +252,22 @@ class PlantDetailsFragment : Fragment() {
 
     private fun animatePlantSavedStatusChange(saved: Boolean) {
         if (saved) {
-            // show add tasks text view
-            binding.mainContainer.transitionToEnd()
+            if (shouldAnimate) {
+                // show add tasks text view
+                binding.mainContainer.transitionToEnd()
+                shouldAnimate = false
+            } else {
+                binding.mainContainer.progress = 1.0f
+            }
         } else {
             // hide add tasks text view
-            binding.mainContainer.progress = 1.0f
-            binding.mainContainer.transitionToStart()
+            if (shouldAnimate) {
+                binding.mainContainer.progress = 1.0f
+                binding.mainContainer.transitionToStart()
+                shouldAnimate = false
+            } else {
+                binding.mainContainer.progress = 0.0f
+            }
             // hide add tasks container
             if (binding.addTaskContainer.isVisible) {
                 if (isPortrait()) {
