@@ -33,7 +33,7 @@
             layout="@layout/view_status"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="@dimen/view_separation_margin_xlarge"
             android:src="@drawable/img_error_no_internet"
             android:visibility="gone" />
 
@@ -55,7 +55,7 @@
             android:id="@+id/plantSearchResultsRv"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="@dimen/view_separation_margin_large"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@id/end"

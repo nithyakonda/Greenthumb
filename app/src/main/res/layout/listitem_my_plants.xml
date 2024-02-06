@@ -14,7 +14,7 @@
         style="@style/Widget.Material3.CardView.Elevated"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp">
+        android:layout_margin="@dimen/view_separation_margin_small">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -38,10 +38,10 @@
                 android:id="@+id/tvCommonName"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="24dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginBottom="4dp"
+                android:layout_marginStart="@dimen/view_separation_margin_medium"
+                android:layout_marginTop="@dimen/view_separation_margin_large"
+                android:layout_marginEnd="@dimen/view_separation_margin_medium"
+                android:layout_marginBottom="@dimen/view_separation_margin_xsmall"
                 android:fontFamily="@font/roboto_condensed_light"
                 android:text="@{plantSummary.commonName}"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
@@ -56,7 +56,7 @@
                 android:id="@+id/tvCycle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
+                android:layout_marginBottom="@dimen/view_separation_margin_small"
                 android:fontFamily="@font/roboto_condensed_light"
                 android:text="@{plantSummary.cycle}"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small"

@@ -10,7 +10,7 @@
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
+        android:layout_margin="@dimen/view_separation_margin_small"
         style="@style/Widget.Material3.CardView.Elevated">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -21,8 +21,8 @@
             <ImageView
                 android:id="@+id/ivPlantImage"
                 searchResultPlantImage="@{plantSummary.defaultImage.thumbnail}"
-                android:layout_width="90dp"
-                android:layout_height="90dp"
+                android:layout_width="@dimen/image_listitem_dimens"
+                android:layout_height="@dimen/image_listitem_dimens"
                 android:contentDescription="@string/cd_listitem_plant_image"
                 android:scaleType="centerCrop"
                 android:src="@drawable/img_default_plant"
@@ -36,7 +36,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/container_listitem_vertical_margin"
-                android:layout_marginBottom="4dp"
+                android:layout_marginBottom="@dimen/view_separation_margin_xsmall"
                 android:fontFamily="@font/roboto_condensed_light"
                 android:text="@{plantSummary.commonName}"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
