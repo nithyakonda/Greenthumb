@@ -19,12 +19,14 @@ import com.nkonda.greenthumb.ui.LoadingUtils
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
+private const val ARG_SEARCH_STATE = "search_state"
 
 class SearchFragment : Fragment(), ConnectivityChangeListener {
 
     private lateinit var binding: FragmentSearchBinding
     private lateinit var adapter: SearchResultsListAdapter
     private val searchViewModel: SearchViewModel by viewModel()
+    private var lastSearchState = SearchState.NOT_RUN
 
     private enum class SearchState { NOT_RUN, NO_INTERNET, SUCCESS, ERROR }
 
@@ -35,6 +37,9 @@ class SearchFragment : Fragment(), ConnectivityChangeListener {
     ): View {
         binding = FragmentSearchBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
+        savedInstanceState?.let {
+            lastSearchState = SearchState.valueOf(it.getString(ARG_SEARCH_STATE).toString())
+        }
         return binding.root
     }
 
@@ -53,15 +58,20 @@ class SearchFragment : Fragment(), ConnectivityChangeListener {
         (requireActivity() as MainActivity).registerForConnectivityUpdates(this)
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putString(ARG_SEARCH_STATE, lastSearchState.name)
+        super.onSaveInstanceState(outState)
+    }
+
+    override fun onStop() {
+        super.onStop()
         (requireActivity() as MainActivity).unregisterFromConnectivityUpdates(this)
     }
 
     override fun onConnectivityChanged(isConnected: Boolean) {
         binding.apply {
             if (isConnected) {
-                updateSearchState(SearchState.NOT_RUN)
+                updateSearchState(lastSearchState)
             } else {
                 updateSearchState(SearchState.NO_INTERNET, ErrorCode.NO_INTERNET.code)
             }
@@ -131,7 +141,10 @@ class SearchFragment : Fragment(), ConnectivityChangeListener {
         state: SearchState,
         codeStr: String = ErrorCode.UNKNOWN_ERROR.message
     ) {
+        // Ignore if NO_INTERNET state is received while search results are displayed
+        if (state == SearchState.NO_INTERNET && lastSearchState == SearchState.SUCCESS) return
         activity?.runOnUiThread {
+            lastSearchState = state
             binding.apply {
                 plantSearchResultsRv.visibility =
                     if (state == SearchState.SUCCESS) View.VISIBLE else View.GONE
